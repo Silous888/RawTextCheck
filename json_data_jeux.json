@@ -1,0 +1,75 @@
+[
+    {
+        "id": 1,
+        "title": "428: Shibuya Scramble",
+        "column_sheet": "C",
+        "page_dictionary": 1,
+        "ingnored_substrings": {
+
+        }
+    },
+    {
+        "id": 2,
+        "title": "AI: The Somnium Files",
+        "column_sheet": "C",
+        "page_dictionary": 2,
+        "ingnored_substrings": {
+
+        }
+    },
+    {
+        "id": 3,
+        "title": "AI: The Somnium Files - Nirvana Initiative",
+        "column_sheet": "D",
+        "page_dictionary": 3,
+        "ingnored_substrings": {
+
+        }
+    },
+    {
+        "id": 4,
+        "title": "PARANOMASIGHT",
+        "column_sheet": "E",
+        "page_dictionary": 4,
+        "ingnored_substrings": {
+            "[": "]",
+            "<": ">"
+        }
+    },
+    {
+        "id": 5,
+        "title": "The Zodiac Trial",
+        "column_sheet": "D",
+        "page_dictionary": 5,
+        "ingnored_substrings": {
+
+        }
+    },
+    {
+        "id": 6,
+        "title": "Zero Escape: Nine Hours, Nine Persons, Nine Doors",
+        "column_sheet": "F",
+        "page_dictionary": 6,
+        "ingnored_substrings": {
+
+        }
+    },
+    {
+        "id": 7,
+        "title": "Zero Escape: Virtue's Last Reward",
+        "column_sheet": "E",
+        "page_dictionary": 7,
+        "ingnored_substrings": {
+            "<": ">"
+        }
+    },
+    {
+        "id": 8,
+        "title": "Zero Escape: Zero Time Dilemma",
+        "column_sheet": "E",
+        "page_dictionary": 8,
+        "ingnored_substrings": {
+
+        }
+    }
+]
