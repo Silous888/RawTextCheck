@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
         self.m_worker.moveToThread(self.m_thread)
 
         self.populate_combobox_game()
-        self.toggle_ui_enabled(False)
+        self.toggle_ui_enabled_except_combobox_game(False)
 
         self.set_up_connect()
 
