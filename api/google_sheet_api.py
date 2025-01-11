@@ -10,10 +10,10 @@ try:
 except ImportError:
     _MODULE_EXIST = False
 
-_scope = ["https://spreadsheets.google.com/feeds",
-          "https://www.googleapis.com/auth/spreadsheets",
-          "https://www.googleapis.com/auth/drive.file",
-          "https://www.googleapis.com/auth/drive"]
+_scope: list[str] = ["https://spreadsheets.google.com/feeds",
+                     "https://www.googleapis.com/auth/spreadsheets",
+                     "https://www.googleapis.com/auth/drive.file",
+                     "https://www.googleapis.com/auth/drive"]
 
 _is_credentials_file_exists = True
 _is_credentials_correct = True

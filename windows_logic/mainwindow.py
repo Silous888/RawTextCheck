@@ -5,7 +5,8 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import QObject, QThread
 
 # -------------------- Import Lib User -------------------
-from ui.Ui_mainwindow import Ui_MainWindow
+from qt_files.Ui_mainwindow import Ui_MainWindow
+from qt_files.Ui_dialog_excluded_word import Ui_Dialog
 import process
 
 
@@ -80,6 +81,7 @@ class MainWindow(QMainWindow):
     def pushbutton_gamedictionary_clicked(self) -> None:
         """slot for pushButton_gameDictionary
         """
+        self.dialog_dict = Ui_Dialog()
 
     def pushbutton_method_1_clicked(self) -> None:
         """slot for pushButton_method_1
