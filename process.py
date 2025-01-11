@@ -7,7 +7,7 @@ from typing import Any
 # -------------------- Import Lib User -------------------
 from api import google_sheet_api as gsa
 
-data: dict[str, Any] = {}
+data_json: dict[str, Any] = {}
 
 ID_SHEET_DICT_GAME: str = "1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc"
 

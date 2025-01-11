@@ -6,7 +6,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 
 # -------------------- Import Lib User -------------------
-from ui.mainwindow import MainWindow
+from windows_logic.mainwindow import MainWindow
 import process
 
 # pyinstaller --onefile --noconsole --name FautesCheck --icon=./ressource/DreamteamLogo.ico main.py
@@ -14,7 +14,7 @@ import process
 # -------------------- Main code -------------------
 if __name__ == "__main__":
     # load data
-    process.data = process.load_json()
+    process.data_json = process.load_json()
 
     # create qt application
     app = QApplication(sys.argv)

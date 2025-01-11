@@ -6,7 +6,7 @@ from PyQt5.QtCore import QObject, QThread
 
 # -------------------- Import Lib User -------------------
 from qt_files.Ui_mainwindow import Ui_MainWindow
-from qt_files.Ui_dialog_excluded_word import Ui_Dialog
+from windows_logic.dialog_excluded_words import DialogExcludedWords
 import process
 
 
@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
         """populate comboBox_game
         """
         self.ui.comboBox_game.addItem("-- Choisissez un jeu --")
-        for game in process.data:
+        for game in process.data_json:
             self.ui.comboBox_game.addItem(game["title"])  # type: ignore
 
     def toggle_ui_enabled_except_combobox_game(self, enabled: bool) -> None:
@@ -81,7 +81,8 @@ class MainWindow(QMainWindow):
     def pushbutton_gamedictionary_clicked(self) -> None:
         """slot for pushButton_gameDictionary
         """
-        self.dialog_dict = Ui_Dialog()
+        self.dialog_dict = DialogExcludedWords()
+        self.dialog_dict.exec()
 
     def pushbutton_method_1_clicked(self) -> None:
         """slot for pushButton_method_1
@@ -107,3 +108,4 @@ class MainWindow(QMainWindow):
         """slot for comboBox_game
         """
         self.toggle_ui_enabled_except_combobox_game(bool(index))
+        self.ui.lineEdit_frenchColumn.setText(process.data_json[index - 1]["column_sheet"])  # type: ignore

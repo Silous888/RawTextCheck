@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\ui\dialog_excluded_word.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\qt_files\dialog_excluded_words.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
