@@ -1,6 +1,7 @@
 # project files
 credentials.py
-
+language-tool-py_correction.py
+word_correction.py
 
 
 # Byte-compiled / optimized / DLL files
