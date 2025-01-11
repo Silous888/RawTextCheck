@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
-    <height>566</height>
+    <width>1193</width>
+    <height>858</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,8 +21,314 @@
    <property name="styleSheet">
     <string notr="true"/>
    </property>
+   <widget class="QTabWidget" name="tabWidget_result">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>230</y>
+      <width>741</width>
+      <height>601</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab_1">
+     <attribute name="title">
+      <string>dictionnaire</string>
+     </attribute>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="tableWidget_1">
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>200</number>
+        </attribute>
+        <attribute name="verticalHeaderDefaultSectionSize">
+         <number>15</number>
+        </attribute>
+        <row>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </row>
+        <column>
+         <property name="text">
+          <string>ligne</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>faute</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Word</string>
+     </attribute>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="tableWidget_2">
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>200</number>
+        </attribute>
+        <attribute name="verticalHeaderDefaultSectionSize">
+         <number>15</number>
+        </attribute>
+        <row>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </row>
+        <column>
+         <property name="text">
+          <string>ligne</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>faute</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>LanguageTool</string>
+     </attribute>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="tableWidget_3">
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>200</number>
+        </attribute>
+        <attribute name="verticalHeaderDefaultSectionSize">
+         <number>15</number>
+        </attribute>
+        <row>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </row>
+        <column>
+         <property name="text">
+          <string>ligne</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>faute</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>230</y>
+      <width>321</width>
+      <height>251</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Mise à jour des fautes trouvées</string>
+    </property>
+    <widget class="QLabel" name="label_lastUdate_3">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>140</y>
+       <width>121</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>last_update</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_method_1">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>141</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>mise à jour &quot;dictionnaire&quot;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_method_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>141</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>mise à jour &quot;MS Word&quot;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_method_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>140</y>
+       <width>141</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Mise à jour &quot;LanguageTool&quot;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_lastUdate_2">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>90</y>
+       <width>121</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>last_update</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_lastUdate_1">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>40</y>
+       <width>121</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>last_update</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>1171</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Choix du jeu et du google sheet</string>
+    </property>
+    <widget class="QLabel" name="label_frenchColumn">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>100</y>
+       <width>161</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Colonne du français :</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_urlSheet">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>30</y>
+       <width>731</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>mettre ici URL google sheet à traiter </string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_frenchColumn">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>100</y>
+       <width>41</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="maxLength">
+      <number>2</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_gameDictionary">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>151</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Dictionnaire termes du jeu</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_game">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>391</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>comboBox_game</tabstop>
+  <tabstop>lineEdit_urlSheet</tabstop>
+  <tabstop>pushButton_gameDictionary</tabstop>
+  <tabstop>lineEdit_frenchColumn</tabstop>
+  <tabstop>pushButton_method_1</tabstop>
+  <tabstop>pushButton_method_2</tabstop>
+  <tabstop>pushButton_method_3</tabstop>
+  <tabstop>tabWidget_result</tabstop>
+  <tabstop>tableWidget_1</tabstop>
+  <tabstop>tableWidget_2</tabstop>
+  <tabstop>tableWidget_3</tabstop>
+ </tabstops>
  <resources>
   <include location="ressource.qrc"/>
  </resources>

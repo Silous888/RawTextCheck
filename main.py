@@ -5,7 +5,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 
 # -------------------- Import Lib User -------------------
-from mainwindow import MainWindow
+from ui.mainwindow import MainWindow
 
 # pyinstaller --onefile --noconsole --name FautesCheck --icon=./ressource/DreamteamLogo.ico main.py
 
