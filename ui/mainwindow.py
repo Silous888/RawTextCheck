@@ -1,14 +1,11 @@
 """functions of the UI"""
 
-import os
-
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import QObject, QThread
 
 # -------------------- Import Lib User -------------------
 from ui.Ui_mainwindow import Ui_MainWindow
-
 
 
 # -------------------------------------------------------------------#
@@ -24,10 +21,15 @@ class _Worker(QObject):
 #                         CLASS MAINWINDOW                           #
 # -------------------------------------------------------------------#
 class MainWindow(QMainWindow):
+    """main window of the application
+
+    Args:
+        QMainWindow (QMainWindow): main window of the application
+    """
     def __init__(self) -> None:
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self) # type: ignore
 
         self.m_thread = QThread()
         self.m_thread.start()
@@ -37,4 +39,43 @@ class MainWindow(QMainWindow):
         self.set_up_connect()
 
     def set_up_connect(self) -> None:
-        pass
+        """connect slots and signals
+        """
+        # pushButton
+        self.ui.pushButton_gameDictionary.clicked.connect(self.pushbutton_gamedictionary_clicked)
+        self.ui.pushButton_method_1.clicked.connect(self.pushbutton_method_1_clicked)
+        self.ui.pushButton_method_2.clicked.connect(self.pushbutton_method_2_clicked)
+        self.ui.pushButton_method_3.clicked.connect(self.pushbutton_method_3_clicked)
+        # lineEdit
+        self.ui.lineEdit_urlSheet.textChanged.connect(self.lineedit_urlsheet_textchanged)
+        self.ui.lineEdit_frenchColumn.textChanged.connect(self.lineedit_frenchcolumn_textchanged)
+        # comboBox
+        self.ui.comboBox_game.currentIndexChanged.connect(self.combobox_game_currentindexchanged)
+
+    def pushbutton_gamedictionary_clicked(self) -> None:
+        """slot for pushButton_gameDictionary
+        """
+
+    def pushbutton_method_1_clicked(self) -> None:
+        """slot for pushButton_method_1
+        """
+
+    def pushbutton_method_2_clicked(self) -> None:
+        """slot for pushButton_method_2
+        """
+
+    def pushbutton_method_3_clicked(self) -> None:
+        """slot for pushButton_method_3
+        """
+
+    def lineedit_urlsheet_textchanged(self, text: str) -> None:
+        """slot for lineEdit_urlSheet
+        """
+
+    def lineedit_frenchcolumn_textchanged(self, text: str) -> None:
+        """slot for lineEdit_frenchColumn
+        """
+
+    def combobox_game_currentindexchanged(self, index: int) -> None:
+        """slot for comboBox_game
+        """
