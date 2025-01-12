@@ -32,6 +32,9 @@
    <property name="text">
     <string>Sauvegarder et quitter</string>
    </property>
+   <property name="autoDefault">
+    <bool>false</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="pushButton_resetChange">
    <property name="geometry">
@@ -44,6 +47,9 @@
    </property>
    <property name="text">
     <string>Réinitialiser changements</string>
+   </property>
+   <property name="autoDefault">
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QFrame" name="frame">

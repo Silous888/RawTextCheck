@@ -1,7 +1,7 @@
 
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QMenu, QAction
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import QPoint
 
 # -------------------- Import Lib User -------------------
 from qt_files.Ui_dialog_excluded_words import Ui_Dialog
@@ -15,6 +15,9 @@ class DialogExcludedWords(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)  # type: ignore
         self.set_up_connect()
+
+        self.ui.tableWidget_excludedWords.installEventFilter(self)
+
         self.id_game: int = id_game
 
     def load_excluded_word_in_table(self) -> None:
