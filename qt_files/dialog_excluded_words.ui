@@ -20,7 +20,7 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="pushButton_saveAndQuit">
    <property name="geometry">
     <rect>
      <x>340</x>
@@ -33,7 +33,7 @@
     <string>Sauvegarder et quitter</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="pushButton_resetChange">
    <property name="geometry">
     <rect>
      <x>190</x>
@@ -63,7 +63,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QTableWidget" name="tableWidget_1">
+     <widget class="QTableWidget" name="tableWidget_excludedWords">
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectRows</enum>
       </property>
@@ -79,11 +79,6 @@
       <attribute name="verticalHeaderShowSortIndicator" stdset="0">
        <bool>false</bool>
       </attribute>
-      <row>
-       <property name="text">
-        <string>1</string>
-       </property>
-      </row>
       <column>
        <property name="text">
         <string>mots</string>
@@ -95,9 +90,9 @@
   </widget>
  </widget>
  <tabstops>
-  <tabstop>tableWidget_1</tabstop>
-  <tabstop>pushButton_2</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>tableWidget_excludedWords</tabstop>
+  <tabstop>pushButton_resetChange</tabstop>
+  <tabstop>pushButton_saveAndQuit</tabstop>
  </tabstops>
  <resources>
   <include location="ressource.qrc"/>

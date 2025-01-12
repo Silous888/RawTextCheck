@@ -81,7 +81,8 @@ class MainWindow(QMainWindow):
     def pushbutton_gamedictionary_clicked(self) -> None:
         """slot for pushButton_gameDictionary
         """
-        self.dialog_dict = DialogExcludedWords()
+        self.dialog_dict = DialogExcludedWords(self.ui.comboBox_game.currentIndex()-1)
+        self.dialog_dict.load_excluded_word_in_table()
         self.dialog_dict.exec()
 
     def pushbutton_method_1_clicked(self) -> None:
