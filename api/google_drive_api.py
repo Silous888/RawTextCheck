@@ -40,7 +40,7 @@ def __init() -> int:
     if _drive_service is None:
         if _MODULE_EXIST:
             try:
-                credentials = _sac.from_json_keyfile_dict(_credentials_info, _scope)
+                credentials: _sac = _sac.from_json_keyfile_dict(_credentials_info, _scope)
                 _credentials_email = credentials.service_account_email
                 _drive_service = __build('drive', 'v3', credentials=credentials)
                 _is_credentials_correct = True
@@ -95,8 +95,9 @@ def has_access_to_element(element_id: str) -> (bool | int):
     if ret != 0:
         return ret
     try:
-        _ = _drive_service.files().get(fileId=element_id).execute()
+        _ = _drive_service.files().get(fileId=element_id, fields="id").execute()
         return True
+        return False
     except Exception:
         return False
 

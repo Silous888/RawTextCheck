@@ -73,7 +73,7 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_method_2.clicked.connect(self.pushbutton_method_2_clicked)
         self.ui.pushButton_method_3.clicked.connect(self.pushbutton_method_3_clicked)
         # lineEdit
-        self.ui.lineEdit_urlSheet.textChanged.connect(self.lineedit_urlsheet_textchanged)
+        self.ui.lineEdit_urlSheet.editingFinished.connect(self.lineedit_urlsheet_textchanged)
         self.ui.lineEdit_frenchColumn.textChanged.connect(self.lineedit_frenchcolumn_textchanged)
         # comboBox
         self.ui.comboBox_game.currentIndexChanged.connect(self.combobox_game_currentindexchanged)
@@ -97,9 +97,17 @@ class MainWindow(QMainWindow):
         """slot for pushButton_method_3
         """
 
-    def lineedit_urlsheet_textchanged(self, text: str) -> None:
+    def lineedit_urlsheet_textchanged(self) -> None:
         """slot for lineEdit_urlSheet
         """
+        text: str = self.ui.lineEdit_urlSheet.text()
+        if len(text) < 1:
+            print(text)
+            self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(255, 255, 255);")
+        elif process.has_access_to_element(text):
+            self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(0, 200, 0);")
+        else:
+            self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(200, 0, 0);")
 
     def lineedit_frenchcolumn_textchanged(self, text: str) -> None:
         """slot for lineEdit_frenchColumn
