@@ -23,7 +23,7 @@ _credentials_email = None
 _credentials_path = ".\\credentials.json"
 _gc = None
 _current_spreadsheet = None
-_last_sheet = None
+_last_sheet : _gspread.Worksheet | None = None
 _last_sheet_index: int | None = None
 
 _MAX_RETRIES = 100
@@ -85,7 +85,7 @@ def set_credentials_path(credentials_path: str = ".\\credentials.json") -> None:
         _credentials_path = credentials_path
 
 
-def safe_execute(func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
+def _safe_execute_function(func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
     """Execute a function with given arguments in a try-except block,
        until it works or the maximum number of retries is reached.
 
@@ -107,7 +107,7 @@ def safe_execute(func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
     return -10  # max retries reached
 
 
-def safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) -> Any:
+def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) -> Any:
     """Execute a method of an object with given arguments in a try-except block,
        until it works or the maximum number of retries is reached.
 
@@ -154,7 +154,7 @@ def open_spreadsheet(sheet_id: str) -> int:
     if ret != 0:
         return ret
 
-    spreadsheet = safe_execute_method(_gc, "open_by_key", sheet_id)
+    spreadsheet = _safe_execute_method(_gc, "open_by_key", sheet_id)
     # need to check exception
 
     _current_spreadsheet = spreadsheet
@@ -186,7 +186,7 @@ def _open_sheet(sheet_index: int) -> int:
         return -4
 
     if sheet_index != _last_sheet_index:
-        last_sheet = safe_execute_method(_current_spreadsheet, "get_worksheet", sheet_index)
+        last_sheet = _safe_execute_method(_current_spreadsheet, "get_worksheet", sheet_index)
         # need to check exception
         _last_sheet = last_sheet
         _last_sheet_index = sheet_index
@@ -210,7 +210,7 @@ def get_sheet(sheet_index: int) -> (list[list[str]] | int):
     ret = _open_sheet(sheet_index)
     if ret != 0:
         return ret
-    return safe_execute_method(_last_sheet, "get_all_values")
+    return _safe_execute_method(_last_sheet, "get_all_values")
 
 
 def get_cell_range(sheet_index: int, range: str) -> (list[list[str]] | int):
@@ -231,7 +231,7 @@ def get_cell_range(sheet_index: int, range: str) -> (list[list[str]] | int):
     ret = _open_sheet(sheet_index)
     if ret != 0:
         return ret
-    return safe_execute_method(_last_sheet, "range", range)
+    return _safe_execute_method(_last_sheet, "range", range)
 
 
 def get_cell(sheet_index: int, row: int, col: int) -> (str | int):
@@ -252,4 +252,30 @@ def get_cell(sheet_index: int, row: int, col: int) -> (str | int):
     ret = _open_sheet(sheet_index)
     if ret != 0:
         return ret
-    return safe_execute_method(_last_sheet, "cell", row, col)
+    return _safe_execute_method(_last_sheet, "cell", row, col)
+
+
+def set_sheet_values(sheet_index: int, values: list[list[str]]) -> int:
+    """Set the values in a sheet
+
+    Args:
+        sheet_index (int): index of the sheet, first is 0
+        values (list[list[str]]): values to set in the sheet
+
+    Returns:
+        int: 0 if no error, error code otherwise
+
+    error code:
+    -3 if no token, end of waiting time
+    -4 if no spreadsheet opened
+    -5 if index not found
+    """
+    ret = _open_sheet(sheet_index)
+    if ret != 0:
+        return ret
+    _safe_execute_method(_last_sheet, "clear", values)
+    result = _safe_execute_method(_last_sheet, "update", values)
+
+    if result is None:
+        return -1  # or any other error code you prefer
+    return 0

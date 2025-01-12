@@ -33,3 +33,14 @@ def get_list_specific_word(sheet_index: int) -> list[str] | int:
     if isinstance(result, int):
         return result
     return [item for sublist in result for item in sublist]
+
+
+def set_list_specific_word(sheet_index: int, list_word: list[str]) -> None:
+    """set the list of specific words of a game in the sheet
+
+    Args:
+        sheet_index (int): index related to the game wanted,
+        list_word (list[str]): list of specific words
+    """
+    gsa.open_spreadsheet(ID_SHEET_DICT_GAME)
+    gsa.set_sheet_values(sheet_index, [[word] for word in list_word])
