@@ -1,8 +1,8 @@
 import gspread as _gspread
 from oauth2client.service_account import ServiceAccountCredentials as _sac
-
 import os as _os
 import time as _time
+from typing import Callable, Any
 
 try:
     from credentials import credentials_info as _credentials_info
@@ -24,10 +24,10 @@ _credentials_path = ".\\credentials.json"
 _gc = None
 _current_spreadsheet = None
 _last_sheet = None
-_last_sheet_index = None
+_last_sheet_index: int | None = None
 
-_MAX_RETRIES = 500
-_WAIT_TIME = 10
+_MAX_RETRIES = 100
+_WAIT_TIME = 5
 
 
 def __init() -> int:
@@ -70,7 +70,7 @@ def __init() -> int:
     return 0
 
 
-def set_credentials_path(credentials_path=".\\credentials.json") -> None:
+def set_credentials_path(credentials_path: str = ".\\credentials.json") -> None:
     """change the path of the credentials, if json file,
     if you give a folder, the path will be credentials_path + "credentials.json
     the path will be set, even if the path doesn't exist yet.
@@ -85,31 +85,52 @@ def set_credentials_path(credentials_path=".\\credentials.json") -> None:
         _credentials_path = credentials_path
 
 
-def _decorator_wait_token(func):
-    """wait for token if necessary
+def safe_execute(func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
+    """Execute a function with given arguments in a try-except block,
+       until it works or the maximum number of retries is reached.
 
     Args:
-        func (func): function to decorate, first return need to be a boolean of success of the function
+        func (Callable[..., Any]): The function to execute.
+        *args (Any): Positional arguments for the function.
+        **kwargs (Any): Keyword arguments for the function.
 
     Returns:
-        Tuple: returns of the decorated functions, except the first result. If no token after waiting, -1
+        Any: The result of the function if it succeeds, otherwise None.
     """
-    def wrapper(*args, **kwargs):
-        for _ in range(_MAX_RETRIES):
-            results = func(*args, **kwargs)
-            if isinstance(results, tuple) and results[0]:
-                if len(results[1:]) > 1:
-                    return results[1:]
-                else:
-                    return results[1]
-            elif results:
-                return results
-            _time.sleep(_WAIT_TIME)
-        return -3
-    return wrapper
+    for _ in range(_MAX_RETRIES):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            if "'code': 429" not in str(e):
+                return -11  # to define later
+        _time.sleep(_WAIT_TIME)
+    return -10  # max retries reached
 
 
-@_decorator_wait_token
+def safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) -> Any:
+    """Execute a method of an object with given arguments in a try-except block,
+       until it works or the maximum number of retries is reached.
+
+    Args:
+        obj (Any): The object containing the method.
+        method_name (str): The name of the method to execute.
+        *args (Any): Positional arguments for the method.
+        **kwargs (Any): Keyword arguments for the method.
+
+    Returns:
+        Any: The result of the method if it succeeds, otherwise None.
+    """
+    method = getattr(obj, method_name)
+    for _ in range(_MAX_RETRIES):
+        try:
+            return method(*args, **kwargs)
+        except Exception as e:
+            if "'code': 429" not in str(e):
+                return -11  # to define later
+        _time.sleep(_WAIT_TIME)
+    return -10  # max retries reached
+
+
 def open_spreadsheet(sheet_id: str) -> int:
     """open a sheet for others functions
 
@@ -133,20 +154,15 @@ def open_spreadsheet(sheet_id: str) -> int:
     if ret != 0:
         return ret
 
-    try:
-        spreadsheet = _gc.open_by_key(sheet_id)
-    except Exception as e:
-        if "Response [404]" in str(e):
-            return True, -4
-        return False
-    else:
-        _current_spreadsheet = spreadsheet
-        _last_sheet = None
-        _last_sheet_index = None
-        return True, 0
+    spreadsheet = safe_execute_method(_gc, "open_by_key", sheet_id)
+    # need to check exception
+
+    _current_spreadsheet = spreadsheet
+    _last_sheet = None
+    _last_sheet_index = None
+    return 0
 
 
-@_decorator_wait_token
 def _open_sheet(sheet_index: int) -> int:
     """open a sheet for others functions
     change the value of the global variables "_last_sheet" and
@@ -167,22 +183,16 @@ def _open_sheet(sheet_index: int) -> int:
     global _last_sheet_index
 
     if _current_spreadsheet is None:
-        return True, -4
+        return -4
 
     if sheet_index != _last_sheet_index:
-        try:
-            last_sheet = _current_spreadsheet.get_worksheet(sheet_index)
-        except Exception as e:
-            if "not found" in str(e):
-                return True, -5
-            return False
-        else:
-            _last_sheet = last_sheet
-            _last_sheet_index = sheet_index
-            return True, 0
+        last_sheet = safe_execute_method(_current_spreadsheet, "get_worksheet", sheet_index)
+        # need to check exception
+        _last_sheet = last_sheet
+        _last_sheet_index = sheet_index
+        return 0
 
 
-@_decorator_wait_token
 def get_sheet(sheet_index: int) -> (list[list[str]] | int):
     """get the values in a sheet
 
@@ -200,15 +210,9 @@ def get_sheet(sheet_index: int) -> (list[list[str]] | int):
     ret = _open_sheet(sheet_index)
     if ret != 0:
         return ret
-    try:
-        values = _last_sheet.get_all_values()
-    except Exception:
-        return False
-    else:
-        return True, values
+    return safe_execute_method(_last_sheet, "get_all_values")
 
 
-@_decorator_wait_token
 def get_cell_range(sheet_index: int, range: str) -> (list[list[str]] | int):
     """get the values in the selected range in a sheet
 
@@ -227,15 +231,9 @@ def get_cell_range(sheet_index: int, range: str) -> (list[list[str]] | int):
     ret = _open_sheet(sheet_index)
     if ret != 0:
         return ret
-    try:
-        values = _last_sheet.range(range)
-    except Exception:
-        return False
-    else:
-        return True, values
+    return safe_execute_method(_last_sheet, "range", range)
 
 
-@_decorator_wait_token
 def get_cell(sheet_index: int, row: int, col: int) -> (str | int):
     """get the values in the selected range in a sheet
 
@@ -254,9 +252,4 @@ def get_cell(sheet_index: int, row: int, col: int) -> (str | int):
     ret = _open_sheet(sheet_index)
     if ret != 0:
         return ret
-    try:
-        value = _last_sheet.cell(row, col)
-    except Exception:
-        return False
-    else:
-        return True, value
+    return safe_execute_method(_last_sheet, "cell", row, col)
