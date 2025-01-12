@@ -20,6 +20,7 @@ class DialogExcludedWords(QDialog):
     def load_excluded_word_in_table(self) -> None:
         """load excluded word in the table
         """
+        self.manual_change = False
         list_excluded_word: list[str] | int = process.get_list_specific_word(sheet_index=self.id_game)
         if isinstance(list_excluded_word, int):
             return
@@ -28,6 +29,7 @@ class DialogExcludedWords(QDialog):
             item = QTableWidgetItem(word)
             self.ui.tableWidget_excludedWords.setItem(self.ui.tableWidget_excludedWords.rowCount()-1, 0, item)
         self.ui.tableWidget_excludedWords.insertRow(self.ui.tableWidget_excludedWords.rowCount())
+        self.manual_change = True
 
     def save_excluded_word(self) -> None:
         """save excluded word in the sheet
@@ -36,15 +38,24 @@ class DialogExcludedWords(QDialog):
         for row in range(self.ui.tableWidget_excludedWords.rowCount()-1):
             item: QTableWidgetItem = self.ui.tableWidget_excludedWords.item(row, 0)
             excluded_words.append(item.text())
-        print(excluded_words)
         process.set_list_specific_word(self.id_game, excluded_words)
+
+    def delete_item(self, item: QTableWidgetItem) -> None:
+        """Delete the selected item from the table.
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
+        self.ui.tableWidget_excludedWords.removeRow(item.row())
 
     def set_up_connect(self) -> None:
         """connect slots and signals
         """
         self.ui.pushButton_resetChange.clicked.connect(self.pushbutton_resetchange_clicked)
         self.ui.pushButton_saveAndQuit.clicked.connect(self.pushbutton_saveandquit_clicked)
+
         self.ui.tableWidget_excludedWords.customContextMenuRequested.connect(self.tablewidget_excludedwords_contextmenu)
+        self.ui.tableWidget_excludedWords.itemChanged.connect(self.handle_item_changed)
 
     def pushbutton_resetchange_clicked(self) -> None:
         """slot for pushButton_resetChanges
@@ -68,12 +79,21 @@ class DialogExcludedWords(QDialog):
         menu = QMenu(self)
 
         self.delete_action = QAction("Delete", self)
-
         self.delete_action.triggered.connect(lambda: self.delete_item(item))
 
         menu.addAction(self.delete_action)
-
         menu.exec_(self.ui.tableWidget_excludedWords.viewport().mapToGlobal(pos))
 
-    def delete_item(self, item: QTableWidgetItem) -> None:
-        self.ui.tableWidget_excludedWords.removeRow(item.row())
+    def handle_item_changed(self, item: QTableWidgetItem) -> None:
+        """Handle changes to items in the table.
+
+        Args:
+            item (QTableWidgetItem): The item that was changed.
+        """
+        if not self.manual_change:
+            return
+        if item.row() == self.ui.tableWidget_excludedWords.rowCount() - 1:
+            if len(item.text()) > 0:
+                self.ui.tableWidget_excludedWords.insertRow(self.ui.tableWidget_excludedWords.rowCount())
+        elif len(item.text()) == 0:
+            self.delete_item(item)
