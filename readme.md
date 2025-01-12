@@ -19,6 +19,7 @@ faut pouvoir indiqué les balises à ignorer
 le tout avec une interface
 
 
+peut-être proposer via clic droit pour accepter de modifier la faute automatiquement
 
 
 pour l’api gooogle sheet, au lieu d’un décorateur, faire une fonction qui prend une fonction et un nombre infini de paramètres et qui fait un try catch en boucle jusqu’à que ça catch plus et qui alors renvoit le résultat de la fonction

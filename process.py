@@ -43,4 +43,8 @@ def set_list_specific_word(sheet_index: int, list_word: list[str]) -> None:
         list_word (list[str]): list of specific words
     """
     gsa.open_spreadsheet(ID_SHEET_DICT_GAME)
-    gsa.set_sheet_values(sheet_index, [[word] for word in list_word])
+    rows: int = len(list_word)
+    range_to_update: list[str] = [f"A{rows+1}:A"]
+    gsa.clear_sheet_range(sheet_index, range_to_update)
+    gsa.open_spreadsheet(ID_SHEET_DICT_GAME)
+    print(gsa.set_sheet_values(sheet_index, [[word] for word in list_word]))

@@ -26,17 +26,18 @@ class DialogExcludedWords(QDialog):
         for word in list_excluded_word:
             self.ui.tableWidget_excludedWords.insertRow(self.ui.tableWidget_excludedWords.rowCount())
             item = QTableWidgetItem(word)
-            item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)  # type: ignore
             self.ui.tableWidget_excludedWords.setItem(self.ui.tableWidget_excludedWords.rowCount()-1, 0, item)
+        self.ui.tableWidget_excludedWords.insertRow(self.ui.tableWidget_excludedWords.rowCount())
 
     def save_excluded_word(self) -> None:
         """save excluded word in the sheet
         """
         excluded_words: list[str] = []
-        for row in range(self.ui.tableWidget_excludedWords.rowCount()):
+        for row in range(self.ui.tableWidget_excludedWords.rowCount()-1):
             item: QTableWidgetItem = self.ui.tableWidget_excludedWords.item(row, 0)
             excluded_words.append(item.text())
-            process.set_list_specific_word(self.id_game, excluded_words)
+        print(excluded_words)
+        process.set_list_specific_word(self.id_game, excluded_words)
 
     def set_up_connect(self) -> None:
         """connect slots and signals
@@ -54,6 +55,7 @@ class DialogExcludedWords(QDialog):
     def pushbutton_saveandquit_clicked(self) -> None:
         """slot for pushButton_saveAndQuit
         """
+
         self.save_excluded_word()
         self.close()
 
@@ -61,26 +63,17 @@ class DialogExcludedWords(QDialog):
         """slot for tableWidget_excludedWords
         """
         item: QTableWidgetItem = self.ui.tableWidget_excludedWords.itemAt(pos)
-        # Créer un menu contextuel
+        if item is None:  # type: ignore
+            return
         menu = QMenu(self)
 
-        # Ajouter des actions au menu
-        self.edit_action = QAction("Edit", self)
         self.delete_action = QAction("Delete", self)
 
-        # Connecter les actions à des méthodes
-        self.edit_action.triggered.connect(lambda: self.edit_item(item))
         self.delete_action.triggered.connect(lambda: self.delete_item(item))
 
-        # Ajouter les actions au menu
-        menu.addAction(self.edit_action)
         menu.addAction(self.delete_action)
 
-        # Afficher le menu contextuel à l'endroit du clic
         menu.exec_(self.ui.tableWidget_excludedWords.viewport().mapToGlobal(pos))
 
-    def edit_item(self, item: QTableWidgetItem) -> None:
-        print(f"Edit item: {item.text()}")
-
     def delete_item(self, item: QTableWidgetItem) -> None:
-        print(f"Delete item: {item.text()}")
+        self.ui.tableWidget_excludedWords.removeRow(item.row())

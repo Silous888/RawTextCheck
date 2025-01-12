@@ -102,6 +102,7 @@ def _safe_execute_function(func: Callable[..., Any], *args: Any, **kwargs: Any) 
             return func(*args, **kwargs)
         except Exception as e:
             if "'code': 429" not in str(e):
+                print(e)
                 return -11  # to define later
         _time.sleep(_WAIT_TIME)
     return -10  # max retries reached
@@ -126,6 +127,7 @@ def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) 
             return method(*args, **kwargs)
         except Exception as e:
             if "'code': 429" not in str(e):
+                print(e)
                 return -11  # to define later
         _time.sleep(_WAIT_TIME)
     return -10  # max retries reached
@@ -273,9 +275,41 @@ def set_sheet_values(sheet_index: int, values: list[list[str]]) -> int:
     ret = _open_sheet(sheet_index)
     if ret != 0:
         return ret
-    _safe_execute_method(_last_sheet, "clear", values)
-    result = _safe_execute_method(_last_sheet, "update", values)
 
-    if result is None:
-        return -1  # or any other error code you prefer
+    rows = len(values)
+    cols = len(values[0]) if rows > 0 else 0
+    range_to_update = f"A1:{chr(65 + cols - 1)}{rows}" if rows > 0 and cols > 0 else None
+
+    if range_to_update is None:
+        print("Erreur : Plage invalide ou vide.")
+        return -7  # Code d'erreur pour plage vide
+
+    # Mise à jour des valeurs dans la feuille
+    result = _safe_execute_method(_last_sheet, "update", range_to_update, values)
+
+    if result is None or result == -10 or result == -11:
+        return -1  # Erreur générique ou quota atteint
     return 0
+
+
+def clear_sheet_range(sheet_index: int, ranges: list[str]) -> int:
+    """Set the values in a sheet
+
+    Args:
+        sheet_index (int): index of the sheet, first is 0
+        values (list[list[str]]): values to set in the sheet
+
+    Returns:
+        int: 0 if no error, error code otherwise
+
+    error code:
+    -3 if no token, end of waiting time
+    -4 if no spreadsheet opened
+    -5 if index not found
+    """
+    ret = _open_sheet(sheet_index)
+    if ret != 0:
+        return ret
+    ret = _safe_execute_method(_last_sheet, "batch_clear", ranges)
+
+    return ret
