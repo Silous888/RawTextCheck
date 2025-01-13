@@ -2,7 +2,7 @@
 
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.QtCore import QObject, QThread, Qt
+from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, pyqtSlot
 
 # -------------------- Import Lib User -------------------
 from qt_files.Ui_mainwindow import Ui_MainWindow
@@ -15,8 +15,16 @@ import process
 # -------------------------------------------------------------------#
 class _Worker(QObject):
 
+    signal_load_word_excluded_start = pyqtSignal(int)
+    signal_load_word_excluded_finished = pyqtSignal()
+
     def __init__(self) -> None:
         super().__init__()
+
+    @pyqtSlot(int)
+    def load_excluded_word_in_table_thread(self, sheet_index: int) -> None:
+        process.get_list_specific_word(sheet_index)
+        self.signal_load_word_excluded_finished.emit()
 
 
 # -------------------------------------------------------------------#
@@ -40,7 +48,6 @@ class MainWindow(QMainWindow):
 
         self.populate_combobox_game()
         self.toggle_ui_enabled_except_combobox_game(False)
-
         self.set_up_connect()
 
     def populate_combobox_game(self) -> None:
@@ -77,15 +84,17 @@ class MainWindow(QMainWindow):
         self.ui.lineEdit_frenchColumn.textChanged.connect(self.lineedit_frenchcolumn_textchanged)
         # comboBox
         self.ui.comboBox_game.currentIndexChanged.connect(self.combobox_game_currentindexchanged)
+        # thread
+        self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
+        self.m_worker.signal_load_word_excluded_finished.connect(self.load_dialog_finished)
 
     def pushbutton_gamedictionary_clicked(self) -> None:
         """slot for pushButton_gameDictionary
         """
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-        self.dialog_dict = DialogExcludedWords(self.ui.comboBox_game.currentIndex()-1)
-        self.dialog_dict.load_excluded_word_in_table()
-        QApplication.restoreOverrideCursor()
-        self.dialog_dict.exec()
+        self.ui.pushButton_gameDictionary.setEnabled(False)
+        self.m_worker.signal_load_word_excluded_start.emit(self.ui.comboBox_game.currentIndex()-1)
+        
 
     def pushbutton_method_1_clicked(self) -> None:
         """slot for pushButton_method_1
@@ -119,5 +128,13 @@ class MainWindow(QMainWindow):
         """slot for comboBox_game
         """
         self.toggle_ui_enabled_except_combobox_game(bool(index))
-        print("on passe ici")
         self.ui.lineEdit_frenchColumn.setText(process.data_json[index - 1]["column_sheet"])  # type: ignore
+
+    def load_dialog_finished(self) -> None:
+        """slot for signal load_dialog_finished
+        """
+        QApplication.restoreOverrideCursor()
+        self.dialog_dict = DialogExcludedWords()
+        self.dialog_dict.load_excluded_word_in_table()
+        self.dialog_dict.exec()
+        self.ui.pushButton_gameDictionary.setEnabled(True)

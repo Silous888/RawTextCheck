@@ -13,6 +13,10 @@ data_json: dict[str, Any] = {}
 
 ID_SHEET_DICT_GAME: str = "1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc"
 
+id_current_game: int = 0
+
+list_excluded_word_current_game: list[str] = []
+
 
 def load_json() -> dict[str, Any]:
     """load json data
@@ -21,23 +25,33 @@ def load_json() -> dict[str, Any]:
         return json.load(file)
 
 
-def get_list_specific_word(sheet_index: int) -> list[str] | int:
+def set_id_and_word_list(id: int, list_word: list[str]) -> None:
+    global id_current_game
+    global list_excluded_word_current_game
+    id_current_game = id
+    list_excluded_word_current_game = list_word
+
+
+def get_list_specific_word(sheet_index: int) -> int:
     """get the list of specific words of a game in the sheet
 
     Args:
         sheet_index (int): index related to the game wanted,
 
     Returns:
-        list[str]: list of specific words
+        int : 0 if no problem, error code otherwise
     """
+    if sheet_index + 1 == id_current_game:
+        return 0
     gsheet.open_spreadsheet(ID_SHEET_DICT_GAME)
     result: list[list[str]] | int = gsheet.get_sheet(sheet_index)
     if isinstance(result, int):
         return result
-    return [item for sublist in result for item in sublist]
+    set_id_and_word_list(sheet_index + 1, [item for sublist in result for item in sublist])
+    return 0
 
 
-def set_list_specific_word(sheet_index: int, list_word: list[str]) -> None:
+def set_list_specific_word(list_word: list[str]) -> None:
     """set the list of specific words of a game in the sheet
 
     Args:
@@ -47,9 +61,10 @@ def set_list_specific_word(sheet_index: int, list_word: list[str]) -> None:
     gsheet.open_spreadsheet(ID_SHEET_DICT_GAME)
     rows: int = len(list_word)
     range_to_update: list[str] = [f"A{rows+1}:A"]
-    gsheet.clear_sheet_range(sheet_index, range_to_update)
+    gsheet.clear_sheet_range(id_current_game - 1, range_to_update)
     gsheet.open_spreadsheet(ID_SHEET_DICT_GAME)
-    gsheet.set_sheet_values(sheet_index, [[word] for word in list_word])
+    gsheet.set_sheet_values(id_current_game - 1, [[word] for word in list_word])
+    set_id_and_word_list(id_current_game, list_word)
 
 
 def has_access_to_element(sheet_url: str) -> bool:

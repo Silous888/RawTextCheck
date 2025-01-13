@@ -10,7 +10,7 @@ import process
 
 class DialogExcludedWords(QDialog):
 
-    def __init__(self, id_game: int) -> None:
+    def __init__(self) -> None:
         super(QDialog, self).__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)  # type: ignore
@@ -18,16 +18,11 @@ class DialogExcludedWords(QDialog):
 
         self.ui.tableWidget_excludedWords.installEventFilter(self)
 
-        self.id_game: int = id_game
-
     def load_excluded_word_in_table(self) -> None:
         """load excluded word in the table
         """
         self.manual_change = False
-        list_excluded_word: list[str] | int = process.get_list_specific_word(sheet_index=self.id_game)
-        if isinstance(list_excluded_word, int):
-            return
-        for word in list_excluded_word:
+        for word in process.list_excluded_word_current_game:
             self.ui.tableWidget_excludedWords.insertRow(self.ui.tableWidget_excludedWords.rowCount())
             item = QTableWidgetItem(word)
             self.ui.tableWidget_excludedWords.setItem(self.ui.tableWidget_excludedWords.rowCount()-1, 0, item)
@@ -41,7 +36,7 @@ class DialogExcludedWords(QDialog):
         for row in range(self.ui.tableWidget_excludedWords.rowCount()-1):
             item: QTableWidgetItem = self.ui.tableWidget_excludedWords.item(row, 0)
             excluded_words.append(item.text())
-        process.set_list_specific_word(self.id_game, excluded_words)
+        process.set_list_specific_word(excluded_words)
 
     def delete_item(self, item: QTableWidgetItem) -> None:
         """Delete the selected item from the table.
