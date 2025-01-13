@@ -2,7 +2,7 @@
 
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, pyqtSlot  # type: ignore
 
 # -------------------- Import Lib User -------------------
 from qt_files.Ui_mainwindow import Ui_MainWindow
@@ -13,10 +13,13 @@ import process
 # -------------------------------------------------------------------#
 #                          CLASS WORKER                              #
 # -------------------------------------------------------------------#
-class _Worker(QObject):
+class _WorkerMainWindow(QObject):
 
     signal_load_word_excluded_start = pyqtSignal(int)
+    signal_has_access_to_element_start = pyqtSignal(str)
+
     signal_load_word_excluded_finished = pyqtSignal()
+    signal_has_access_to_element_finished = pyqtSignal(bool)
 
     def __init__(self) -> None:
         super().__init__()
@@ -25,6 +28,11 @@ class _Worker(QObject):
     def load_excluded_word_in_table_thread(self, sheet_index: int) -> None:
         process.get_list_specific_word(sheet_index)
         self.signal_load_word_excluded_finished.emit()
+
+    @pyqtSlot(str)
+    def has_access_to_element_thread(self, url: str) -> None:
+        result: bool = process.has_access_to_element(url)
+        self.signal_has_access_to_element_finished.emit(result)
 
 
 # -------------------------------------------------------------------#
@@ -43,7 +51,7 @@ class MainWindow(QMainWindow):
 
         self.m_thread = QThread()
         self.m_thread.start()
-        self.m_worker = _Worker()
+        self.m_worker = _WorkerMainWindow()
         self.m_worker.moveToThread(self.m_thread)
 
         self.populate_combobox_game()
@@ -84,9 +92,14 @@ class MainWindow(QMainWindow):
         self.ui.lineEdit_frenchColumn.textChanged.connect(self.lineedit_frenchcolumn_textchanged)
         # comboBox
         self.ui.comboBox_game.currentIndexChanged.connect(self.combobox_game_currentindexchanged)
-        # thread
-        self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
+        # thread start
+        self.m_worker.signal_load_word_excluded_start.connect(
+            self.m_worker.load_excluded_word_in_table_thread)  # type: ignore
+        self.m_worker.signal_has_access_to_element_start.connect(
+            self.m_worker.has_access_to_element_thread)  # type: ignore
+        # thread finish
         self.m_worker.signal_load_word_excluded_finished.connect(self.load_dialog_finished)
+        self.m_worker.signal_has_access_to_element_finished.connect(self.has_access_to_element_finished)
 
     def pushbutton_gamedictionary_clicked(self) -> None:
         """slot for pushButton_gameDictionary
@@ -94,7 +107,6 @@ class MainWindow(QMainWindow):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         self.ui.pushButton_gameDictionary.setEnabled(False)
         self.m_worker.signal_load_word_excluded_start.emit(self.ui.comboBox_game.currentIndex()-1)
-        
 
     def pushbutton_method_1_clicked(self) -> None:
         """slot for pushButton_method_1
@@ -113,12 +125,9 @@ class MainWindow(QMainWindow):
         """
         text: str = self.ui.lineEdit_urlSheet.text()
         if len(text) < 1:
-            print(text)
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(255, 255, 255);")
-        elif process.has_access_to_element(text):
-            self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(0, 200, 0);")
         else:
-            self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(200, 0, 0);")
+            self.m_worker.signal_has_access_to_element_start.emit(text)
 
     def lineedit_frenchcolumn_textchanged(self, text: str) -> None:
         """slot for lineEdit_frenchColumn
@@ -138,3 +147,9 @@ class MainWindow(QMainWindow):
         self.dialog_dict.load_excluded_word_in_table()
         self.dialog_dict.exec()
         self.ui.pushButton_gameDictionary.setEnabled(True)
+
+    def has_access_to_element_finished(self, result: bool) -> None:
+        if result:
+            self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(0, 200, 0);")
+        else:
+            self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(200, 0, 0);")
