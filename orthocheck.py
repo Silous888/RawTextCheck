@@ -18,13 +18,10 @@ def parse_csv(csv_file: str) -> set[str]:
     return words
 
 
-def load_words(specific_csv: str | None = None) -> set[str]:
+def load_words(folder_dict_name: str) -> set[str]:
     words: set[str] = set()
-    for path in Path('words').iterdir():
-        if 'specific' in path.name and specific_csv is not None:
-            if specific_csv in path.name:
-                words = words.union(parse_csv(str(path)))
-        elif path.name.endswith('.csv'):
+    for path in Path(folder_dict_name).iterdir():
+        if path.name.endswith('.csv'):
             words = words.union(parse_csv(str(path)))
     return words
 
@@ -61,17 +58,6 @@ def check_string(string: str, existing_words: set[str], tags: dict[str, str] = {
             break
         char = f.read(1)
 
-    return output
-
-
-def check_file(path: str, encoding: str = 'utf-8', tags: dict[str, str] = {}) -> dict[int, list[str]]:
-    existing_words: set[str] = load_words()
-    output: dict[int, list[str]] = {}
-    lines: list[str] = open(path, mode='r', encoding=encoding).readlines()
-    for idx, line in enumerate(lines):
-        mistake: list[str] = check_string(line, existing_words=existing_words, tags=tags)
-        if len(mistake) != 0:
-            output[idx + 1] = mistake
     return output
 
 
