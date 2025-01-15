@@ -8,10 +8,18 @@ CHARS = (
     "ÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇŒÆÁȦĀÃČĘĪŁṆÑÓØŌÕŠṢṬÚŽẒ-"
 )
 
-dictionay_words: set[str] = set()
+dictionary_words: set[str] = set()
 
 
 def parse_csv(csv_file: str) -> set[str]:
+    """parse a dictionary file
+
+    Args:
+        csv_file (str): file to parse
+
+    Returns:
+        set[str]: words of the dictionary file
+    """
     words: set[str] = set()
     with open(csv_file, encoding='utf-8') as f:
         reader = csv.reader(f)
@@ -20,15 +28,30 @@ def parse_csv(csv_file: str) -> set[str]:
     return words
 
 
-def load_words(folder_dict_name: str) -> set[str]:
-    words: set[str] = set()
+def load_words(folder_dict_name: str) -> None:
+    """load all dictionary files
+
+    Args:
+        folder_dict_name (str): csv dictionaries folder
+
+    Returns:
+        set[str]: words from all dictionaries
+    """
+    global dictionary_words
     for path in Path(folder_dict_name).iterdir():
         if path.name.endswith('.csv'):
-            words = words.union(parse_csv(str(path)))
-    return words
+            dictionary_words = dictionary_words.union(parse_csv(str(path)))
 
 
-def check_string(string: str, existing_words: set[str]) -> list[str]:
+def check_string(string: str) -> list[str]:
+    """check if words if the string are in the dictionaries
+
+    Args:
+        string (str): string to check
+
+    Returns:
+        list[str]: words not in dictionary
+    """
     f = StringIO(string)
     output: list[str] = []
     char: str = f.read(1)
@@ -41,13 +64,13 @@ def check_string(string: str, existing_words: set[str]) -> list[str]:
                 word_to_check = current_word.lower()
 
                 if "-" in word_to_check:
-                    if word_to_check not in existing_words:
+                    if word_to_check not in dictionary_words:
                         for sub_word in word_to_check.split('-'):
-                            if sub_word not in existing_words:
+                            if sub_word not in dictionary_words:
                                 output.append(word_to_check)
                                 break
                 else:
-                    if word_to_check not in existing_words:
+                    if word_to_check not in dictionary_words:
                         output.append(current_word)
                 current_word = ""
         if char == "":
@@ -56,16 +79,18 @@ def check_string(string: str, existing_words: set[str]) -> list[str]:
     return output
 
 
-def read_until_occurrence(f: StringIO, end_char: str) -> None:
-    char: str = f.read(1)
-    while char not in [end_char, ""]:
-        char = f.read(1)
-
-
 def process_orthocheck(list_sentences: list[str]) -> list[tuple[int, str]]:
+    """check if words are in dictionary for every strings
+
+    Args:
+        list_sentences (list[str]): strings to test
+
+    Returns:
+        list[tuple[int, str]]: words not in dictionary, with sentence index
+    """
     output_process: list[tuple[int, str]] = []
     for index, sentence in enumerate(list_sentences):
-        output_ortho: list[str] = check_string(sentence, dictionay_words)
+        output_ortho: list[str] = check_string(sentence)
         if output_ortho:  # Check if output_ortho is not empty
             for mistake in output_ortho:
                 output_process.append((index, mistake))
