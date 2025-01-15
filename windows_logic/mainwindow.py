@@ -190,6 +190,7 @@ class MainWindow(QMainWindow):
         """
         self.toggle_ui_enabled_except_combobox_game(bool(index))
         self.ui.lineEdit_frenchColumn.setText(process.data_json[index - 1]["column_sheet"])  # type: ignore
+        process.set_id_and_word_list(index, [])
 
     def load_dialog_finished(self) -> None:
         """slot for signal load_dialog_finished

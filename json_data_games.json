@@ -4,7 +4,7 @@
         "title": "428: Shibuya Scramble",
         "column_sheet": "C",
         "page_dictionary": 1,
-        "ingnored_substrings": {
+        "ignored_substrings": {
 
         }
     },
@@ -13,7 +13,7 @@
         "title": "AI: The Somnium Files",
         "column_sheet": "C",
         "page_dictionary": 2,
-        "ingnored_substrings": {
+        "ignored_substrings": {
 
         }
     },
@@ -22,7 +22,7 @@
         "title": "AI: The Somnium Files - Nirvana Initiative",
         "column_sheet": "D",
         "page_dictionary": 3,
-        "ingnored_substrings": {
+        "ignored_substrings": {
 
         }
     },
@@ -31,7 +31,7 @@
         "title": "PARANOMASIGHT",
         "column_sheet": "E",
         "page_dictionary": 4,
-        "ingnored_substrings": {
+        "ignored_substrings": {
             "[": "]",
             "<": ">"
         }
@@ -41,8 +41,9 @@
         "title": "The Zodiac Trial",
         "column_sheet": "D",
         "page_dictionary": 5,
-        "ingnored_substrings": {
-
+        "ignored_substrings": {
+            "{": "}",
+            "\\": "n"
         }
     },
     {
@@ -50,7 +51,7 @@
         "title": "Zero Escape: Nine Hours, Nine Persons, Nine Doors",
         "column_sheet": "F",
         "page_dictionary": 6,
-        "ingnored_substrings": {
+        "ignored_substrings": {
 
         }
     },
@@ -59,7 +60,7 @@
         "title": "Zero Escape: Virtue's Last Reward",
         "column_sheet": "E",
         "page_dictionary": 7,
-        "ingnored_substrings": {
+        "ignored_substrings": {
             "<": ">"
         }
     },
@@ -68,7 +69,7 @@
         "title": "Zero Escape: Zero Time Dilemma",
         "column_sheet": "E",
         "page_dictionary": 8,
-        "ingnored_substrings": {
+        "ignored_substrings": {
 
         }
     }

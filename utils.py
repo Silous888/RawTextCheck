@@ -1,4 +1,5 @@
 import re
+from io import StringIO
 
 
 def extract_google_sheet_id(url_or_id: str) -> str:
@@ -28,3 +29,10 @@ def get_position_letter_alphabet(letter: str) -> int:
         int: position of the letter in the alphabet
     """
     return ord(letter.upper()) - ord("A") + 1
+
+
+def read_until_occurrence(f: str, end_char: str) -> None:
+    fs = StringIO(f)
+    char: str = fs.read(1)
+    while char not in [end_char, ""]:
+        char = fs.read(1)

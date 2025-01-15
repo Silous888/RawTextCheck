@@ -2,6 +2,7 @@
 
 # -------------------- Import Lib Standard -------------------
 import json
+import re
 from typing import Any
 
 # -------------------- Import Lib User -------------------
@@ -69,8 +70,10 @@ def get_list_sentence_sheet(url_sheet: str, column_letter: str) -> int:
     sheet_extraction: list[str] | int = gsheet.get_value_column(0, num_column)
     if isinstance(sheet_extraction, int):
         return sheet_extraction
-    list_sentences_current_sheet = sheet_extraction
-    print(list_sentences_current_sheet)
+    ignored_substrings: dict[str, str] = data_json[id_current_game - 1]["ignored_substrings"]  # type: ignore
+    list_sentences_current_sheet = [
+        remove_ignored_substrings(sentence, ignored_substrings) for sentence in sheet_extraction
+    ]
     return 0
 
 
@@ -91,10 +94,29 @@ def set_list_specific_word(list_word: list[str]) -> None:
 
 
 def has_access_to_element(sheet_url: str) -> bool:
+    """call has_access_to_element of google_drive_api
+    """
     res: bool | int = gdrive.has_access_to_element(utils.extract_google_sheet_id(sheet_url))
     if isinstance(res, bool):
         return res
     return False
+
+
+def remove_ignored_substrings(text: str, ignored_substrings: dict[str, str]) -> str:
+    """Remove substrings from text that are enclosed by any of the ignored substrings.
+
+    Args:
+        text (str): The input text.
+        ignored_substrings (dict[str, str]): A dictionary where keys are the starting
+        substrings and values are the ending substrings.
+
+    Returns:
+        str: The text with the ignored substrings removed.
+    """
+    for start, end in ignored_substrings.items():
+        pattern: str = re.escape(start) + r'.*?' + re.escape(end)
+        text = re.sub(pattern, '', text)  # Remove all matches of the pattern
+    return text
 
 
 def orthocheck_load_dictionary() -> None:
