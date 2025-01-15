@@ -14,3 +14,15 @@ def extract_google_sheet_id(url: str) -> str:
     if match:
         return match.group(1)
     return ""
+
+
+def get_position_letter_alphabet(letter: str) -> int:
+    """get the letter of the alphabet given a position
+
+    Args:
+        letter (str): letter of the alphabet
+
+    Returns:
+        int: position of the letter in the alphabet
+    """
+    return ord(letter.upper()) - ord("A")

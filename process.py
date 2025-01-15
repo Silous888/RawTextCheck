@@ -7,6 +7,7 @@ from typing import Any
 # -------------------- Import Lib User -------------------
 from api import google_sheet_api as gsheet
 from api import google_drive_api as gdrive
+import orthocheck
 import utils
 
 data_json: dict[str, Any] = {}
@@ -14,14 +15,13 @@ data_json: dict[str, Any] = {}
 ID_SHEET_DICT_GAME: str = "1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc"
 
 id_current_game: int = 0
-
 list_excluded_word_current_game: list[str] = []
 
 
 def load_json() -> dict[str, Any]:
     """load json data
     """
-    with open("./json_data_jeux.json", "r", encoding="utf-8") as file:
+    with open("./json_data_games.json", "r", encoding="utf-8") as file:
         return json.load(file)
 
 
@@ -72,3 +72,9 @@ def has_access_to_element(sheet_url: str) -> bool:
     if isinstance(res, bool):
         return res
     return False
+
+
+def orthocheck_load_dictionary() -> None:
+    """call load_words of orthocheck
+    """
+    orthocheck.load_words("dictionary_orthocheck")
