@@ -26,3 +26,7 @@ pour l’api gooogle sheet, au lieu d’un décorateur, faire une fonction qui p
 
 
 pouvoir ajouter soit au dictionnaire des exceptions du jeu, soit au dictionnaire général de la méthode
+
+
+
+ajouter un sort automatique de la liste des termes quand on la sauvegarde
