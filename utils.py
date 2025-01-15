@@ -1,7 +1,7 @@
 import re
 
 
-def extract_google_sheet_id(url: str) -> str:
+def extract_google_sheet_id(url_or_id: str) -> str:
     """Extract the Google Sheets ID from a given URL.
 
     Args:
@@ -10,7 +10,9 @@ def extract_google_sheet_id(url: str) -> str:
     Returns:
         str: The extracted ID, or an empty string if no match is found.
     """
-    match = re.search(r"/d/([a-zA-Z0-9-_]+)", url)
+    if re.match(r"^[a-zA-Z0-9-_]+$", url_or_id):
+        return url_or_id
+    match: re.Match[str] | None = re.search(r"/d/([a-zA-Z0-9-_]+)", url_or_id)
     if match:
         return match.group(1)
     return ""
