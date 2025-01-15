@@ -27,4 +27,4 @@ def get_position_letter_alphabet(letter: str) -> int:
     Returns:
         int: position of the letter in the alphabet
     """
-    return ord(letter.upper()) - ord("A")
+    return ord(letter.upper()) - ord("A") + 1

@@ -16,6 +16,7 @@ ID_SHEET_DICT_GAME: str = "1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc"
 
 id_current_game: int = 0
 list_excluded_word_current_game: list[str] = []
+list_sentences_current_sheet: list[str] = []
 
 
 def load_json() -> dict[str, Any]:
@@ -44,10 +45,32 @@ def get_list_specific_word(sheet_index: int) -> int:
     if sheet_index + 1 == id_current_game:
         return 0
     gsheet.open_spreadsheet(ID_SHEET_DICT_GAME)
-    result: list[list[str]] | int = gsheet.get_sheet(sheet_index)
-    if isinstance(result, int):
-        return result
-    set_id_and_word_list(sheet_index + 1, [item for sublist in result for item in sublist])
+    output: list[list[str]] | int = gsheet.get_sheet(sheet_index)
+    if isinstance(output, int):
+        return output
+    set_id_and_word_list(sheet_index + 1, [item for sublist in output for item in sublist])
+    return 0
+
+
+def get_list_sentence_sheet(url_sheet: str, column_letter: str) -> int:
+    """get the list of specific words of a game in the sheet
+
+    Args:
+        sheet_index (int): index related to the game wanted,
+
+    Returns:
+        int : 0 if no problem, error code otherwise
+    """
+    global list_sentences_current_sheet
+    if len(list_sentences_current_sheet) > 0:
+        return 0
+    gsheet.open_spreadsheet(utils.extract_google_sheet_id(url_sheet))
+    num_column: int = utils.get_position_letter_alphabet(column_letter)
+    sheet_extraction: list[str] | int = gsheet.get_value_column(0, num_column)
+    if isinstance(sheet_extraction, int):
+        return sheet_extraction
+    list_sentences_current_sheet = sheet_extraction
+    print(list_sentences_current_sheet)
     return 0
 
 
@@ -78,3 +101,20 @@ def orthocheck_load_dictionary() -> None:
     """call load_words of orthocheck
     """
     orthocheck.load_words("dictionary_orthocheck")
+
+
+def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, str]] | int:
+    """get the list of specific words of a game in the sheet
+    and call process_orthocheck of orthocheck and return result
+
+    Args:
+        sheet_index (int): index related to the game wanted,
+
+    Returns:
+        int : 0 if no problem, error code otherwise
+    """
+    error_code: int = get_list_sentence_sheet(url_sheet, column_letter)
+    if error_code == 0:
+        return orthocheck.process_orthocheck(list_sentences_current_sheet)
+    else:
+        return error_code

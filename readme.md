@@ -30,3 +30,8 @@ pouvoir ajouter soit au dictionnaire des exceptions du jeu, soit au dictionnaire
 
 
 ajouter un sort automatique de la liste des termes quand on la sauvegarde
+
+
+le truc de sauvegarder la sheet en mémoire, faut gérer le cas de si on refait la même méthod, après avoir corrigé les fautes
+donc charger à nouveau les fautes, et en fait peut-être ne pas sauvegarder du tout
+parce que si on fait méthod 1, on corrige les fautes, puis on fait méthode 2, ça va pas prendre en compte les corrections

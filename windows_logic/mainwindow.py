@@ -1,7 +1,7 @@
 """functions of the UI"""
 
 # -------------------- Import Lib Tier -------------------
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem
 from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, QTimer
 from PyQt5.QtGui import QCloseEvent
 
@@ -19,10 +19,12 @@ class _WorkerMainWindow(QObject):
     signal_load_word_excluded_start = pyqtSignal(int)
     signal_has_access_to_element_start = pyqtSignal(str)
     signal_orthocheck_load_dictionary_start = pyqtSignal()
+    signal_orthocheck_process_start = pyqtSignal(str, str)
 
     signal_load_word_excluded_finished = pyqtSignal()
     signal_has_access_to_element_finished = pyqtSignal(bool)
     signal_orthocheck_load_dictionary_finished = pyqtSignal()
+    signal_orthocheck_process_finished = pyqtSignal(object)
 
     def __init__(self) -> None:
         super().__init__()
@@ -38,6 +40,10 @@ class _WorkerMainWindow(QObject):
     def orthocheck_load_dictionary_thread(self) -> None:
         process.orthocheck_load_dictionary()
         self.signal_orthocheck_load_dictionary_finished.emit()
+
+    def orthocheck_process_thread(self, url: str, column_letter: str) -> None:
+        output: list[tuple[int, str]] | int = process.orthocheck_process(url, column_letter)
+        self.signal_orthocheck_process_finished.emit(output)
 
 
 # -------------------------------------------------------------------#
@@ -90,8 +96,7 @@ class MainWindow(QMainWindow):
         self.toggle_ui_enabled_buttons_methods(enabled)
         self.ui.lineEdit_urlSheet.setEnabled(enabled)
         self.ui.lineEdit_frenchColumn.setEnabled(enabled)
-        if not enabled or self.is_url_correct:
-            self.ui.tabWidget_result.setEnabled(enabled)
+        self.toggle_ui_enabled_tabWidget_result(enabled)
 
     def toggle_ui_enabled_buttons_methods(self, enabled: bool) -> None:
         """toggle the enabled state of the buttons of check methods
@@ -105,6 +110,15 @@ class MainWindow(QMainWindow):
             self.ui.pushButton_method_2.setEnabled(enabled)
         if not enabled or self.is_url_correct:
             self.ui.pushButton_method_3.setEnabled(enabled)
+
+    def toggle_ui_enabled_tabWidget_result(self, enabled: bool) -> None:
+        """toggle the enabled state of the tabWidget_result
+
+        Args:
+            enabled (bool): enabled state
+        """
+        if not enabled or self.is_url_correct:
+            self.ui.tabWidget_result.setEnabled(enabled)
 
     def set_up_connect(self) -> None:
         """connect slots and signals
@@ -121,17 +135,15 @@ class MainWindow(QMainWindow):
         # comboBox
         self.ui.comboBox_game.currentIndexChanged.connect(self.combobox_game_currentindexchanged)
         # thread start
-        self.m_worker.signal_load_word_excluded_start.connect(
-            self.m_worker.load_excluded_word_in_table_thread)
-        self.m_worker.signal_has_access_to_element_start.connect(
-            self.m_worker.has_access_to_element_thread)
-        self.m_worker.signal_orthocheck_load_dictionary_start.connect(
-            self.m_worker.orthocheck_load_dictionary_thread
-        )
+        self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
+        self.m_worker.signal_has_access_to_element_start.connect(self.m_worker.has_access_to_element_thread)
+        self.m_worker.signal_orthocheck_load_dictionary_start.connect(self.m_worker.orthocheck_load_dictionary_thread)
+        self.m_worker.signal_orthocheck_process_start.connect(self.m_worker.orthocheck_process_thread)
         # thread finish
         self.m_worker.signal_load_word_excluded_finished.connect(self.load_dialog_finished)
         self.m_worker.signal_has_access_to_element_finished.connect(self.has_access_to_element_finished)
         self.m_worker.signal_orthocheck_load_dictionary_finished.connect(self.orthocheck_load_dictionary_finished)
+        self.m_worker.signal_orthocheck_process_finished.connect(self.orthocheck_process_finished)
 
     def pushbutton_gamedictionary_clicked(self) -> None:
         """slot for pushButton_gameDictionary
@@ -143,6 +155,8 @@ class MainWindow(QMainWindow):
     def pushbutton_method_1_clicked(self) -> None:
         """slot for pushButton_method_1
         """
+        self.m_worker.signal_orthocheck_process_start.emit(self.ui.lineEdit_urlSheet.text(),
+                                                           self.ui.lineEdit_frenchColumn.text())
 
     def pushbutton_method_2_clicked(self) -> None:
         """slot for pushButton_method_2
@@ -187,17 +201,39 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_gameDictionary.setEnabled(True)
 
     def has_access_to_element_finished(self, result: bool) -> None:
+        """slot for signal has_access_to_element_finished
+        """
         self.is_url_correct = result
         if self.is_url_correct:
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(0, 200, 0);")
             self.toggle_ui_enabled_buttons_methods(True)
+            self.toggle_ui_enabled_tabWidget_result(True)
         else:
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(200, 0, 0);")
             self.toggle_ui_enabled_buttons_methods(False)
+            self.toggle_ui_enabled_tabWidget_result(False)
 
     def orthocheck_load_dictionary_finished(self) -> None:
+        """slot for signal orthocheck_load_dictionary_finished
+        """
         self.is_orthocheck_available = True
         self.ui.pushButton_method_1.setEnabled(bool(self.ui.comboBox_game.currentIndex()))
+
+    def orthocheck_process_finished(self, result: list[tuple[int, str]] | int) -> None:
+        """slot for signal orthocheck_process_finished
+        """
+        if isinstance(result, int):
+            # TODO
+            pass
+        else:
+            self.ui.tableWidget_1.setRowCount(0)  # Clear existing rows
+            self.ui.tableWidget_1.setRowCount(len(result))  # Set the number of rows
+
+            for row_index, (index, word) in enumerate(result):
+                item_index = QTableWidgetItem(str(index + 1))
+                item_word = QTableWidgetItem(word)
+                self.ui.tableWidget_1.setItem(row_index, 0, item_index)
+                self.ui.tableWidget_1.setItem(row_index, 1, item_word)
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         if self.m_thread.isRunning():

@@ -215,7 +215,7 @@ def get_sheet(sheet_index: int) -> (list[list[str]] | int):
     return _safe_execute_method(_last_sheet, "get_all_values")
 
 
-def get_cell_range(sheet_index: int, range: str) -> (list[list[str]] | int):
+def get_values_range(sheet_index: int, range: str) -> (list[list[str]] | int):
     """get the values in the selected range in a sheet
 
     Args:
@@ -233,7 +233,28 @@ def get_cell_range(sheet_index: int, range: str) -> (list[list[str]] | int):
     ret = _open_sheet(sheet_index)
     if ret != 0:
         return ret
-    return _safe_execute_method(_last_sheet, "range", range)
+    return _safe_execute_method(_last_sheet, "get_values", range)
+
+
+def get_value_column(sheet_index: int, column: int) -> (list[str] | int):
+    """get the values in the selected range in a sheet
+
+    Args:
+        sheet_index (int): index of the sheet, first is 0
+        range (str): range of the values wanted (ex: 'A1:C3')
+
+    Returns:
+        list[list[str]] | int: values in the sheet, error code otherwise
+
+    error code:
+    -3 if no token, end of waiting time
+    -4 if no spreadsheet opened
+    -5 if index not found
+    """
+    ret = _open_sheet(sheet_index)
+    if ret != 0:
+        return ret
+    return _safe_execute_method(_last_sheet, "col_values", column)
 
 
 def get_cell(sheet_index: int, row: int, col: int) -> (str | int):
