@@ -58,9 +58,9 @@ def set_list_specific_word(list_word: list[str]) -> None:
         sheet_index (int): index related to the game wanted,
         list_word (list[str]): list of specific words
     """
+    list_word.sort()
     gsheet.open_spreadsheet(ID_SHEET_DICT_GAME)
-    rows: int = len(list_word)
-    range_to_update: list[str] = [f"A{rows+1}:A"]
+    range_to_update: list[str] = ["A:A"]
     gsheet.clear_sheet_range(id_current_game - 1, range_to_update)
     gsheet.open_spreadsheet(ID_SHEET_DICT_GAME)
     gsheet.set_sheet_values(id_current_game - 1, [[word] for word in list_word])

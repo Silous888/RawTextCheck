@@ -3,6 +3,7 @@
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, QTimer
+from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
 from qt_files.Ui_mainwindow import Ui_MainWindow
@@ -197,3 +198,9 @@ class MainWindow(QMainWindow):
     def orthocheck_load_dictionary_finished(self) -> None:
         self.is_orthocheck_available = True
         self.ui.pushButton_method_1.setEnabled(bool(self.ui.comboBox_game.currentIndex()))
+
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        if self.m_thread.isRunning():
+            self.m_thread.quit()
+            self.m_thread.wait()
+        a0.accept()

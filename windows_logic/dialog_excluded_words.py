@@ -1,7 +1,8 @@
 
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QMenu, QAction, QApplication
-from PyQt5.QtCore import Qt, QObject, QPoint, QThread, pyqtSignal, pyqtSlot  # type: ignore
+from PyQt5.QtCore import Qt, QObject, QPoint, QThread, pyqtSignal
+from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
 from qt_files.Ui_dialog_excluded_words import Ui_Dialog
@@ -17,7 +18,6 @@ class _WorkerDialogExcludedWords(QObject):
     def __init__(self) -> None:
         super().__init__()
 
-    @pyqtSlot(list)
     def set_list_specific_word_thread(self, excluded_words: list[str]) -> None:
         process.set_list_specific_word(excluded_words)
         self.signal_set_list_specific_word_finished.emit()
@@ -134,3 +134,9 @@ class DialogExcludedWords(QDialog):
         QApplication.restoreOverrideCursor()
         self.toggle_ui_enable(True)
         self.close()
+
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        if self.m_thread.isRunning():
+            self.m_thread.quit()
+            self.m_thread.wait()
+        a0.accept()
