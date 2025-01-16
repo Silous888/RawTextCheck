@@ -53,11 +53,14 @@ def get_list_specific_word(sheet_index: int) -> int:
     return 0
 
 
-def get_list_sentence_sheet(url_sheet: str, column_letter: str) -> int:
+def get_list_sentence_sheet(url_sheet: str, column_letter: str,
+                            insert_space_substrings: bool, insert_space_codes: bool) -> int:
     """get the list of specific words of a game in the sheet
 
     Args:
-        sheet_index (int): index related to the game wanted,
+        url_sheet (int): url of the sheet
+        column_letter (str): column of the sheet to get
+        insert_space (bool): Whether to insert a space where substrings are removed.
 
     Returns:
         int : 0 if no problem, error code otherwise
@@ -69,8 +72,13 @@ def get_list_sentence_sheet(url_sheet: str, column_letter: str) -> int:
     if isinstance(sheet_extraction, int):
         return sheet_extraction
     ignored_substrings: dict[str, str] = data_json[id_current_game - 1]["ignored_substrings"]  # type: ignore
+    ignored_codes: list[str] = data_json[id_current_game - 1]["ignored_codes"]  # type: ignore
     list_sentences_current_sheet = [
-        remove_ignored_substrings(sentence, ignored_substrings) for sentence in sheet_extraction
+        remove_ignored_codes(
+            remove_ignored_substrings(sentence, ignored_substrings, insert_space_substrings),
+            ignored_codes,
+            insert_space_codes
+        ) for sentence in sheet_extraction
     ]
     return 0
 
@@ -100,20 +108,42 @@ def has_access_to_element(sheet_url: str) -> bool:
     return False
 
 
-def remove_ignored_substrings(text: str, ignored_substrings: dict[str, str]) -> str:
+def remove_ignored_substrings(text: str, ignored_substrings: dict[str, str], insert_space: bool) -> str:
     """Remove substrings from text that are enclosed by any of the ignored substrings.
 
     Args:
         text (str): The input text.
         ignored_substrings (dict[str, str]): A dictionary where keys are the starting
         substrings and values are the ending substrings.
+        insert_space (bool): Whether to insert a space where substrings are removed.
 
     Returns:
         str: The text with the ignored substrings removed.
     """
     for start, end in ignored_substrings.items():
         pattern: str = re.escape(start) + r'.*?' + re.escape(end)
-        text = re.sub(pattern, '', text)  # Remove all matches of the pattern
+        replacement: str = ' ' if insert_space else ''
+        text = re.sub(pattern, replacement, text)  # Remove all matches of the pattern
+    return text
+
+
+def remove_ignored_codes(text: str, ignored_codes: list[str], insert_space: bool) -> str:
+    """Remove codes of the game from the string
+
+    Args:
+        text (str): The input text.
+        ignored_codes (dict[str]): A dictionary where codes to removes
+        substrings and values are the ending substrings.
+        insert_space (bool): Whether to insert a space where substrings are removed.
+
+    Returns:
+        str: The text with the ignored substrings removed.
+    """
+    for code in ignored_codes:
+        if insert_space:
+            text = text.replace(code, " ")
+        else:
+            text = text.replace(code, "")
     return text
 
 
@@ -133,8 +163,11 @@ def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, st
     Returns:
         int : 0 if no problem, error code otherwise
     """
-    error_code: int = get_list_sentence_sheet(url_sheet, column_letter)
+    error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
     if error_code == 0:
+        print(list_sentences_current_sheet[159])
+        print(list_sentences_current_sheet[160])
+        print(list_sentences_current_sheet[161])
         return orthocheck.process_orthocheck(list_sentences_current_sheet)
     else:
         return error_code

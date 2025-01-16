@@ -38,3 +38,5 @@ parce que si on fait méthod 1, on corrige les fautes, puis on fait méthode 2, 
 
 
 bug qui fait que je peux faire qu’une fois le check d’orthographe
+
+ajouter un check de caractères qui passe pas dans le jeu, espace insécable, mauvais guillemets...
