@@ -241,6 +241,8 @@ class MainWindow(QMainWindow):
                 self.ui.tableWidget_1.setItem(row_index, 0, item_index)
                 self.ui.tableWidget_1.setItem(row_index, 1, item_word)
 
+            process.save_result_process(self.ui.label_sheetOpened.text(), 1, result)
+
     def closeEvent(self, a0: QCloseEvent) -> None:
         if self.m_thread.isRunning():
             self.m_thread.quit()

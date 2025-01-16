@@ -1,7 +1,8 @@
 [
     {
         "id": 1,
-        "title": "428: Shibuya Scramble",
+        "title": "428 Shibuya Scramble",
+        "folder_name": "428 Shibuya Scramble",
         "column_sheet": "C",
         "page_dictionary": 1,
         "ignored_codes": ["\\n"],
@@ -12,6 +13,7 @@
     {
         "id": 2,
         "title": "AI: The Somnium Files",
+        "folder_name": "AI - The Somnium Files",
         "column_sheet": "C",
         "page_dictionary": 2,
         "ignored_codes": ["\\n"],
@@ -22,6 +24,7 @@
     {
         "id": 3,
         "title": "AI: The Somnium Files - Nirvana Initiative",
+        "folder_name": "AI - The Somnium Files - Nirvana Initiative",
         "column_sheet": "D",
         "page_dictionary": 3,
         "ignored_codes": [],
@@ -32,6 +35,7 @@
     {
         "id": 4,
         "title": "PARANOMASIGHT",
+        "folder_name": "PARANOMASIGHT",
         "column_sheet": "E",
         "page_dictionary": 4,
         "ignored_codes": [],
@@ -43,6 +47,7 @@
     {
         "id": 5,
         "title": "The Zodiac Trial",
+        "folder_name": "The Zodiac Trial",
         "column_sheet": "D",
         "page_dictionary": 5,
         "ignored_codes": ["\\n"],
@@ -53,6 +58,7 @@
     {
         "id": 6,
         "title": "Zero Escape: Nine Hours, Nine Persons, Nine Doors",
+        "folder_name": "Zero Escape - Nine Hours Nine Persons Nine Doors",
         "column_sheet": "F",
         "page_dictionary": 6,
         "ignored_codes": ["⑳S0.", "⑳n", "⑳h⑲", "⑳f0.", "⑳f1.", "⑳f2.", "　",
@@ -66,6 +72,7 @@
     {
         "id": 7,
         "title": "Zero Escape: Virtue's Last Reward",
+        "folder_name": "Zero Escape - Virtue's Last Reward",
         "column_sheet": "E",
         "page_dictionary": 7,
         "ignored_codes": [],
@@ -76,6 +83,7 @@
     {
         "id": 8,
         "title": "Zero Escape: Zero Time Dilemma",
+        "folder_name": "Zero Escape - Zero Time Dilemma",
         "column_sheet": "E",
         "page_dictionary": 8,
         "ignored_codes": ["\\\\", "\\n"],

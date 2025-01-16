@@ -40,6 +40,12 @@
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QTableWidget" name="tableWidget_1">
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
         </property>

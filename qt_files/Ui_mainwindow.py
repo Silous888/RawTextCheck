@@ -29,6 +29,8 @@ class Ui_MainWindow(object):
         self.gridLayout_2 = QtWidgets.QGridLayout(self.tab_1)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.tableWidget_1 = QtWidgets.QTableWidget(self.tab_1)
+        self.tableWidget_1.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.tableWidget_1.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.tableWidget_1.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.tableWidget_1.setObjectName("tableWidget_1")
         self.tableWidget_1.setColumnCount(2)

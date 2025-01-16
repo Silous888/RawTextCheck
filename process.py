@@ -2,6 +2,7 @@
 
 # -------------------- Import Lib Standard -------------------
 import json
+import os
 import re
 from typing import Any
 
@@ -14,6 +15,10 @@ import utils
 data_json: dict[str, Any] = {}
 
 ID_SHEET_DICT_GAME: str = "1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc"
+
+LIST_METHOD_FOLDER_NAME: list[str] = ["methode 1 - dictionnaire",
+                                      "methode 2 - MS Word",
+                                      "methode 3 - LanguageTool"]
 
 id_current_game: int = 0
 list_excluded_word_current_game: list[str] = []
@@ -146,6 +151,15 @@ def remove_ignored_codes(text: str, ignored_codes: list[str], insert_space: bool
         else:
             text = text.replace(code, "")
     return text
+
+
+def save_result_process(name_file: str, method: int, data: list[tuple[int, str]]) -> None:
+    folder_name: str = data_json[id_current_game - 1]["folder_name"]  # type: ignore
+    path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[method - 1])
+    os.makedirs(path, exist_ok=True)
+
+    with open(os.path.join(path, name_file + ".json"), "w", encoding="utf-8") as file:
+        json.dump(data, file, ensure_ascii=False)
 
 
 def orthocheck_load_dictionary() -> None:
