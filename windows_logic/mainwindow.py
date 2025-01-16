@@ -17,12 +17,12 @@ import process
 class _WorkerMainWindow(QObject):
 
     signal_load_word_excluded_start = pyqtSignal(int)
-    signal_has_access_to_element_start = pyqtSignal(str)
+    signal_get_name_sheet_start = pyqtSignal(str)
     signal_orthocheck_load_dictionary_start = pyqtSignal()
     signal_orthocheck_process_start = pyqtSignal(str, str)
 
     signal_load_word_excluded_finished = pyqtSignal()
-    signal_has_access_to_element_finished = pyqtSignal(bool)
+    signal_get_name_sheet_finished = pyqtSignal(object)
     signal_orthocheck_load_dictionary_finished = pyqtSignal()
     signal_orthocheck_process_finished = pyqtSignal(object)
 
@@ -33,9 +33,9 @@ class _WorkerMainWindow(QObject):
         process.get_list_specific_word(sheet_index)
         self.signal_load_word_excluded_finished.emit()
 
-    def has_access_to_element_thread(self, url: str) -> None:
-        result: bool = process.has_access_to_element(url)
-        self.signal_has_access_to_element_finished.emit(result)
+    def get_name_sheet_thread(self, url: str) -> None:
+        result: str | int = process.get_name_sheet(url)
+        self.signal_get_name_sheet_finished.emit(result)
 
     def orthocheck_load_dictionary_thread(self) -> None:
         process.orthocheck_load_dictionary()
@@ -68,6 +68,8 @@ class MainWindow(QMainWindow):
         self.is_url_correct: bool = False
         self.is_orthocheck_available: bool = False
         self.ui.pushButton_method_1.setEnabled(False)
+
+        self.ui.label_sheetOpened.setText("")
 
         self.urlsheet_timer = QTimer(self)
         self.urlsheet_timer.setSingleShot(True)
@@ -136,12 +138,12 @@ class MainWindow(QMainWindow):
         self.ui.comboBox_game.currentIndexChanged.connect(self.combobox_game_currentindexchanged)
         # thread start
         self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
-        self.m_worker.signal_has_access_to_element_start.connect(self.m_worker.has_access_to_element_thread)
+        self.m_worker.signal_get_name_sheet_start.connect(self.m_worker.get_name_sheet_thread)
         self.m_worker.signal_orthocheck_load_dictionary_start.connect(self.m_worker.orthocheck_load_dictionary_thread)
         self.m_worker.signal_orthocheck_process_start.connect(self.m_worker.orthocheck_process_thread)
         # thread finish
         self.m_worker.signal_load_word_excluded_finished.connect(self.load_dialog_finished)
-        self.m_worker.signal_has_access_to_element_finished.connect(self.has_access_to_element_finished)
+        self.m_worker.signal_get_name_sheet_finished.connect(self.get_name_sheet_finished)
         self.m_worker.signal_orthocheck_load_dictionary_finished.connect(self.orthocheck_load_dictionary_finished)
         self.m_worker.signal_orthocheck_process_finished.connect(self.orthocheck_process_finished)
 
@@ -173,13 +175,14 @@ class MainWindow(QMainWindow):
         if len(text) < 1:
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(255, 255, 255);")
             self.is_url_correct = False
+            self.ui.label_sheetOpened.setText("")
         else:
             self.urlsheet_timer.start()
 
     def check_urlsheet_access(self) -> None:
         """Vérifier l'accès à l'élément après un délai"""
         text: str = self.ui.lineEdit_urlSheet.text()
-        self.m_worker.signal_has_access_to_element_start.emit(text)
+        self.m_worker.signal_get_name_sheet_start.emit(text)
 
     def lineedit_frenchcolumn_textchanged(self, text: str) -> None:
         """slot for lineEdit_frenchColumn
@@ -201,18 +204,20 @@ class MainWindow(QMainWindow):
         self.dialog_dict.exec()
         self.ui.pushButton_gameDictionary.setEnabled(True)
 
-    def has_access_to_element_finished(self, result: bool) -> None:
-        """slot for signal has_access_to_element_finished
+    def get_name_sheet_finished(self, result: str | int) -> None:
+        """slot for signal get_name_sheet_finished
         """
-        self.is_url_correct = result
+        self.is_url_correct = isinstance(result, str)
         if self.is_url_correct:
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(0, 200, 0);")
             self.toggle_ui_enabled_buttons_methods(True)
             self.toggle_ui_enabled_tabWidget_result(True)
+            self.ui.label_sheetOpened.setText(str(result))
         else:
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(200, 0, 0);")
             self.toggle_ui_enabled_buttons_methods(False)
             self.toggle_ui_enabled_tabWidget_result(False)
+            self.ui.label_sheetOpened.setText("url incorrect")
 
     def orthocheck_load_dictionary_finished(self) -> None:
         """slot for signal orthocheck_load_dictionary_finished

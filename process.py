@@ -99,13 +99,16 @@ def set_list_specific_word(list_word: list[str]) -> None:
     set_id_and_word_list(id_current_game, list_word)
 
 
-def has_access_to_element(sheet_url: str) -> bool:
+def get_name_sheet(sheet_url: str) -> str | int:
     """call has_access_to_element of google_drive_api
     """
-    res: bool | int = gdrive.has_access_to_element(utils.extract_google_sheet_id(sheet_url))
-    if isinstance(res, bool):
-        return res
-    return False
+    try:
+        output: str | int = gdrive.get_name_by_id(utils.extract_google_sheet_id(sheet_url))
+        if isinstance(output, str):
+            return output
+    except Exception:
+        return -1
+    return -2
 
 
 def remove_ignored_substrings(text: str, ignored_substrings: dict[str, str], insert_space: bool) -> str:

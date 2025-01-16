@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\ui\mainwindow.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\qt_files\mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -112,6 +112,11 @@ class Ui_MainWindow(object):
         self.groupBox_2.setObjectName("groupBox_2")
         self.label_frenchColumn = QtWidgets.QLabel(self.groupBox_2)
         self.label_frenchColumn.setGeometry(QtCore.QRect(430, 100, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_frenchColumn.setFont(font)
         self.label_frenchColumn.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_frenchColumn.setObjectName("label_frenchColumn")
         self.lineEdit_urlSheet = QtWidgets.QLineEdit(self.groupBox_2)
@@ -129,6 +134,14 @@ class Ui_MainWindow(object):
         self.comboBox_game = QtWidgets.QComboBox(self.groupBox_2)
         self.comboBox_game.setGeometry(QtCore.QRect(20, 30, 391, 41))
         self.comboBox_game.setObjectName("comboBox_game")
+        self.label_sheetOpened = QtWidgets.QLabel(self.groupBox_2)
+        self.label_sheetOpened.setGeometry(QtCore.QRect(730, 100, 431, 41))
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_sheetOpened.setFont(font)
+        self.label_sheetOpened.setObjectName("label_sheetOpened")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -180,4 +193,5 @@ class Ui_MainWindow(object):
         self.label_frenchColumn.setText(_translate("MainWindow", "Colonne du français :"))
         self.lineEdit_urlSheet.setPlaceholderText(_translate("MainWindow", "mettre ici URL google sheet à traiter "))
         self.pushButton_gameDictionary.setText(_translate("MainWindow", "Dictionnaire termes du jeu"))
+        self.label_sheetOpened.setText(_translate("MainWindow", "name_sheet_opened"))
 import qt_files.ressource_rc

@@ -85,29 +85,6 @@ def set_credentials_path(credentials_path: str = ".\\credentials.json") -> None:
         _credentials_path = credentials_path
 
 
-def _safe_execute_function(func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
-    """Execute a function with given arguments in a try-except block,
-       until it works or the maximum number of retries is reached.
-
-    Args:
-        func (Callable[..., Any]): The function to execute.
-        *args (Any): Positional arguments for the function.
-        **kwargs (Any): Keyword arguments for the function.
-
-    Returns:
-        Any: The result of the function if it succeeds, otherwise None.
-    """
-    for _ in range(_MAX_RETRIES):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            if "'code': 429" not in str(e):
-                print(e)
-                return -11  # to define later
-        _time.sleep(_WAIT_TIME)
-    return -10  # max retries reached
-
-
 def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) -> Any:
     """Execute a method of an object with given arguments in a try-except block,
        until it works or the maximum number of retries is reached.
@@ -156,13 +133,19 @@ def open_spreadsheet(sheet_id: str) -> int:
     if ret != 0:
         return ret
 
-    spreadsheet = _safe_execute_method(_gc, "open_by_key", sheet_id)
+    spreadsheet: _gspread.spreadsheet.Spreadsheet = _safe_execute_method(_gc, "open_by_key", sheet_id)
     # need to check exception
 
     _current_spreadsheet = spreadsheet
     _last_sheet = None
     _last_sheet_index = None
     return 0
+
+
+def get_sheet_name() -> str | int:
+    if _current_spreadsheet is None:
+        return -4
+    return _safe_execute_method(_current_spreadsheet, "title")
 
 
 def _open_sheet(sheet_index: int) -> int:

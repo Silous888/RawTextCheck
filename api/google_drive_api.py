@@ -196,10 +196,10 @@ def get_id_by_name(name_element: str) -> (str | int):
     -3 if no element with this name
     -4 if more than one element with this name
     """
-    ret = __init()
+    ret: int = __init()
     if ret != 0:
         return ret
-    query = f"name='{name_element}'"
+    query: str = f"name='{name_element}'"
     results = _drive_service.files().list(q=query).execute()
     files = results.get('files', [])
     if len(files) == 1:
@@ -208,6 +208,35 @@ def get_id_by_name(name_element: str) -> (str | int):
         return -3
     if (len(files)) > 1:
         return -4
+    return -5
+
+
+def get_name_by_id(file_id: str) -> (str | int):
+    """get the name by the id of a file or folder
+
+    Args:
+        name_element (str): name of the element
+
+    Returns:
+        (str | int): id of the element. Error code otherwise.
+
+    error code:
+    -1 if no credentials file found
+    -2 if credentials not correct
+    -3 if no file with this ID
+    """
+    ret: int = __init()
+    if ret != 0:
+        return ret
+    try:
+        file = _drive_service.files().get(fileId=file_id, fields='name').execute()
+        return file['name']
+    except HttpError as error:
+        if error.resp.status == 404:
+            return -3
+        else:
+            print(f"An error occurred: {error}")
+            return -2
 
 
 def download_file(file_id: str, local_folder=".\\") -> int:

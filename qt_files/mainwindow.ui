@@ -266,6 +266,13 @@
        <height>41</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
       <string>Colonne du français :</string>
      </property>
@@ -326,6 +333,26 @@
        <width>391</width>
        <height>41</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_sheetOpened">
+     <property name="geometry">
+      <rect>
+       <x>730</x>
+       <y>100</y>
+       <width>431</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>name_sheet_opened</string>
      </property>
     </widget>
    </widget>
