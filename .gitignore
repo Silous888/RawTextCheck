@@ -2,7 +2,7 @@
 credentials.py
 language-tool-py_correction.py
 word_correction.py
-
+result/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__
