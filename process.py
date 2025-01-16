@@ -43,8 +43,6 @@ def get_list_specific_word(sheet_index: int) -> int:
     Returns:
         int : 0 if no problem, error code otherwise
     """
-    if sheet_index + 1 == id_current_game:
-        return 0
     gsheet.open_spreadsheet(ID_SHEET_DICT_GAME)
     output: list[list[str]] | int = gsheet.get_sheet(sheet_index)
     if isinstance(output, int):
@@ -168,9 +166,7 @@ def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, st
     """
     error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
     if error_code == 0:
-        print(list_sentences_current_sheet[159])
-        print(list_sentences_current_sheet[160])
-        print(list_sentences_current_sheet[161])
-        return orthocheck.process_orthocheck(list_sentences_current_sheet)
+        get_list_specific_word(id_current_game - 1)
+        return orthocheck.process_orthocheck(list_sentences_current_sheet, list_excluded_word_current_game)
     else:
         return error_code

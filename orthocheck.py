@@ -5,10 +5,14 @@ from io import StringIO
 CHARS = (
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "àâäāéèêëēîïôöùûüÿçœæáȧāãčęīłṇñóøōõšṣṭúūžẓ"
-    "ÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇŒÆÁȦĀÃČĘĪŁṆÑÓØŌÕŠṢṬÚŽẒ-"
+    "ÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇŒÆÁȦĀÃČĘĪŁṆÑÓØŌÓÕŠṢṬÚŽẒ"
 )
 
 dictionary_words: set[str] = set()
+
+dictionary_specific: set[str] = set()
+
+full_dictionary: set[str] = set()
 
 
 def parse_csv(csv_file: str) -> set[str]:
@@ -64,13 +68,13 @@ def check_string(string: str) -> list[str]:
                 word_to_check = current_word.lower()
 
                 if "-" in word_to_check:
-                    if word_to_check not in dictionary_words:
+                    if word_to_check not in full_dictionary:
                         for sub_word in word_to_check.split('-'):
-                            if sub_word not in dictionary_words:
+                            if sub_word not in full_dictionary:
                                 output.append(word_to_check)
                                 break
                 else:
-                    if word_to_check not in dictionary_words:
+                    if word_to_check not in full_dictionary:
                         output.append(current_word)
                 current_word = ""
         if char == "":
@@ -79,7 +83,7 @@ def check_string(string: str) -> list[str]:
     return output
 
 
-def process_orthocheck(list_sentences: list[str]) -> list[tuple[int, str]]:
+def process_orthocheck(list_sentences: list[str], list_specific_words: list[str]) -> list[tuple[int, str]]:
     """check if words are in dictionary for every strings
 
     Args:
@@ -88,6 +92,9 @@ def process_orthocheck(list_sentences: list[str]) -> list[tuple[int, str]]:
     Returns:
         list[tuple[int, str]]: words not in dictionary, with sentence index
     """
+    global dictionary_specific, full_dictionary
+    dictionary_specific = set([word.lower() for word in list_specific_words])
+    full_dictionary = dictionary_words.union(dictionary_specific)
     output_process: list[tuple[int, str]] = []
     for index, sentence in enumerate(list_sentences):
         output_ortho: list[str] = check_string(sentence)

@@ -14,9 +14,9 @@
         "title": "AI: The Somnium Files",
         "column_sheet": "C",
         "page_dictionary": 2,
-        "ignored_codes": [],
+        "ignored_codes": ["\\n"],
         "ignored_substrings": {
-
+            "<": ">"
         }
     },
     {
@@ -55,7 +55,10 @@
         "title": "Zero Escape: Nine Hours, Nine Persons, Nine Doors",
         "column_sheet": "F",
         "page_dictionary": 6,
-        "ignored_codes": [],
+        "ignored_codes": ["⑳S0.", "⑳n", "⑳h⑲", "⑳f0.", "⑳f1.", "⑳f2.", "　",
+                          "⑳N", "▼", "⑳K20.", "⑳K21.", "⑳K22.", "⑳K23.", "⑳K24.",
+                          "⑳K25.", "⑳K26.", "⑳K27.", "⑳K28.", "⑳K29.", "⑳C0",
+                          "⑳C1", "⑳C2", "⑳C3", "⑳C4", "⑳C5", "⑳C6"],
         "ignored_substrings": {
 
         }
