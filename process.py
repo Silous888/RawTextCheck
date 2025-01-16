@@ -63,8 +63,6 @@ def get_list_sentence_sheet(url_sheet: str, column_letter: str) -> int:
         int : 0 if no problem, error code otherwise
     """
     global list_sentences_current_sheet
-    if len(list_sentences_current_sheet) > 0:
-        return 0
     gsheet.open_spreadsheet(utils.extract_google_sheet_id(url_sheet))
     num_column: int = utils.get_position_letter_alphabet(column_letter)
     sheet_extraction: list[str] | int = gsheet.get_value_column(0, num_column)
