@@ -169,6 +169,34 @@ class MainWindow(QMainWindow):
         """
         self.ui.tableWidget_1.removeRow(item.row())
 
+    def update_table(self, table: QTableWidget, data: list[tuple[int, str]]) -> None:
+        table.setRowCount(0)  # Clear existing rows
+        table.setRowCount(len(data))  # Set the number of rows
+
+        for row_index, (index, word) in enumerate(data):
+            item_index = QTableWidgetItem(str(index + 1))
+            item_word = QTableWidgetItem(word)
+            table.setItem(row_index, 0, item_index)
+            table.setItem(row_index, 1, item_word)
+
+    def load_last_results(self, file_name: str) -> None:
+        """load every tables with last check data, and show
+        last modified date
+
+        Args:
+            file_name (str): name of the file
+        """
+        results: list[list[tuple[int, str]]]
+        date: list[str]
+        results, date = process.load_result_process(file_name)
+        self.update_table(self.ui.tableWidget_1, results[0])
+        self.update_table(self.ui.tableWidget_2, results[1])
+        self.update_table(self.ui.tableWidget_3, results[2])
+
+        self.ui.label_lastUdate_1.setText(date[0])
+        self.ui.label_lastUdate_2.setText(date[1])
+        self.ui.label_lastUdate_3.setText(date[2])
+
     def set_up_connect(self) -> None:
         """connect slots and signals
         """
@@ -293,6 +321,7 @@ class MainWindow(QMainWindow):
             self.toggle_ui_enabled_buttons_methods(True)
             self.toggle_ui_enabled_tabWidget_result(True)
             self.ui.label_sheetOpened.setText(str(result))
+            self.load_last_results(str(result))
         else:
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(200, 0, 0);")
             self.toggle_ui_enabled_buttons_methods(False)
@@ -312,14 +341,7 @@ class MainWindow(QMainWindow):
             # TODO
             pass
         else:
-            self.ui.tableWidget_1.setRowCount(0)  # Clear existing rows
-            self.ui.tableWidget_1.setRowCount(len(result))  # Set the number of rows
-
-            for row_index, (index, word) in enumerate(result):
-                item_index = QTableWidgetItem(str(index + 1))
-                item_word = QTableWidgetItem(word)
-                self.ui.tableWidget_1.setItem(row_index, 0, item_index)
-                self.ui.tableWidget_1.setItem(row_index, 1, item_word)
+            self.update_table(self.ui.tableWidget_1, result)
 
             process.save_result_process(self.ui.label_sheetOpened.text(), 1, result)
 

@@ -1,6 +1,7 @@
 """"main process of the application"""
 
 # -------------------- Import Lib Standard -------------------
+from datetime import datetime
 import json
 import os
 import re
@@ -173,6 +174,23 @@ def save_result_process(name_file: str, method: int, data: list[tuple[int, str]]
 
     with open(os.path.join(path, name_file + ".json"), "w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False)
+
+
+def load_result_process(name_file: str) -> tuple[list[list[tuple[int, str]]], list[str]]:
+    result: list[list[tuple[int, str]]] = [[], [], []]
+    modification_dates: list[str] = []
+    folder_name: str = data_json[id_current_game - 1]["folder_name"]  # type: ignore
+    for i in range(len(LIST_METHOD_FOLDER_NAME)):
+        path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[i], name_file + ".json")
+        if os.path.isfile(path):
+            with open(path, "r", encoding="utf-8") as file:
+                result[i] = json.load(file)
+            modification_time: float = os.path.getmtime(path)
+            modification_date: str = datetime.fromtimestamp(modification_time).strftime('%Y-%m-%d %H:%M:%S')
+            modification_dates.append(modification_date)
+        else:
+            modification_dates.append("jamais lancée")
+    return result, modification_dates
 
 
 def orthocheck_load_dictionary() -> None:
