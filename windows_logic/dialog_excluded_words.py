@@ -37,13 +37,11 @@ class DialogExcludedWords(QDialog):
 
         self.set_up_connect()
 
-        self.ui.tableWidget_excludedWords.installEventFilter(self)
-
     def load_excluded_word_in_table(self) -> None:
         """load excluded word in the table
         """
         self.manual_change = False
-        for word in process.list_excluded_word_current_game:
+        for word in process.list_specific_word_current_game:
             self.ui.tableWidget_excludedWords.insertRow(self.ui.tableWidget_excludedWords.rowCount())
             item = QTableWidgetItem(word)
             self.ui.tableWidget_excludedWords.setItem(self.ui.tableWidget_excludedWords.rowCount()-1, 0, item)
@@ -110,7 +108,7 @@ class DialogExcludedWords(QDialog):
             return
         menu = QMenu(self)
 
-        self.delete_action = QAction("Delete", self)
+        self.delete_action = QAction("Supprimer", self)
         self.delete_action.triggered.connect(lambda: self.delete_item(item))
 
         menu.addAction(self.delete_action)

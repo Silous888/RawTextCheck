@@ -30,9 +30,6 @@
       <height>601</height>
      </rect>
     </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
     <widget class="QWidget" name="tab_1">
      <attribute name="title">
       <string>dictionnaire</string>
@@ -40,6 +37,9 @@
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QTableWidget" name="tableWidget_1">
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
         </property>
@@ -90,6 +90,9 @@
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
        <widget class="QTableWidget" name="tableWidget_2">
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
@@ -128,6 +131,9 @@
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="0">
        <widget class="QTableWidget" name="tableWidget_3">
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
@@ -361,6 +367,19 @@
       <string>name_sheet_opened</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="pushButton_uploadSpecificWords">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>500</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pas de termes à uploader</string>
+    </property>
    </widget>
   </widget>
  </widget>

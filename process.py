@@ -21,8 +21,10 @@ LIST_METHOD_FOLDER_NAME: list[str] = ["methode 1 - dictionnaire",
                                       "methode 3 - LanguageTool"]
 
 id_current_game: int = 0
-list_excluded_word_current_game: list[str] = []
+list_specific_word_current_game: list[str] = []
 list_sentences_current_sheet: list[str] = []
+
+list_specific_word_to_upload: list[str] = []
 
 
 def load_json() -> dict[str, Any]:
@@ -34,9 +36,9 @@ def load_json() -> dict[str, Any]:
 
 def set_id_and_word_list(id: int, list_word: list[str]) -> None:
     global id_current_game
-    global list_excluded_word_current_game
+    global list_specific_word_current_game
     id_current_game = id
-    list_excluded_word_current_game = list_word
+    list_specific_word_current_game = list_word
 
 
 def get_list_specific_word(sheet_index: int) -> int:
@@ -90,7 +92,6 @@ def set_list_specific_word(list_word: list[str]) -> None:
     """set the list of specific words of a game in the sheet
 
     Args:
-        sheet_index (int): index related to the game wanted,
         list_word (list[str]): list of specific words
     """
     list_word.sort()
@@ -100,6 +101,18 @@ def set_list_specific_word(list_word: list[str]) -> None:
     gsheet.open_spreadsheet(ID_SHEET_DICT_GAME)
     gsheet.set_sheet_values(id_current_game - 1, [[word] for word in list_word])
     set_id_and_word_list(id_current_game, list_word)
+
+
+def add_list_specific_word() -> None:
+    """add the list of specific words in the sheet
+    """
+    global list_specific_word_current_game, list_specific_word_to_upload
+    get_list_specific_word(id_current_game - 1)
+    list_specific_word_current_game = list_specific_word_current_game + list_specific_word_to_upload
+    list_specific_word_current_game.sort()
+    gsheet.open_spreadsheet(ID_SHEET_DICT_GAME)
+    gsheet.set_sheet_values(id_current_game - 1, [[word] for word in list_specific_word_current_game])
+    list_specific_word_to_upload.clear()
 
 
 def get_name_sheet(sheet_url: str) -> str | int:
@@ -181,6 +194,6 @@ def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, st
     error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
     if error_code == 0:
         get_list_specific_word(id_current_game - 1)
-        return orthocheck.process_orthocheck(list_sentences_current_sheet, list_excluded_word_current_game)
+        return orthocheck.process_orthocheck(list_sentences_current_sheet, list_specific_word_current_game)
     else:
         return error_code

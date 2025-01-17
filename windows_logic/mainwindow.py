@@ -1,8 +1,8 @@
 """functions of the UI"""
 
 # -------------------- Import Lib Tier -------------------
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem
-from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, QTimer
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem, QMenu, QAction, QTableWidget
+from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, QTimer, QPoint
 from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
@@ -20,11 +20,13 @@ class _WorkerMainWindow(QObject):
     signal_get_name_sheet_start = pyqtSignal(str)
     signal_orthocheck_load_dictionary_start = pyqtSignal()
     signal_orthocheck_process_start = pyqtSignal(str, str)
+    signal_add_specific_words_start = pyqtSignal()
 
     signal_load_word_excluded_finished = pyqtSignal()
     signal_get_name_sheet_finished = pyqtSignal(object)
     signal_orthocheck_load_dictionary_finished = pyqtSignal()
     signal_orthocheck_process_finished = pyqtSignal(object)
+    signal_add_specific_words_finished = pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -44,6 +46,10 @@ class _WorkerMainWindow(QObject):
     def orthocheck_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str]] | int = process.orthocheck_process(url, column_letter)
         self.signal_orthocheck_process_finished.emit(output)
+
+    def add_specific_words_thread(self) -> None:
+        process.add_list_specific_word()
+        self.signal_add_specific_words_finished.emit()
 
 
 # -------------------------------------------------------------------#
@@ -68,12 +74,13 @@ class MainWindow(QMainWindow):
         self.is_url_correct: bool = False
         self.is_orthocheck_available: bool = False
         self.ui.pushButton_method_1.setEnabled(False)
+        self.ui.pushButton_uploadSpecificWords.setEnabled(False)
 
         self.ui.label_sheetOpened.setText("")
 
         self.urlsheet_timer = QTimer(self)
         self.urlsheet_timer.setSingleShot(True)
-        self.urlsheet_timer.setInterval(1000)  # 1 seconde
+        self.urlsheet_timer.setInterval(1000)
 
         self.populate_combobox_game()
         self.toggle_ui_enabled_except_combobox_game(False)
@@ -122,6 +129,44 @@ class MainWindow(QMainWindow):
         if not enabled or self.is_url_correct:
             self.ui.tabWidget_result.setEnabled(enabled)
 
+    def add_to_specific_dictionary(self, item: QTableWidgetItem) -> None:
+        """add to specific dictionary of the game
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
+        process.list_specific_word_to_upload.append(item.text())
+        self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
+        self.ui.pushButton_uploadSpecificWords.setText(
+            str(len(process.list_specific_word_to_upload)) + " terme(s) à upload"
+        )
+        self.ui.pushButton_uploadSpecificWords.setEnabled(True)
+
+    def remove_rows_table_by_text(self, table: QTableWidget, text: str) -> None:
+        rows_to_delete: list[int] = []
+        for row in range(table.rowCount()):
+            cell_item: QTableWidgetItem = table.item(row, 1)
+            if cell_item and cell_item.text() == text:
+                rows_to_delete.append(row)
+        # Delete rows in reverse order to avoid messing up the row indices
+        for row in reversed(rows_to_delete):
+            table.removeRow(row)
+
+    def add_to_global_dictionary(self, item: QTableWidgetItem) -> None:
+        """add to global dictionary of the method
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
+
+    def delete_item(self, item: QTableWidgetItem) -> None:
+        """Delete the selected item from the table.
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
+        self.ui.tableWidget_1.removeRow(item.row())
+
     def set_up_connect(self) -> None:
         """connect slots and signals
         """
@@ -130,22 +175,27 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_method_1.clicked.connect(self.pushbutton_method_1_clicked)
         self.ui.pushButton_method_2.clicked.connect(self.pushbutton_method_2_clicked)
         self.ui.pushButton_method_3.clicked.connect(self.pushbutton_method_3_clicked)
+        self.ui.pushButton_uploadSpecificWords.clicked.connect(self.pushbutton_uploadspecificwords_clicked)
         # lineEdit
         self.ui.lineEdit_urlSheet.textChanged.connect(self.lineedit_urlsheet_textchanged)
         self.urlsheet_timer.timeout.connect(self.check_urlsheet_access)
         self.ui.lineEdit_frenchColumn.textChanged.connect(self.lineedit_frenchcolumn_textchanged)
         # comboBox
         self.ui.comboBox_game.currentIndexChanged.connect(self.combobox_game_currentindexchanged)
+        # tab
+        self.ui.tableWidget_1.customContextMenuRequested.connect(self.tablewidget_1_contextmenu)
         # thread start
         self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
         self.m_worker.signal_get_name_sheet_start.connect(self.m_worker.get_name_sheet_thread)
         self.m_worker.signal_orthocheck_load_dictionary_start.connect(self.m_worker.orthocheck_load_dictionary_thread)
         self.m_worker.signal_orthocheck_process_start.connect(self.m_worker.orthocheck_process_thread)
+        self.m_worker.signal_add_specific_words_start.connect(self.m_worker.add_specific_words_thread)
         # thread finish
         self.m_worker.signal_load_word_excluded_finished.connect(self.load_dialog_finished)
         self.m_worker.signal_get_name_sheet_finished.connect(self.get_name_sheet_finished)
         self.m_worker.signal_orthocheck_load_dictionary_finished.connect(self.orthocheck_load_dictionary_finished)
         self.m_worker.signal_orthocheck_process_finished.connect(self.orthocheck_process_finished)
+        self.m_worker.signal_add_specific_words_finished.connect(self.add_specific_words_finished)
 
     def pushbutton_gamedictionary_clicked(self) -> None:
         """slot for pushButton_gameDictionary
@@ -168,15 +218,20 @@ class MainWindow(QMainWindow):
         """slot for pushButton_method_3
         """
 
+    def pushbutton_uploadspecificwords_clicked(self) -> None:
+        """slot for pushButton_uploadSpecificWords
+        """
+        self.ui.pushButton_uploadSpecificWords.setEnabled(False)
+        self.m_worker.signal_add_specific_words_start.emit()
+
     def lineedit_urlsheet_textchanged(self) -> None:
         """slot for lineEdit_urlSheet
         """
+        self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.ui.label_sheetOpened.setText("")
         text: str = self.ui.lineEdit_urlSheet.text()
-        if len(text) < 1:
-            self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(255, 255, 255);")
-            self.is_url_correct = False
-            self.ui.label_sheetOpened.setText("")
-        else:
+        self.is_url_correct = False
+        if len(text) > 0:
             self.urlsheet_timer.start()
 
     def check_urlsheet_access(self) -> None:
@@ -194,6 +249,29 @@ class MainWindow(QMainWindow):
         self.toggle_ui_enabled_except_combobox_game(bool(index))
         self.ui.lineEdit_frenchColumn.setText(process.data_json[index - 1]["column_sheet"])  # type: ignore
         process.set_id_and_word_list(index, [])
+
+    def tablewidget_1_contextmenu(self, pos: QPoint) -> None:
+        """slot for tableWidget_excludedWords
+        """
+        item: QTableWidgetItem = self.ui.tableWidget_1.itemAt(pos)
+        if item is None:  # type: ignore
+            return
+        menu = QMenu(self)
+
+        self.add_to_specific_dictionary_action = QAction("Ajouter aux termes du jeu", self)
+        self.add_to_global_dictionary_action = QAction("Ajouter au dictionnaire de la méthode", self)
+        self.delete_action = QAction("Faute traitée", self)
+
+        self.delete_action.setIconVisibleInMenu(False)
+        self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
+        self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
+        self.delete_action.triggered.connect(lambda: self.delete_item(item))
+
+        menu.addAction(self.add_to_specific_dictionary_action)
+        menu.addAction(self.add_to_global_dictionary_action)
+        menu.addSeparator()
+        menu.addAction(self.delete_action)
+        menu.exec_(self.ui.tableWidget_1.viewport().mapToGlobal(pos))
 
     def load_dialog_finished(self) -> None:
         """slot for signal load_dialog_finished
@@ -242,6 +320,12 @@ class MainWindow(QMainWindow):
                 self.ui.tableWidget_1.setItem(row_index, 1, item_word)
 
             process.save_result_process(self.ui.label_sheetOpened.text(), 1, result)
+
+    def add_specific_words_finished(self) -> None:
+        """slot for signal add_specific_words_finished
+        """
+        self.ui.pushButton_uploadSpecificWords.setEnabled(True)
+        self.ui.pushButton_uploadSpecificWords.setText("Pas de termes à uploader")
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         if self.m_thread.isRunning():
