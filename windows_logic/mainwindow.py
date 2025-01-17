@@ -142,6 +142,15 @@ class MainWindow(QMainWindow):
         )
         self.ui.pushButton_uploadSpecificWords.setEnabled(True)
 
+    def add_to_global_dictionary(self, item: QTableWidgetItem) -> None:
+        """add to global dictionary of the method
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
+        process.orthocheck_add_word_to_csv(item.text())
+        self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
+
     def remove_rows_table_by_text(self, table: QTableWidget, text: str) -> None:
         rows_to_delete: list[int] = []
         for row in range(table.rowCount()):
@@ -151,13 +160,6 @@ class MainWindow(QMainWindow):
         # Delete rows in reverse order to avoid messing up the row indices
         for row in reversed(rows_to_delete):
             table.removeRow(row)
-
-    def add_to_global_dictionary(self, item: QTableWidgetItem) -> None:
-        """add to global dictionary of the method
-
-        Args:
-            item (QTableWidgetItem): item from the table
-        """
 
     def delete_item(self, item: QTableWidgetItem) -> None:
         """Delete the selected item from the table.

@@ -197,3 +197,15 @@ def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, st
         return orthocheck.process_orthocheck(list_sentences_current_sheet, list_specific_word_current_game)
     else:
         return error_code
+
+
+def orthocheck_add_word_to_csv(word: str) -> None:
+    """Add a word to the end of a CSV file.
+
+    Args:
+        word (str): The word to add.
+        csv_file (str): The path to the CSV file.
+    """
+    path_csv: str = "dictionary_orthocheck\\added_words.csv"
+    with open(path_csv, 'a', encoding='utf-8') as file:
+        file.write(f"{word}\n")
