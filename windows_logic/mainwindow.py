@@ -20,12 +20,14 @@ class _WorkerMainWindow(QObject):
     signal_get_name_sheet_start = pyqtSignal(str)
     signal_orthocheck_load_dictionary_start = pyqtSignal()
     signal_orthocheck_process_start = pyqtSignal(str, str)
+    signal_language_tool_process_start = pyqtSignal(str, str)
     signal_add_specific_words_start = pyqtSignal()
 
     signal_load_word_excluded_finished = pyqtSignal()
     signal_get_name_sheet_finished = pyqtSignal(object)
     signal_orthocheck_load_dictionary_finished = pyqtSignal()
     signal_orthocheck_process_finished = pyqtSignal(object)
+    signal_language_tool_process_finished = pyqtSignal(object)
     signal_add_specific_words_finished = pyqtSignal()
 
     def __init__(self) -> None:
@@ -46,6 +48,10 @@ class _WorkerMainWindow(QObject):
     def orthocheck_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str]] | int = process.orthocheck_process(url, column_letter)
         self.signal_orthocheck_process_finished.emit(output)
+
+    def language_tool_process_thread(self, url: str, column_letter: str) -> None:
+        output: list[tuple[int, str]] | int = process.language_tool_process(url, column_letter)
+        self.signal_language_tool_process_finished.emit(output)
 
     def add_specific_words_thread(self) -> None:
         process.add_list_specific_word()
@@ -219,12 +225,14 @@ class MainWindow(QMainWindow):
         self.m_worker.signal_get_name_sheet_start.connect(self.m_worker.get_name_sheet_thread)
         self.m_worker.signal_orthocheck_load_dictionary_start.connect(self.m_worker.orthocheck_load_dictionary_thread)
         self.m_worker.signal_orthocheck_process_start.connect(self.m_worker.orthocheck_process_thread)
+        self.m_worker.signal_language_tool_process_start.connect(self.m_worker.language_tool_process_thread)
         self.m_worker.signal_add_specific_words_start.connect(self.m_worker.add_specific_words_thread)
         # thread finish
         self.m_worker.signal_load_word_excluded_finished.connect(self.load_dialog_finished)
         self.m_worker.signal_get_name_sheet_finished.connect(self.get_name_sheet_finished)
         self.m_worker.signal_orthocheck_load_dictionary_finished.connect(self.orthocheck_load_dictionary_finished)
         self.m_worker.signal_orthocheck_process_finished.connect(self.orthocheck_process_finished)
+        self.m_worker.signal_language_tool_process_finished.connect(self.language_tool_process_finished)
         self.m_worker.signal_add_specific_words_finished.connect(self.add_specific_words_finished)
 
     def pushbutton_gamedictionary_clicked(self) -> None:
@@ -237,6 +245,7 @@ class MainWindow(QMainWindow):
     def pushbutton_method_1_clicked(self) -> None:
         """slot for pushButton_method_1
         """
+        self.ui.pushButton_method_1.setEnabled(False)
         self.m_worker.signal_orthocheck_process_start.emit(self.ui.lineEdit_urlSheet.text(),
                                                            self.ui.lineEdit_frenchColumn.text())
 
@@ -247,6 +256,9 @@ class MainWindow(QMainWindow):
     def pushbutton_method_3_clicked(self) -> None:
         """slot for pushButton_method_3
         """
+        self.ui.pushButton_method_3.setEnabled(False)
+        self.m_worker.signal_language_tool_process_start.emit(self.ui.lineEdit_urlSheet.text(),
+                                                              self.ui.lineEdit_frenchColumn.text())
 
     def pushbutton_uploadspecificwords_clicked(self) -> None:
         """slot for pushButton_uploadSpecificWords
@@ -337,6 +349,7 @@ class MainWindow(QMainWindow):
     def orthocheck_process_finished(self, result: list[tuple[int, str]] | int) -> None:
         """slot for signal orthocheck_process_finished
         """
+        self.ui.pushButton_method_1.setEnabled(True)
         if isinstance(result, int):
             # TODO
             pass
@@ -345,6 +358,18 @@ class MainWindow(QMainWindow):
 
             process.save_result_process(self.ui.label_sheetOpened.text(), 1, result)
 
+    def language_tool_process_finished(self, result: list[tuple[int, str]] | int) -> None:
+        """slot for signal language_tool_process_finished
+        """
+        self.ui.pushButton_method_3.setEnabled(True)
+        if isinstance(result, int):
+            # TODO
+            pass
+        else:
+            self.update_table(self.ui.tableWidget_3, result)
+
+            process.save_result_process(self.ui.label_sheetOpened.text(), 3, result)
+
     def add_specific_words_finished(self) -> None:
         """slot for signal add_specific_words_finished
         """
@@ -352,6 +377,7 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_uploadSpecificWords.setText("Pas de termes à uploader")
 
     def closeEvent(self, a0: QCloseEvent) -> None:
+        self.urlsheet_timer.stop()
         if self.m_thread.isRunning():
             self.m_thread.quit()
             self.m_thread.wait()

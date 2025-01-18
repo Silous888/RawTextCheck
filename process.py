@@ -10,6 +10,7 @@ from typing import Any
 # -------------------- Import Lib User -------------------
 from api import google_sheet_api as gsheet
 from api import google_drive_api as gdrive
+import languagetool
 import orthocheck
 import utils
 
@@ -227,3 +228,21 @@ def orthocheck_add_word_to_csv(word: str) -> None:
     path_csv: str = "dictionary_orthocheck\\added_words.csv"
     with open(path_csv, 'a', encoding='utf-8') as file:
         file.write(f"{word}\n")
+
+
+def language_tool_process(url_sheet: str, column_letter: str) -> list[tuple[int, str]] | int:
+    """get the list of specific words of a game in the sheet
+    and call process_orthocheck of orthocheck and return result
+
+    Args:
+        sheet_index (int): index related to the game wanted,
+
+    Returns:
+        int : 0 if no problem, error code otherwise
+    """
+    error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
+    if error_code == 0:
+        get_list_specific_word(id_current_game - 1)
+        return languagetool.language_tool_on_text(list_sentences_current_sheet, list_specific_word_current_game)
+    else:
+        return error_code
