@@ -19,15 +19,19 @@ class _WorkerMainWindow(QObject):
     signal_load_word_excluded_start = pyqtSignal(int)
     signal_get_name_sheet_start = pyqtSignal(str)
     signal_orthocheck_load_dictionary_start = pyqtSignal()
+    signal_languagetool_initialize_start = pyqtSignal()
     signal_orthocheck_process_start = pyqtSignal(str, str)
     signal_language_tool_process_start = pyqtSignal(str, str)
+    signal_word_check_process_start = pyqtSignal(str, str)
     signal_add_specific_words_start = pyqtSignal()
 
     signal_load_word_excluded_finished = pyqtSignal()
     signal_get_name_sheet_finished = pyqtSignal(object)
     signal_orthocheck_load_dictionary_finished = pyqtSignal()
+    signal_languagetool_initialize_finished = pyqtSignal()
     signal_orthocheck_process_finished = pyqtSignal(object)
     signal_language_tool_process_finished = pyqtSignal(object)
+    signal_word_check_process_finished = pyqtSignal(object)
     signal_add_specific_words_finished = pyqtSignal()
 
     def __init__(self) -> None:
@@ -45,6 +49,10 @@ class _WorkerMainWindow(QObject):
         process.orthocheck_load_dictionary()
         self.signal_orthocheck_load_dictionary_finished.emit()
 
+    def languagetool_initialize_thread(self) -> None:
+        process.language_tool_initialize()
+        self.signal_languagetool_initialize_finished.emit()
+
     def orthocheck_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str]] | int = process.orthocheck_process(url, column_letter)
         self.signal_orthocheck_process_finished.emit(output)
@@ -52,6 +60,10 @@ class _WorkerMainWindow(QObject):
     def language_tool_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str]] | int = process.language_tool_process(url, column_letter)
         self.signal_language_tool_process_finished.emit(output)
+
+    def word_check_process_thread(self, url: str, column_letter: str) -> None:
+        output: list[tuple[int, str]] | int = process.word_check_process(url, column_letter)
+        self.signal_word_check_process_finished.emit(output)
 
     def add_specific_words_thread(self) -> None:
         process.add_list_specific_word()
@@ -79,6 +91,7 @@ class MainWindow(QMainWindow):
 
         self.is_url_correct: bool = False
         self.is_orthocheck_available: bool = False
+        self.is_languagetool_available: bool = False
         self.ui.pushButton_method_1.setEnabled(False)
         self.ui.pushButton_uploadSpecificWords.setEnabled(False)
 
@@ -95,6 +108,7 @@ class MainWindow(QMainWindow):
         self.ui.tabWidget_result
 
         self.m_worker.signal_orthocheck_load_dictionary_start.emit()
+        self.m_worker.signal_languagetool_initialize_start.emit()
 
     def populate_combobox_game(self) -> None:
         """populate comboBox_game
@@ -123,7 +137,7 @@ class MainWindow(QMainWindow):
         """
         if not enabled or (self.is_orthocheck_available and self.is_url_correct):
             self.ui.pushButton_method_1.setEnabled(enabled)
-        if not enabled or self.is_url_correct:
+        if not enabled or (self.is_languagetool_available and self.is_url_correct):
             self.ui.pushButton_method_2.setEnabled(enabled)
         if not enabled or self.is_url_correct:
             self.ui.pushButton_method_3.setEnabled(enabled)
@@ -226,15 +240,19 @@ class MainWindow(QMainWindow):
         self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
         self.m_worker.signal_get_name_sheet_start.connect(self.m_worker.get_name_sheet_thread)
         self.m_worker.signal_orthocheck_load_dictionary_start.connect(self.m_worker.orthocheck_load_dictionary_thread)
+        self.m_worker.signal_languagetool_initialize_start.connect(self.m_worker.languagetool_initialize_thread)
         self.m_worker.signal_orthocheck_process_start.connect(self.m_worker.orthocheck_process_thread)
         self.m_worker.signal_language_tool_process_start.connect(self.m_worker.language_tool_process_thread)
+        self.m_worker.signal_word_check_process_start.connect(self.m_worker.word_check_process_thread)
         self.m_worker.signal_add_specific_words_start.connect(self.m_worker.add_specific_words_thread)
         # thread finish
         self.m_worker.signal_load_word_excluded_finished.connect(self.load_dialog_finished)
         self.m_worker.signal_get_name_sheet_finished.connect(self.get_name_sheet_finished)
         self.m_worker.signal_orthocheck_load_dictionary_finished.connect(self.orthocheck_load_dictionary_finished)
+        self.m_worker.signal_languagetool_initialize_finished.connect(self.languagetool_initialize_finished)
         self.m_worker.signal_orthocheck_process_finished.connect(self.orthocheck_process_finished)
         self.m_worker.signal_language_tool_process_finished.connect(self.language_tool_process_finished)
+        self.m_worker.signal_word_check_process_finished.connect(self.word_check_process_finished)
         self.m_worker.signal_add_specific_words_finished.connect(self.add_specific_words_finished)
 
     def pushbutton_gamedictionary_clicked(self) -> None:
@@ -254,13 +272,16 @@ class MainWindow(QMainWindow):
     def pushbutton_method_2_clicked(self) -> None:
         """slot for pushButton_method_2
         """
+        self.ui.pushButton_method_2.setEnabled(False)
+        self.m_worker.signal_language_tool_process_start.emit(self.ui.lineEdit_urlSheet.text(),
+                                                              self.ui.lineEdit_frenchColumn.text())
 
     def pushbutton_method_3_clicked(self) -> None:
         """slot for pushButton_method_3
         """
         self.ui.pushButton_method_3.setEnabled(False)
-        self.m_worker.signal_language_tool_process_start.emit(self.ui.lineEdit_urlSheet.text(),
-                                                              self.ui.lineEdit_frenchColumn.text())
+        self.m_worker.signal_word_check_process_start.emit(self.ui.lineEdit_urlSheet.text(),
+                                                           self.ui.lineEdit_frenchColumn.text())
 
     def pushbutton_uploadspecificwords_clicked(self) -> None:
         """slot for pushButton_uploadSpecificWords
@@ -277,6 +298,9 @@ class MainWindow(QMainWindow):
         self.is_url_correct = False
         if len(text) > 0:
             self.urlsheet_timer.start()
+        else:
+            self.toggle_ui_enabled_buttons_methods(False)
+            self.toggle_ui_enabled_tabWidget_result(False)
 
     def check_urlsheet_access(self) -> None:
         """Vérifier l'accès à l'élément après un délai"""
@@ -346,7 +370,13 @@ class MainWindow(QMainWindow):
         """slot for signal orthocheck_load_dictionary_finished
         """
         self.is_orthocheck_available = True
-        self.ui.pushButton_method_1.setEnabled(bool(self.ui.comboBox_game.currentIndex()))
+        self.ui.pushButton_method_1.setEnabled(bool(self.ui.comboBox_game.currentIndex() and self.is_url_correct))
+
+    def languagetool_initialize_finished(self) -> None:
+        """slot for signal languagetool_initialize_finished
+        """
+        self.is_languagetool_available = True
+        self.ui.pushButton_method_2.setEnabled(bool(self.ui.comboBox_game.currentIndex() and self.is_url_correct))
 
     def orthocheck_process_finished(self, result: list[tuple[int, str]] | int) -> None:
         """slot for signal orthocheck_process_finished
@@ -361,6 +391,18 @@ class MainWindow(QMainWindow):
             process.save_result_process(self.ui.label_sheetOpened.text(), 1, result)
 
     def language_tool_process_finished(self, result: list[tuple[int, str]] | int) -> None:
+        """slot for signal language_tool_process_finished
+        """
+        self.ui.pushButton_method_2.setEnabled(True)
+        if isinstance(result, int):
+            # TODO
+            pass
+        else:
+            self.update_table(self.ui.tableWidget_2, result)
+
+            process.save_result_process(self.ui.label_sheetOpened.text(), 2, result)
+
+    def word_check_process_finished(self, result: list[tuple[int, str]] | int) -> None:
         """slot for signal language_tool_process_finished
         """
         self.ui.pushButton_method_3.setEnabled(True)

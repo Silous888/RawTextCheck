@@ -1,7 +1,18 @@
 import language_tool_python
 # java needed for that
 
-tool = language_tool_python.LanguageTool('fr')
+
+tool: language_tool_python.LanguageTool | None = None
+
+
+def initialize_tool(language: str = 'fr') -> None:
+    """Initialize the global LanguageTool for the specified language.
+
+    Args:
+        language (str): The language code (default is 'fr' for French).
+    """
+    global tool
+    tool = language_tool_python.LanguageTool(language)
 
 
 def language_tool_on_text(texts: list[str], specific_words: list[str]) -> list[tuple[int, str]]:
@@ -10,7 +21,7 @@ def language_tool_on_text(texts: list[str], specific_words: list[str]) -> list[t
     matches: list[language_tool_python.Match] = tool.check(combined_text)
 
     output: list[tuple[int, str]] = []
-    line_offsets: List[int] = [0]
+    line_offsets: list[int] = [0]
     for text in texts:
         line_offsets.append(line_offsets[-1] + len(text) + 1)
 

@@ -30,6 +30,9 @@
       <height>601</height>
      </rect>
     </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
     <widget class="QWidget" name="tab_1">
      <attribute name="title">
       <string>dictionnaire</string>
@@ -85,9 +88,9 @@
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
-      <string>Word</string>
+      <string>LanguageTool</string>
      </attribute>
-     <layout class="QGridLayout" name="gridLayout_4">
+     <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="0">
        <widget class="QTableWidget" name="tableWidget_2">
         <property name="contextMenuPolicy">
@@ -126,9 +129,9 @@
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
-      <string>LanguageTool</string>
+      <string>Word</string>
      </attribute>
-     <layout class="QGridLayout" name="gridLayout_5">
+     <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
        <widget class="QTableWidget" name="tableWidget_3">
         <property name="contextMenuPolicy">
@@ -204,11 +207,11 @@
       <string>mise à jour &quot;dictionnaire&quot;</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_method_2">
+    <widget class="QPushButton" name="pushButton_method_3">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>90</y>
+       <y>140</y>
        <width>141</width>
        <height>41</height>
       </rect>
@@ -217,11 +220,11 @@
       <string>mise à jour &quot;MS Word&quot;</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_method_3">
+    <widget class="QPushButton" name="pushButton_method_2">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>140</y>
+       <y>90</y>
        <width>141</width>
        <height>41</height>
       </rect>
@@ -389,12 +392,12 @@
   <tabstop>pushButton_gameDictionary</tabstop>
   <tabstop>lineEdit_frenchColumn</tabstop>
   <tabstop>pushButton_method_1</tabstop>
-  <tabstop>pushButton_method_2</tabstop>
   <tabstop>pushButton_method_3</tabstop>
+  <tabstop>pushButton_method_2</tabstop>
   <tabstop>tabWidget_result</tabstop>
   <tabstop>tableWidget_1</tabstop>
-  <tabstop>tableWidget_2</tabstop>
   <tabstop>tableWidget_3</tabstop>
+  <tabstop>tableWidget_2</tabstop>
  </tabstops>
  <resources>
   <include location="ressource.qrc"/>

@@ -13,14 +13,16 @@ from api import google_drive_api as gdrive
 import languagetool
 import orthocheck
 import utils
+import word_check
+
 
 data_json: dict[str, Any] = {}
 
 ID_SHEET_DICT_GAME: str = "1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc"
 
 LIST_METHOD_FOLDER_NAME: list[str] = ["methode 1 - dictionnaire",
-                                      "methode 2 - MS Word",
-                                      "methode 3 - LanguageTool"]
+                                      "methode 3 - LanguageTool",
+                                      "methode 2 - MS Word"]
 
 id_current_game: int = 0
 list_specific_word_current_game: list[str] = []
@@ -200,6 +202,12 @@ def orthocheck_load_dictionary() -> None:
     orthocheck.load_words("dictionary_orthocheck")
 
 
+def language_tool_initialize() -> None:
+    """call initialize_tool of languagetool
+    """
+    languagetool.initialize_tool()
+
+
 def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, str]] | int:
     """get the list of specific words of a game in the sheet
     and call process_orthocheck of orthocheck and return result
@@ -232,7 +240,7 @@ def orthocheck_add_word_to_csv(word: str) -> None:
 
 def language_tool_process(url_sheet: str, column_letter: str) -> list[tuple[int, str]] | int:
     """get the list of specific words of a game in the sheet
-    and call process_orthocheck of orthocheck and return result
+    and call language_tool_on_text of languageTool and return result
 
     Args:
         sheet_index (int): index related to the game wanted,
@@ -244,5 +252,23 @@ def language_tool_process(url_sheet: str, column_letter: str) -> list[tuple[int,
     if error_code == 0:
         get_list_specific_word(id_current_game - 1)
         return languagetool.language_tool_on_text(list_sentences_current_sheet, list_specific_word_current_game)
+    else:
+        return error_code
+
+
+def word_check_process(url_sheet: str, column_letter: str) -> list[tuple[int, str]] | int:
+    """get the list of specific words of a game in the sheet
+    and call word_on_text of word_check and return result
+
+    Args:
+        sheet_index (int): index related to the game wanted,
+
+    Returns:
+        int : 0 if no problem, error code otherwise
+    """
+    error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
+    if error_code == 0:
+        get_list_specific_word(id_current_game - 1)
+        return word_check.word_on_text(list_sentences_current_sheet, list_specific_word_current_game)
     else:
         return error_code
