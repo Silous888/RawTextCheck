@@ -92,6 +92,8 @@ class MainWindow(QMainWindow):
         self.toggle_ui_enabled_except_combobox_game(False)
         self.set_up_connect()
 
+        self.ui.tabWidget_result
+
         self.m_worker.signal_orthocheck_load_dictionary_start.emit()
 
     def populate_combobox_game(self) -> None:

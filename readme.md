@@ -29,6 +29,7 @@ pouvoir ajouter soit au dictionnaire des exceptions du jeu, soit au dictionnaire
 
 
 
+
 ajouter un sort automatique de la liste des termes quand on la sauvegarde
 
 
@@ -42,3 +43,6 @@ bug qui fait que je peux faire qu’une fois le check d’orthographe
 ajouter un check de caractères qui passe pas dans le jeu, espace insécable, mauvais guillemets...
 
 quand une méthode est fini d’être exécuté, faut mettre sur le tab des résultats automatiquement
+
+
+threader le démarrage de languagetool
