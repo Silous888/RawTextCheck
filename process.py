@@ -1,6 +1,7 @@
 """"main process of the application"""
 
 # -------------------- Import Lib Standard -------------------
+from datetime import datetime
 import re
 
 # -------------------- Import Lib User -------------------
@@ -21,6 +22,10 @@ list_specific_word_current_game: list[str] = []
 list_sentences_current_sheet: list[str] = []
 
 list_specific_word_to_upload: list[str] = []
+
+
+def get_current_date() -> str:
+    return datetime.now().strftime('%Y-%m-%d %H:%M')
 
 
 def set_id_and_word_list(id: int, list_word: list[str]) -> None:
@@ -96,6 +101,7 @@ def add_list_specific_word() -> None:
     """add the list of specific words in the sheet
     """
     global list_specific_word_current_game, list_specific_word_to_upload
+    print(list_specific_word_to_upload)
     get_list_specific_word(id_current_game - 1)
     list_specific_word_current_game = list_specific_word_current_game + list_specific_word_to_upload
     list_specific_word_current_game.sort()

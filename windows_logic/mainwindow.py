@@ -8,6 +8,7 @@ from PyQt5.QtGui import QCloseEvent
 # -------------------- Import Lib User -------------------
 from qt_files.Ui_mainwindow import Ui_MainWindow
 from windows_logic.dialog_excluded_words import DialogExcludedWords
+from windows_logic.confirm_exit import ConfirmExit
 import process
 import json_management as json_man
 
@@ -97,6 +98,14 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_uploadSpecificWords.setEnabled(False)
 
         self.ui.label_sheetOpened.setText("")
+        self.ui.label_lastUdate_1.setText("")
+        self.ui.label_lastUdate_2.setText("")
+        self.ui.label_lastUdate_3.setText("")
+
+        self.ui.tableWidget_3.setHidden(True)
+        self.ui.tabWidget_result.removeTab(2)
+        self.ui.pushButton_method_3.setHidden(True)
+        self.ui.label_lastUdate_3.setHidden(True)
 
         self.urlsheet_timer = QTimer(self)
         self.urlsheet_timer.setSingleShot(True)
@@ -164,6 +173,8 @@ class MainWindow(QMainWindow):
             str(len(process.list_specific_word_to_upload)) + " terme(s) à upload"
         )
         self.ui.pushButton_uploadSpecificWords.setEnabled(True)
+        self.ui.comboBox_game.setEnabled(False)
+        self.ui.comboBox_game.setToolTip("Veuillez uploader les termes avant de changer de jeu")
 
     def add_to_global_dictionary(self, item: QTableWidgetItem) -> None:
         """add to global dictionary of the method
@@ -198,6 +209,9 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
+        json_man.add_correct_letter(process.id_current_game - 1, item.text()[0])
+        json_man.load_json()
+        self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
 
     def add_punctuation(self, item: QTableWidgetItem) -> None:
         """Add the punctuation to the authorized punctuation for this game.
@@ -205,6 +219,9 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
+        json_man.add_correct_punctuation(process.id_current_game - 1, item.text()[0])
+        json_man.load_json()
+        self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
 
     def update_table(self, table: QTableWidget, data: list[tuple[int, str]]) -> None:
         table.setRowCount(0)  # Clear existing rows
@@ -269,6 +286,7 @@ class MainWindow(QMainWindow):
         self.m_worker.signal_language_tool_process_finished.connect(self.language_tool_process_finished)
         self.m_worker.signal_word_check_process_finished.connect(self.word_check_process_finished)
         self.m_worker.signal_add_specific_words_finished.connect(self.add_specific_words_finished)
+        # help
 
     def pushbutton_gamedictionary_clicked(self) -> None:
         """slot for pushButton_gameDictionary
@@ -309,6 +327,9 @@ class MainWindow(QMainWindow):
         """
         self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ui.label_sheetOpened.setText("")
+        self.ui.label_lastUdate_1.setText("")
+        self.ui.label_lastUdate_2.setText("")
+        self.ui.label_lastUdate_3.setText("")
         text: str = self.ui.lineEdit_urlSheet.text()
         self.is_url_correct = False
         if len(text) > 0:
@@ -332,6 +353,8 @@ class MainWindow(QMainWindow):
         self.toggle_ui_enabled_except_combobox_game(bool(index))
         self.ui.lineEdit_frenchColumn.setText(json_man.data_json[index - 1]["column_sheet"])  # type: ignore
         process.set_id_and_word_list(index, [])
+        if len(self.ui.lineEdit_urlSheet.text()) > 0:
+            self.urlsheet_timer.start()
 
     def tablewidget_1_contextmenu(self, pos: QPoint) -> None:
         """slot for tableWidget_excludedWords
@@ -412,6 +435,7 @@ class MainWindow(QMainWindow):
             self.update_table(self.ui.tableWidget_1, result)
 
             json_man.save_result_process(process.id_current_game - 1, self.ui.label_sheetOpened.text(), 1, result)
+            self.ui.label_lastUdate_1.setText(process.get_current_date())
 
     def language_tool_process_finished(self, result: list[tuple[int, str]] | int) -> None:
         """slot for signal language_tool_process_finished
@@ -424,6 +448,7 @@ class MainWindow(QMainWindow):
             self.update_table(self.ui.tableWidget_2, result)
 
             json_man.save_result_process(process.id_current_game - 1, self.ui.label_sheetOpened.text(), 2, result)
+            self.ui.label_lastUdate_2.setText(process.get_current_date())
 
     def word_check_process_finished(self, result: list[tuple[int, str]] | int) -> None:
         """slot for signal language_tool_process_finished
@@ -436,15 +461,20 @@ class MainWindow(QMainWindow):
             self.update_table(self.ui.tableWidget_3, result)
 
             json_man.save_result_process(process.id_current_game - 1, self.ui.label_sheetOpened.text(), 3, result)
+            self.ui.label_lastUdate_3.setText(process.get_current_date())
 
     def add_specific_words_finished(self) -> None:
         """slot for signal add_specific_words_finished
         """
         self.ui.pushButton_uploadSpecificWords.setEnabled(True)
         self.ui.pushButton_uploadSpecificWords.setText("Pas de termes à uploader")
+        self.ui.comboBox_game.setEnabled(True)
+        self.ui.comboBox_game.setToolTip("")
 
     def closeEvent(self, a0: QCloseEvent) -> None:
-        self.urlsheet_timer.stop()
+        if len(process.list_specific_word_to_upload) > 0:
+            self.exit_widget = ConfirmExit()
+            self.exit_widget.exec()
         if self.m_thread.isRunning():
             self.m_thread.quit()
             self.m_thread.wait()

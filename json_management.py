@@ -5,9 +5,10 @@ from typing import Any
 
 
 LIST_METHOD_FOLDER_NAME: list[str] = ["methode 1 - dictionnaire",
-                                      "methode 3 - LanguageTool",
-                                      "methode 2 - MS Word"]
+                                      "methode 2 - LanguageTool",
+                                      "methode 3 - MS Word"]
 
+JSON_FILE_PATH: str = "./json_data_games.json"
 
 data_json: dict[str, Any] = {}
 
@@ -16,11 +17,11 @@ def load_json() -> None:
     """load json data
     """
     global data_json
-    with open("./json_data_games.json", "r", encoding="utf-8") as file:
+    with open(JSON_FILE_PATH, "r", encoding="utf-8") as file:
         data_json = json.load(file)
 
 
-def add_correct_letter(id_game: int, new_letter: str, json_file_path: str) -> None:
+def add_correct_letter(id_game: int, new_letter: str, ) -> None:
     """add a character in the json to correct_letters of the current game
 
     Args:
@@ -30,11 +31,11 @@ def add_correct_letter(id_game: int, new_letter: str, json_file_path: str) -> No
     if new_letter not in data_json[id_game]['correct_letters']:  # type: ignore
         data_json[id_game]['correct_letters'] += new_letter  # type: ignore
 
-    with open(json_file_path, 'w', encoding='utf-8') as file:
+    with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
         json.dump(data_json, file, ensure_ascii=False, indent=4)
 
 
-def add_correct_punctuation(id_game: int, new_letter: str, json_file_path: str) -> None:
+def add_correct_punctuation(id_game: int, new_letter: str) -> None:
     """add a punctuation in the json to correct_letters of the current game
 
     Args:
@@ -44,7 +45,7 @@ def add_correct_punctuation(id_game: int, new_letter: str, json_file_path: str) 
     if new_letter not in data_json[id_game]['correct_punctuation']:  # type: ignore
         data_json[id_game]['correct_punctuation'] += new_letter  # type: ignore
 
-    with open(json_file_path, 'w', encoding='utf-8') as file:
+    with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
         json.dump(data_json, file, ensure_ascii=False, indent=4)
 
 
@@ -67,7 +68,7 @@ def load_result_process(id_game: int, name_file: str) -> tuple[list[list[tuple[i
             with open(path, "r", encoding="utf-8") as file:
                 result[i] = json.load(file)
             modification_time: float = os.path.getmtime(path)
-            modification_date: str = datetime.fromtimestamp(modification_time).strftime('%Y-%m-%d %H:%M:%S')
+            modification_date: str = datetime.fromtimestamp(modification_time).strftime('%Y-%m-%d %H:%M')
             modification_dates.append(modification_date)
         else:
             modification_dates.append("jamais lancée")
