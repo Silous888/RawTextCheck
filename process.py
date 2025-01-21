@@ -1,41 +1,26 @@
 """"main process of the application"""
 
 # -------------------- Import Lib Standard -------------------
-from datetime import datetime
-import json
-import os
 import re
-from typing import Any
 
 # -------------------- Import Lib User -------------------
 from api import google_sheet_api as gsheet
 from api import google_drive_api as gdrive
+import json_management as json_man
 import languagetool
 import orthocheck
 import utils
 import word_check
 
 
-data_json: dict[str, Any] = {}
-
 ID_SHEET_DICT_GAME: str = "1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc"
 
-LIST_METHOD_FOLDER_NAME: list[str] = ["methode 1 - dictionnaire",
-                                      "methode 3 - LanguageTool",
-                                      "methode 2 - MS Word"]
 
 id_current_game: int = 0
 list_specific_word_current_game: list[str] = []
 list_sentences_current_sheet: list[str] = []
 
 list_specific_word_to_upload: list[str] = []
-
-
-def load_json() -> dict[str, Any]:
-    """load json data
-    """
-    with open("./json_data_games.json", "r", encoding="utf-8") as file:
-        return json.load(file)
 
 
 def set_id_and_word_list(id: int, list_word: list[str]) -> None:
@@ -80,8 +65,8 @@ def get_list_sentence_sheet(url_sheet: str, column_letter: str,
     sheet_extraction: list[str] | int = gsheet.get_value_column(0, num_column)
     if isinstance(sheet_extraction, int):
         return sheet_extraction
-    ignored_substrings: dict[str, str] = data_json[id_current_game - 1]["ignored_substrings"]  # type: ignore
-    ignored_codes: list[str] = data_json[id_current_game - 1]["ignored_codes"]  # type: ignore
+    ignored_substrings: dict[str, str] = json_man.data_json[id_current_game - 1]["ignored_substrings"]  # type: ignore
+    ignored_codes: list[str] = json_man.data_json[id_current_game - 1]["ignored_codes"]  # type: ignore
     list_sentences_current_sheet = [
         remove_ignored_codes(
             remove_ignored_substrings(sentence, ignored_substrings, insert_space_substrings),
@@ -170,32 +155,6 @@ def remove_ignored_codes(text: str, ignored_codes: list[str], insert_space: bool
     return text
 
 
-def save_result_process(name_file: str, method: int, data: list[tuple[int, str]]) -> None:
-    folder_name: str = data_json[id_current_game - 1]["folder_name"]  # type: ignore
-    path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[method - 1])
-    os.makedirs(path, exist_ok=True)
-
-    with open(os.path.join(path, name_file + ".json"), "w", encoding="utf-8") as file:
-        json.dump(data, file, ensure_ascii=False)
-
-
-def load_result_process(name_file: str) -> tuple[list[list[tuple[int, str]]], list[str]]:
-    result: list[list[tuple[int, str]]] = [[], [], []]
-    modification_dates: list[str] = []
-    folder_name: str = data_json[id_current_game - 1]["folder_name"]  # type: ignore
-    for i in range(len(LIST_METHOD_FOLDER_NAME)):
-        path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[i], name_file + ".json")
-        if os.path.isfile(path):
-            with open(path, "r", encoding="utf-8") as file:
-                result[i] = json.load(file)
-            modification_time: float = os.path.getmtime(path)
-            modification_date: str = datetime.fromtimestamp(modification_time).strftime('%Y-%m-%d %H:%M:%S')
-            modification_dates.append(modification_date)
-        else:
-            modification_dates.append("jamais lancée")
-    return result, modification_dates
-
-
 def orthocheck_load_dictionary() -> None:
     """call load_words of orthocheck
     """
@@ -221,8 +180,8 @@ def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, st
     error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
     if error_code == 0:
         get_list_specific_word(id_current_game - 1)
-        correct_char: str = data_json[id_current_game - 1]["correct_letters"]  # type: ignore
-        correct_punct: str = data_json[id_current_game - 1]["correct_punctuation"]  # type: ignore
+        correct_char: str = json_man.data_json[id_current_game - 1]["correct_letters"]  # type: ignore
+        correct_punct: str = json_man.data_json[id_current_game - 1]["correct_punctuation"]  # type: ignore
         return orthocheck.process_orthocheck(list_sentences_current_sheet, list_specific_word_current_game,
                                              correct_char, correct_punct)
     else:

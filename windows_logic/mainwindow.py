@@ -9,6 +9,7 @@ from PyQt5.QtGui import QCloseEvent
 from qt_files.Ui_mainwindow import Ui_MainWindow
 from windows_logic.dialog_excluded_words import DialogExcludedWords
 import process
+import json_management as json_man
 
 
 # -------------------------------------------------------------------#
@@ -114,7 +115,7 @@ class MainWindow(QMainWindow):
         """populate comboBox_game
         """
         self.ui.comboBox_game.addItem("-- Choisissez un jeu --")
-        for game in process.data_json:
+        for game in json_man.data_json:
             self.ui.comboBox_game.addItem(game["title"])  # type: ignore
 
     def toggle_ui_enabled_except_combobox_game(self, enabled: bool) -> None:
@@ -191,6 +192,20 @@ class MainWindow(QMainWindow):
         """
         self.ui.tableWidget_1.removeRow(item.row())
 
+    def add_character(self, item: QTableWidgetItem) -> None:
+        """Add the character to the authorized character for this game.
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
+
+    def add_punctuation(self, item: QTableWidgetItem) -> None:
+        """Add the punctuation to the authorized punctuation for this game.
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
+
     def update_table(self, table: QTableWidget, data: list[tuple[int, str]]) -> None:
         table.setRowCount(0)  # Clear existing rows
         table.setRowCount(len(data))  # Set the number of rows
@@ -210,7 +225,7 @@ class MainWindow(QMainWindow):
         """
         results: list[list[tuple[int, str]]]
         date: list[str]
-        results, date = process.load_result_process(file_name)
+        results, date = json_man.load_result_process(process.id_current_game - 1, file_name)
         self.update_table(self.ui.tableWidget_1, results[0])
         self.update_table(self.ui.tableWidget_2, results[1])
         self.update_table(self.ui.tableWidget_3, results[2])
@@ -315,7 +330,7 @@ class MainWindow(QMainWindow):
         """slot for comboBox_game
         """
         self.toggle_ui_enabled_except_combobox_game(bool(index))
-        self.ui.lineEdit_frenchColumn.setText(process.data_json[index - 1]["column_sheet"])  # type: ignore
+        self.ui.lineEdit_frenchColumn.setText(json_man.data_json[index - 1]["column_sheet"])  # type: ignore
         process.set_id_and_word_list(index, [])
 
     def tablewidget_1_contextmenu(self, pos: QPoint) -> None:
@@ -329,16 +344,24 @@ class MainWindow(QMainWindow):
         self.add_to_specific_dictionary_action = QAction("Ajouter aux termes du jeu", self)
         self.add_to_global_dictionary_action = QAction("Ajouter au dictionnaire de la méthode", self)
         self.delete_action = QAction("Faute traitée", self)
+        self.add_character_action = QAction("Ajouter le caractère", self)
+        self.add_punctuation_action = QAction("Ajouter la ponctuation", self)
 
         self.delete_action.setIconVisibleInMenu(False)
         self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
         self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
         self.delete_action.triggered.connect(lambda: self.delete_item(item))
+        self.add_character_action.triggered.connect(lambda: self.add_character(item))
+        self.add_punctuation_action.triggered.connect(lambda: self.add_punctuation(item))
 
-        menu.addAction(self.add_to_specific_dictionary_action)
-        menu.addAction(self.add_to_global_dictionary_action)
-        menu.addSeparator()
-        menu.addAction(self.delete_action)
+        if item.text().endswith(", caractère non autorisé"):
+            menu.addAction(self.add_character_action)
+            menu.addAction(self.add_punctuation_action)
+        else:
+            menu.addAction(self.add_to_specific_dictionary_action)
+            menu.addAction(self.add_to_global_dictionary_action)
+            menu.addSeparator()
+            menu.addAction(self.delete_action)
         menu.exec_(self.ui.tableWidget_1.viewport().mapToGlobal(pos))
 
     def load_dialog_finished(self) -> None:
@@ -388,7 +411,7 @@ class MainWindow(QMainWindow):
         else:
             self.update_table(self.ui.tableWidget_1, result)
 
-            process.save_result_process(self.ui.label_sheetOpened.text(), 1, result)
+            json_man.save_result_process(process.id_current_game - 1, self.ui.label_sheetOpened.text(), 1, result)
 
     def language_tool_process_finished(self, result: list[tuple[int, str]] | int) -> None:
         """slot for signal language_tool_process_finished
@@ -400,7 +423,7 @@ class MainWindow(QMainWindow):
         else:
             self.update_table(self.ui.tableWidget_2, result)
 
-            process.save_result_process(self.ui.label_sheetOpened.text(), 2, result)
+            json_man.save_result_process(process.id_current_game - 1, self.ui.label_sheetOpened.text(), 2, result)
 
     def word_check_process_finished(self, result: list[tuple[int, str]] | int) -> None:
         """slot for signal language_tool_process_finished
@@ -412,7 +435,7 @@ class MainWindow(QMainWindow):
         else:
             self.update_table(self.ui.tableWidget_3, result)
 
-            process.save_result_process(self.ui.label_sheetOpened.text(), 3, result)
+            json_man.save_result_process(process.id_current_game - 1, self.ui.label_sheetOpened.text(), 3, result)
 
     def add_specific_words_finished(self) -> None:
         """slot for signal add_specific_words_finished

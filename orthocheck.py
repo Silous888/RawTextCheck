@@ -59,7 +59,6 @@ def check_string(string: str, correct_char: str, correct_punct: str) -> list[str
     char: str = f.read(1)
     current_word: str = ""
     while True:
-        print()
         if char not in (CHARS + correct_char + correct_punct) and char != "":
             if char not in correct_punct and char != "":
                 output.append(char + ", caractère non autorisé")
