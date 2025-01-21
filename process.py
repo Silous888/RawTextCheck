@@ -221,7 +221,10 @@ def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, st
     error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
     if error_code == 0:
         get_list_specific_word(id_current_game - 1)
-        return orthocheck.process_orthocheck(list_sentences_current_sheet, list_specific_word_current_game)
+        correct_char: str = data_json[id_current_game - 1]["correct_letters"]  # type: ignore
+        correct_punct: str = data_json[id_current_game - 1]["correct_punctuation"]  # type: ignore
+        return orthocheck.process_orthocheck(list_sentences_current_sheet, list_specific_word_current_game,
+                                             correct_char, correct_punct)
     else:
         return error_code
 

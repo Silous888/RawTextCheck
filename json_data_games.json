@@ -5,6 +5,8 @@
         "folder_name": "428 Shibuya Scramble",
         "column_sheet": "C",
         "page_dictionary": 1,
+        "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ",
+        "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'“”",
         "ignored_codes": ["\\n"],
         "ignored_substrings": {
             "{": "}"
@@ -16,6 +18,8 @@
         "folder_name": "AI - The Somnium Files",
         "column_sheet": "C",
         "page_dictionary": 2,
+        "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ ",
+        "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'",
         "ignored_codes": ["\\n"],
         "ignored_substrings": {
             "<": ">"
@@ -27,6 +31,8 @@
         "folder_name": "AI - The Somnium Files - Nirvana Initiative",
         "column_sheet": "D",
         "page_dictionary": 3,
+        "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ ",
+        "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'",
         "ignored_codes": [],
         "ignored_substrings": {
 
@@ -38,6 +44,8 @@
         "folder_name": "PARANOMASIGHT",
         "column_sheet": "E",
         "page_dictionary": 4,
+        "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ ",
+        "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'",
         "ignored_codes": [],
         "ignored_substrings": {
             "[": "]",
@@ -50,6 +58,8 @@
         "folder_name": "The Zodiac Trial",
         "column_sheet": "D",
         "page_dictionary": 5,
+        "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ ",
+        "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'",
         "ignored_codes": ["\\n"],
         "ignored_substrings": {
             "{": "}"
@@ -61,6 +71,8 @@
         "folder_name": "Zero Escape - Nine Hours Nine Persons Nine Doors",
         "column_sheet": "F",
         "page_dictionary": 6,
+        "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ ",
+        "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'",
         "ignored_codes": ["⑳S0.", "⑳n", "⑳h⑲", "⑳f0.", "⑳f1.", "⑳f2.", "　",
                           "⑳N", "▼", "⑳K20.", "⑳K21.", "⑳K22.", "⑳K23.", "⑳K24.",
                           "⑳K25.", "⑳K26.", "⑳K27.", "⑳K28.", "⑳K29.", "⑳C0",
@@ -75,6 +87,8 @@
         "folder_name": "Zero Escape - Virtue's Last Reward",
         "column_sheet": "E",
         "page_dictionary": 7,
+        "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ ",
+        "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'",
         "ignored_codes": [],
         "ignored_substrings": {
             "<": ">"
@@ -86,6 +100,8 @@
         "folder_name": "Zero Escape - Zero Time Dilemma",
         "column_sheet": "E",
         "page_dictionary": 8,
+        "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ ",
+        "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'",
         "ignored_codes": ["\\\\", "\\n"],
         "ignored_substrings": {
 

@@ -45,4 +45,4 @@ ajouter un check de caractères qui passe pas dans le jeu, espace insécable, ma
 quand une méthode est fini d’être exécuté, faut mettre sur le tab des résultats automatiquement
 
 
-threader le démarrage de languagetool
+faire en sorte de threader le worker si plusieurs signaux sont en même temps

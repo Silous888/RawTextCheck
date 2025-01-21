@@ -4,8 +4,6 @@ from io import StringIO
 
 CHARS = (
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "àâäāéèêëēîïôöùûüÿçœæáȧāãčęīłṇñóøōõšṣṭúūžẓ"
-    "ÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇŒÆÁȦĀÃČĘĪŁṆÑÓØŌÓÕŠṢṬÚŽẒ"
 )
 
 dictionary_words: set[str] = set()
@@ -47,7 +45,7 @@ def load_words(folder_dict_name: str) -> None:
             dictionary_words = dictionary_words.union(parse_csv(str(path)))
 
 
-def check_string(string: str) -> list[str]:
+def check_string(string: str, correct_char: str, correct_punct: str) -> list[str]:
     """check if words if the string are in the dictionaries
 
     Args:
@@ -61,7 +59,13 @@ def check_string(string: str) -> list[str]:
     char: str = f.read(1)
     current_word: str = ""
     while True:
-        if char in CHARS and char != "":
+        print()
+        if char not in (CHARS + correct_char + correct_punct) and char != "":
+            if char not in correct_punct and char != "":
+                output.append(char + ", caractère non autorisé")
+            else:
+                output.append(char + ", ponctuation non autorisée")
+        if char in (CHARS + correct_char) and char != "":
             current_word += char
         else:
             if current_word != "":
@@ -83,7 +87,8 @@ def check_string(string: str) -> list[str]:
     return output
 
 
-def process_orthocheck(list_sentences: list[str], list_specific_words: list[str]) -> list[tuple[int, str]]:
+def process_orthocheck(list_sentences: list[str], list_specific_words: list[str],
+                       correct_char: str, correct_punct: str) -> list[tuple[int, str]]:
     """check if words are in dictionary for every strings
 
     Args:
@@ -97,7 +102,7 @@ def process_orthocheck(list_sentences: list[str], list_specific_words: list[str]
     full_dictionary = dictionary_words.union(dictionary_specific)
     output_process: list[tuple[int, str]] = []
     for index, sentence in enumerate(list_sentences):
-        output_ortho: list[str] = check_string(sentence)
+        output_ortho: list[str] = check_string(sentence, correct_char, correct_punct)
         if output_ortho:  # Check if output_ortho is not empty
             for mistake in output_ortho:
                 output_process.append((index, mistake))
