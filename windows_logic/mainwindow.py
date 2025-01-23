@@ -174,7 +174,10 @@ class MainWindow(QMainWindow):
         )
         self.ui.pushButton_uploadSpecificWords.setEnabled(True)
         self.ui.comboBox_game.setEnabled(False)
-        self.ui.comboBox_game.setToolTip("Veuillez uploader les termes avant de changer de jeu")
+        self.ui.pushButton_gameDictionary.setEnabled(False)
+        textToolTip: str = "Veuillez uploader les termes avant de changer de jeu"
+        self.ui.comboBox_game.setToolTip(textToolTip)
+        self.ui.pushButton_gameDictionary.setToolTip(textToolTip)
 
     def add_to_global_dictionary(self, item: QTableWidgetItem) -> None:
         """add to global dictionary of the method
@@ -469,7 +472,9 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_uploadSpecificWords.setEnabled(True)
         self.ui.pushButton_uploadSpecificWords.setText("Pas de termes à uploader")
         self.ui.comboBox_game.setEnabled(True)
+        self.ui.pushButton_gameDictionary.setEnabled(True)
         self.ui.comboBox_game.setToolTip("")
+        self.ui.pushButton_gameDictionary.setToolTip("")
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         if len(process.list_specific_word_to_upload) > 0:
