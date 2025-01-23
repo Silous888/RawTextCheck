@@ -483,4 +483,5 @@ class MainWindow(QMainWindow):
         if self.m_thread.isRunning():
             self.m_thread.quit()
             self.m_thread.wait()
+        self.urlsheet_timer.stop()
         a0.accept()
