@@ -12,7 +12,8 @@
         ],
         "ignored_substrings": {
             "{": "}"
-        }
+        },
+        "ignored_rules_languagetool": []
     },
     {
         "id": 2,
@@ -27,7 +28,8 @@
         ],
         "ignored_substrings": {
             "<": ">"
-        }
+        },
+        "ignored_rules_languagetool": []
     },
     {
         "id": 3,
@@ -38,7 +40,8 @@
         "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ",
         "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'",
         "ignored_codes": [],
-        "ignored_substrings": {}
+        "ignored_substrings": {},
+        "ignored_rules_languagetool": []
     },
     {
         "id": 4,
@@ -52,7 +55,8 @@
         "ignored_substrings": {
             "[": "]",
             "<": ">"
-        }
+        },
+        "ignored_rules_languagetool": []
     },
     {
         "id": 5,
@@ -67,7 +71,8 @@
         ],
         "ignored_substrings": {
             "{": "}"
-        }
+        },
+        "ignored_rules_languagetool": []
     },
     {
         "id": 6,
@@ -105,7 +110,8 @@
             "⑳C5",
             "⑳C6"
         ],
-        "ignored_substrings": {}
+        "ignored_substrings": {},
+        "ignored_rules_languagetool": []
     },
     {
         "id": 7,
@@ -118,7 +124,8 @@
         "ignored_codes": [],
         "ignored_substrings": {
             "<": ">"
-        }
+        },
+        "ignored_rules_languagetool": []
     },
     {
         "id": 8,
@@ -132,6 +139,7 @@
             "\\\\",
             "\\n"
         ],
-        "ignored_substrings": {}
+        "ignored_substrings": {},
+        "ignored_rules_languagetool": []
     }
 ]
