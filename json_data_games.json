@@ -49,8 +49,8 @@
         "folder_name": "PARANOMASIGHT",
         "column_sheet": "E",
         "page_dictionary": 4,
-        "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ",
-        "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'",
+        "correct_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒō",
+        "correct_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'★",
         "ignored_codes": [],
         "ignored_substrings": {
             "[": "]",

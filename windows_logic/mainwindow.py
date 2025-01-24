@@ -549,6 +549,7 @@ class MainWindow(QMainWindow):
             json_man.save_result_process_one_str(process.id_current_game - 1,
                                                  self.ui.label_sheetOpened.text(), 1, result)
             self.ui.label_lastUdate_1.setText(process.get_current_date())
+            self.ui.tabWidget_result.setCurrentIndex(0)
 
     def language_tool_process_finished(self, result: list[tuple[int, str, str]] | int) -> None:
         """slot for signal language_tool_process_finished
@@ -564,6 +565,7 @@ class MainWindow(QMainWindow):
             json_man.save_result_process_two_str(process.id_current_game - 1,
                                                  self.ui.label_sheetOpened.text(), 2, result)
             self.ui.label_lastUdate_2.setText(process.get_current_date())
+            self.ui.tabWidget_result.setCurrentIndex(1)
 
     def word_check_process_finished(self, result: list[tuple[int, str]] | int) -> None:
         """slot for signal language_tool_process_finished
@@ -578,6 +580,7 @@ class MainWindow(QMainWindow):
             json_man.save_result_process_one_str(process.id_current_game - 1,
                                                  self.ui.label_sheetOpened.text(), 3, result)
             self.ui.label_lastUdate_3.setText(process.get_current_date())
+            self.ui.tabWidget_result.setCurrentIndex(2)
 
     def add_specific_words_finished(self) -> None:
         """slot for signal add_specific_words_finished
