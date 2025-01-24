@@ -25,7 +25,7 @@ list_specific_word_to_upload: list[str] = []
 
 list_ignored_languagetool_rules_current_game: list[str] = []
 
-list_languagetool_current_file_rules: list[str] = []
+list_ignored_languagetool_rules_current_file: list[str] = []
 
 
 def get_current_date() -> str:
@@ -54,6 +54,44 @@ def get_list_specific_word(sheet_index: int) -> int:
         return output
     set_id_and_word_list(sheet_index + 1, [item for sublist in output for item in sublist])
     return 0
+
+
+def get_list_ignored_languagetool_rules() -> None:
+    """get the list of ignored rules of a game in the sheet
+
+    Returns:
+        int : 0 if no problem, error code otherwise
+    """
+    global list_ignored_languagetool_rules_current_game
+    list_ignored_languagetool_rules_current_game = json_man.data_json[
+        id_current_game - 1]["ignored_rules_languagetool"]  # type: ignore
+
+
+def get_index_item_with_rule(rule: str) -> list[int]:
+    """get the index of the item with a specific rule in the list of ignored rules
+
+    Args:
+        rule (str): rule to find
+
+    Returns:
+        list[int] : list of index of the item with the rule
+    """
+    return [i for i, x in enumerate(list_ignored_languagetool_rules_current_file) if x == rule]
+
+
+def remove_rule_current_file(rule: str) -> None:
+    """get the index of the item with a specific rule in the list of ignored rules
+
+    Args:
+        rule (str): rule to find
+
+    Returns:
+        list[int] : list of index of the item with the rule
+    """
+    global list_ignored_languagetool_rules_current_file
+    list_ignored_languagetool_rules_current_file = [
+        x for x in list_ignored_languagetool_rules_current_file if x != rule
+    ]
 
 
 def get_list_sentence_sheet(url_sheet: str, column_letter: str,

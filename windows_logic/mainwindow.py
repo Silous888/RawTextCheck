@@ -176,6 +176,9 @@ class MainWindow(QMainWindow):
         textToolTip: str = "Veuillez uploader les termes avant de changer de jeu"
         self.ui.comboBox_game.setToolTip(textToolTip)
         self.ui.pushButton_gameDictionary.setToolTip(textToolTip)
+        json_man.save_result_process_one_str(process.id_current_game - 1,
+                                             self.ui.label_sheetOpened.text(), 1,
+                                             self.get_table_data(self.ui.tableWidget_1))
 
     def add_to_global_dictionary(self, item: QTableWidgetItem) -> None:
         """add to global dictionary of the method
@@ -185,6 +188,9 @@ class MainWindow(QMainWindow):
         """
         process.orthocheck_add_word_to_csv(item.text())
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
+        json_man.save_result_process_one_str(process.id_current_game - 1,
+                                             self.ui.label_sheetOpened.text(), 1,
+                                             self.get_table_data(self.ui.tableWidget_1))
 
     def add_to_ignored_rules(self, item: QTableWidgetItem) -> None:
         """add to ignored rules of the game
@@ -192,8 +198,30 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        json_man.add_ignored_rules(process.id_current_game - 1,
-                                   process.list_languagetool_current_file_rules[item.row()])
+        rule: str = process.list_ignored_languagetool_rules_current_file[item.row()]
+        json_man.add_ignored_rules(process.id_current_game - 1, rule)
+        process.get_list_ignored_languagetool_rules()
+        self.remove_rows_by_index(self.ui.tableWidget_2, process.get_index_item_with_rule(rule))
+        process.remove_rule_current_file(rule)
+        data: list[tuple[int, str]] = self.get_table_data(self.ui.tableWidget_2)
+        data_with_rules: list[tuple[int, str, str]] = [
+            (row[0], row[1], process.list_ignored_languagetool_rules_current_file[x])
+            for x, row in enumerate(data)
+        ]
+        json_man.save_result_process_two_str(process.id_current_game - 1,
+                                             self.ui.label_sheetOpened.text(), 2,
+                                             data_with_rules)
+
+    def remove_rows_by_index(self, table: QTableWidget, rows: list[int]) -> None:
+        """Remove rows from the table by their index.
+
+        Args:
+            table (QTableWidget): table to remove rows from
+            rows (list[int]): list of row indices to remove
+        """
+        # Delete rows in reverse order to avoid messing up the row indices
+        for row in reversed(rows):
+            table.removeRow(row)
 
     def remove_rows_table_by_text(self, table: QTableWidget, text: str) -> None:
         rows_to_delete: list[int] = []
@@ -212,6 +240,9 @@ class MainWindow(QMainWindow):
             item (QTableWidgetItem): item from the table
         """
         self.ui.tableWidget_1.removeRow(item.row())
+        json_man.save_result_process_one_str(process.id_current_game - 1,
+                                             self.ui.label_sheetOpened.text(), 1,
+                                             self.get_table_data(self.ui.tableWidget_1))
 
     def delete_languagetool_item(self, item: QTableWidgetItem) -> None:
         """Delete the selected item from the table.
@@ -219,6 +250,16 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
+        process.list_ignored_languagetool_rules_current_file.pop(item.row())
+        self.ui.tableWidget_2.removeRow(item.row())
+        data: list[tuple[int, str]] = self.get_table_data(self.ui.tableWidget_2)
+        data_with_rules: list[tuple[int, str, str]] = [
+            (row[0], row[1], process.list_ignored_languagetool_rules_current_file[x])
+            for x, row in enumerate(data)
+        ]
+        json_man.save_result_process_two_str(process.id_current_game - 1,
+                                             self.ui.label_sheetOpened.text(), 2,
+                                             data_with_rules)
 
     def add_character(self, item: QTableWidgetItem) -> None:
         """Add the character to the authorized character for this game.
@@ -276,7 +317,25 @@ class MainWindow(QMainWindow):
         self.ui.label_lastUdate_3.setText(date[2])
 
         # languageTool
-        process.list_languagetool_current_file_rules = [row[2] for row in results[1]]
+        process.list_ignored_languagetool_rules_current_file = [row[2] for row in results[1]]
+
+    def get_table_data(self, table: QTableWidget) -> list[tuple[int, str]]:
+        """Get all data from the table in the same format as result.
+
+        Args:
+            table (QTableWidget): The table to get data from.
+
+        Returns:
+            List[Union[Tuple[int, str], Tuple[int, str, str]]]: The data from the table.
+        """
+        data: list[Any] = []
+        for row in range(table.rowCount()):
+            row_data: list[Any] = []
+            for col in range(table.columnCount()):
+                item: QTableWidgetItem = table.item(row, col)
+                row_data.append(item.text())
+            data.append(tuple(row_data))
+        return data
 
     def set_up_connect(self) -> None:
         """connect slots and signals
@@ -385,6 +444,7 @@ class MainWindow(QMainWindow):
         self.toggle_ui_enabled_except_combobox_game(bool(index))
         self.ui.lineEdit_frenchColumn.setText(json_man.data_json[index - 1]["column_sheet"])  # type: ignore
         process.set_id_and_word_list(index, [])
+        process.get_list_ignored_languagetool_rules()
         if len(self.ui.lineEdit_urlSheet.text()) > 0:
             self.urlsheet_timer.start()
 
@@ -426,7 +486,7 @@ class MainWindow(QMainWindow):
             return
         menu = QMenu(self)
 
-        rule_text: str = process.list_languagetool_current_file_rules[item.row()]
+        rule_text: str = process.list_ignored_languagetool_rules_current_file[item.row()]
         self.add_to_ignored_rules_action = QAction("ignorer " + rule_text + " pour ce jeu", self)
         self.delete_languagetool_item_action = QAction("Faute traitée", self)
 
@@ -499,7 +559,7 @@ class MainWindow(QMainWindow):
             pass
         else:
             self.update_table(self.ui.tableWidget_2, [(row[0], row[1]) for row in result])
-            process.list_languagetool_current_file_rules = [row[2] for row in result]
+            process.list_ignored_languagetool_rules_current_file = [row[2] for row in result]
 
             json_man.save_result_process_two_str(process.id_current_game - 1,
                                                  self.ui.label_sheetOpened.text(), 2, result)
