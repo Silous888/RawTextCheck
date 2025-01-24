@@ -186,6 +186,15 @@ class MainWindow(QMainWindow):
         process.orthocheck_add_word_to_csv(item.text())
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
 
+    def add_to_ignored_rules(self, item: QTableWidgetItem) -> None:
+        """add to ignored rules of the game
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
+        json_man.add_ignored_rules(process.id_current_game - 1,
+                                   process.list_languagetool_current_file_rules[item.row()])
+
     def remove_rows_table_by_text(self, table: QTableWidget, text: str) -> None:
         rows_to_delete: list[int] = []
         for row in range(table.rowCount()):
@@ -203,6 +212,13 @@ class MainWindow(QMainWindow):
             item (QTableWidgetItem): item from the table
         """
         self.ui.tableWidget_1.removeRow(item.row())
+
+    def delete_languagetool_item(self, item: QTableWidgetItem) -> None:
+        """Delete the selected item from the table.
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
 
     def add_character(self, item: QTableWidgetItem) -> None:
         """Add the character to the authorized character for this game.
@@ -279,6 +295,7 @@ class MainWindow(QMainWindow):
         self.ui.comboBox_game.currentIndexChanged.connect(self.combobox_game_currentindexchanged)
         # tab
         self.ui.tableWidget_1.customContextMenuRequested.connect(self.tablewidget_1_contextmenu)
+        self.ui.tableWidget_2.customContextMenuRequested.connect(self.tablewidget_2_contextmenu)
         # thread start
         self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
         self.m_worker.signal_get_name_sheet_start.connect(self.m_worker.get_name_sheet_thread)
@@ -385,7 +402,6 @@ class MainWindow(QMainWindow):
         self.add_character_action = QAction("Ajouter le caractère", self)
         self.add_punctuation_action = QAction("Ajouter la ponctuation", self)
 
-        self.delete_action.setIconVisibleInMenu(False)
         self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
         self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
         self.delete_action.triggered.connect(lambda: self.delete_item(item))
@@ -401,6 +417,27 @@ class MainWindow(QMainWindow):
             menu.addSeparator()
             menu.addAction(self.delete_action)
         menu.exec_(self.ui.tableWidget_1.viewport().mapToGlobal(pos))
+
+    def tablewidget_2_contextmenu(self, pos: QPoint) -> None:
+        """slot for tableWidget_excludedWords
+        """
+        item: QTableWidgetItem = self.ui.tableWidget_2.itemAt(pos)
+        if item is None:  # type: ignore
+            return
+        menu = QMenu(self)
+
+        rule_text: str = process.list_languagetool_current_file_rules[item.row()]
+        self.add_to_ignored_rules_action = QAction("ignorer " + rule_text + " pour ce jeu", self)
+        self.delete_languagetool_item_action = QAction("Faute traitée", self)
+
+        self.add_to_ignored_rules_action.triggered.connect(lambda: self.add_to_ignored_rules(item))
+        self.delete_languagetool_item_action.triggered.connect(lambda: self.delete_languagetool_item(item))
+
+        menu.addAction(self.add_to_ignored_rules_action)
+        menu.addSeparator()
+        menu.addAction(self.delete_languagetool_item_action)
+
+        menu.exec_(self.ui.tableWidget_2.viewport().mapToGlobal(pos))
 
     def load_dialog_finished(self) -> None:
         """slot for signal load_dialog_finished

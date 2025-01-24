@@ -49,6 +49,20 @@ def add_correct_punctuation(id_game: int, new_letter: str) -> None:
         json.dump(data_json, file, ensure_ascii=False, indent=4)
 
 
+def add_ignored_rules(id_game: int, rule: str) -> None:
+    """add a punctuation in the json to correct_letters of the current game
+
+    Args:
+        new_letter (str): punctuation to add
+        json_file_path (str): path of the json file
+    """
+    if rule not in data_json[id_game]['ignored_rules_languagetool']:  # type: ignore
+        data_json[id_game]['ignored_rules_languagetool'].append(rule)  # type: ignore
+
+    with open(JSON_FILE_PATH, 'w', encoding='utf-8') as file:
+        json.dump(data_json, file, ensure_ascii=False, indent=4)
+
+
 def save_result_process_one_str(id_game: int, name_file: str, method: int, data: list[tuple[int, str]]) -> None:
     folder_name: str = data_json[id_game]["folder_name"]  # type: ignore
     path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[method - 1])

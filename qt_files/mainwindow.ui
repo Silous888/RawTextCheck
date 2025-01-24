@@ -271,7 +271,7 @@
               <string>Teste les caractères autorisés dans le jeu et si les mots existent. Rapide. Utilisez ça d'abord pour virer les termes spéciaux du jeu.</string>
              </property>
              <property name="text">
-              <string>mise à jour &quot;dictionnaire&quot;</string>
+              <string>Mise à jour &quot;dictionnaire&quot;</string>
              </property>
             </widget>
             <widget class="QPushButton" name="pushButton_method_3">
@@ -284,7 +284,7 @@
               </rect>
              </property>
              <property name="text">
-              <string>mise à jour &quot;MS Word&quot;</string>
+              <string>Mise à jour &quot;MS Word&quot;</string>
              </property>
             </widget>
             <widget class="QPushButton" name="pushButton_method_2">
@@ -449,6 +449,9 @@
              <widget class="QTableWidget" name="tableWidget_2">
               <property name="contextMenuPolicy">
                <enum>Qt::CustomContextMenu</enum>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
               </property>
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>
