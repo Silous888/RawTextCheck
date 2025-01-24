@@ -23,6 +23,10 @@ list_sentences_current_sheet: list[str] = []
 
 list_specific_word_to_upload: list[str] = []
 
+list_ignored_languagetool_rules_current_game: list[str] = []
+
+list_languagetool_current_file_rules: list[str] = []
+
 
 def get_current_date() -> str:
     return datetime.now().strftime('%Y-%m-%d %H:%M')
@@ -212,7 +216,7 @@ def orthocheck_add_word_to_csv(word: str) -> None:
         file.write(f"{word}\n")
 
 
-def language_tool_process(url_sheet: str, column_letter: str) -> list[tuple[int, str]] | int:
+def language_tool_process(url_sheet: str, column_letter: str) -> list[tuple[int, str, str]] | int:
     """get the list of specific words of a game in the sheet
     and call language_tool_on_text of languageTool and return result
 
@@ -225,7 +229,8 @@ def language_tool_process(url_sheet: str, column_letter: str) -> list[tuple[int,
     error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
     if error_code == 0:
         get_list_specific_word(id_current_game - 1)
-        return languagetool.language_tool_on_text(list_sentences_current_sheet, list_specific_word_current_game)
+        return languagetool.language_tool_on_text(list_sentences_current_sheet, list_specific_word_current_game,
+                                                  list_ignored_languagetool_rules_current_game)
     else:
         return error_code
 

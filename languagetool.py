@@ -29,17 +29,23 @@ def language_tool_on_text(texts: list[str], specific_words: list[str],
 
     combined_text: str = "\n".join(texts)
 
+    output: list[tuple[int, str, str]] = []
+
+    if tool is None:
+        return output
     matches: list[language_tool_python.Match] = tool.check(combined_text)
 
-    output: list[tuple[int, str]] = []
     line_offsets: list[int] = [0]
     for text in texts:
         line_offsets.append(line_offsets[-1] + len(text) + 1)
 
     for match in matches:
-        if match.matchedText in specific_words:
+        if str(match.matchedText) in specific_words or str(match.ruleId) in rules_ignored:  # type: ignore
             continue
-        line_number: int = next(i for i, offset in enumerate(line_offsets) if offset > int(match.offset)) - 1
-        output.append((line_number, str(match.matchedText) + ", " + str(match.message)))
-
+        line_number: int = next(
+            i for i, offset in enumerate(line_offsets) if offset > int(match.offset)  # type: ignore
+        ) - 1
+        output.append((line_number + 1,
+                       str(match.matchedText) + ", " + str(match.message),  # type: ignore
+                       str(match.ruleId)))
     return output

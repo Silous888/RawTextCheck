@@ -1,5 +1,6 @@
 """functions of the UI"""
 
+from typing import Union, Sequence, Any
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem, QMenu, QAction, QTableWidget
 from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, QTimer, QPoint
@@ -60,7 +61,7 @@ class _WorkerMainWindow(QObject):
         self.signal_orthocheck_process_finished.emit(output)
 
     def language_tool_process_thread(self, url: str, column_letter: str) -> None:
-        output: list[tuple[int, str]] | int = process.language_tool_process(url, column_letter)
+        output: list[tuple[int, str, str]] | int = process.language_tool_process(url, column_letter)
         self.signal_language_tool_process_finished.emit(output)
 
     def word_check_process_thread(self, url: str, column_letter: str) -> None:
@@ -117,9 +118,6 @@ class MainWindow(QMainWindow):
 
         self.ui.tabWidget_result
 
-        self.m_worker.signal_orthocheck_load_dictionary_start.emit()
-        self.m_worker.signal_languagetool_initialize_start.emit()
-
     def populate_combobox_game(self) -> None:
         """populate comboBox_game
         """
@@ -145,9 +143,9 @@ class MainWindow(QMainWindow):
         Args:
             enabled (bool): enabled state
         """
-        if not enabled or (self.is_orthocheck_available and self.is_url_correct):
+        if not enabled or self.is_url_correct:
             self.ui.pushButton_method_1.setEnabled(enabled)
-        if not enabled or (self.is_languagetool_available and self.is_url_correct):
+        if not enabled or self.is_url_correct:
             self.ui.pushButton_method_2.setEnabled(enabled)
         if not enabled or self.is_url_correct:
             self.ui.pushButton_method_3.setEnabled(enabled)
@@ -226,15 +224,22 @@ class MainWindow(QMainWindow):
         json_man.load_json()
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
 
-    def update_table(self, table: QTableWidget, data: list[tuple[int, str]]) -> None:
-        table.setRowCount(0)  # Clear existing rows
-        table.setRowCount(len(data))  # Set the number of rows
+    def update_table(
+        self, table: QTableWidget, data: Sequence[Union[tuple[int, str], tuple[int, str, str]]]
+    ) -> None:
+        table.setRowCount(0)
+        table.setRowCount(len(data))
 
-        for row_index, (index, word) in enumerate(data):
-            item_index = QTableWidgetItem(str(index + 1))
-            item_word = QTableWidgetItem(word)
-            table.setItem(row_index, 0, item_index)
-            table.setItem(row_index, 1, item_word)
+        if not data:
+            return
+
+        num_columns: int = len(data[0])
+        table.setColumnCount(num_columns)
+
+        for row_index, row_data in enumerate(data):
+            for col_index, value in enumerate(row_data):
+                item = QTableWidgetItem(str(value))
+                table.setItem(row_index, col_index, item)
 
     def load_last_results(self, file_name: str) -> None:
         """load every tables with last check data, and show
@@ -243,16 +248,19 @@ class MainWindow(QMainWindow):
         Args:
             file_name (str): name of the file
         """
-        results: list[list[tuple[int, str]]]
+        results: list[list[Any]]
         date: list[str]
         results, date = json_man.load_result_process(process.id_current_game - 1, file_name)
-        self.update_table(self.ui.tableWidget_1, results[0])
-        self.update_table(self.ui.tableWidget_2, results[1])
-        self.update_table(self.ui.tableWidget_3, results[2])
+        self.update_table(self.ui.tableWidget_1, [(row[0], row[1]) for row in results[0]])
+        self.update_table(self.ui.tableWidget_2, [(row[0], row[1]) for row in results[1]])
+        self.update_table(self.ui.tableWidget_3, [(row[0], row[1]) for row in results[2]])
 
         self.ui.label_lastUdate_1.setText(date[0])
         self.ui.label_lastUdate_2.setText(date[1])
         self.ui.label_lastUdate_3.setText(date[2])
+
+        # languageTool
+        process.list_languagetool_current_file_rules = [row[2] for row in results[1]]
 
     def set_up_connect(self) -> None:
         """connect slots and signals
@@ -302,6 +310,8 @@ class MainWindow(QMainWindow):
         """slot for pushButton_method_1
         """
         self.ui.pushButton_method_1.setEnabled(False)
+        if not self.is_orthocheck_available:
+            self.m_worker.signal_orthocheck_load_dictionary_start.emit()
         self.m_worker.signal_orthocheck_process_start.emit(self.ui.lineEdit_urlSheet.text(),
                                                            self.ui.lineEdit_frenchColumn.text())
 
@@ -309,6 +319,8 @@ class MainWindow(QMainWindow):
         """slot for pushButton_method_2
         """
         self.ui.pushButton_method_2.setEnabled(False)
+        if not self.is_languagetool_available:
+            self.m_worker.signal_languagetool_initialize_start.emit()
         self.m_worker.signal_language_tool_process_start.emit(self.ui.lineEdit_urlSheet.text(),
                                                               self.ui.lineEdit_frenchColumn.text())
 
@@ -419,13 +431,13 @@ class MainWindow(QMainWindow):
         """slot for signal orthocheck_load_dictionary_finished
         """
         self.is_orthocheck_available = True
-        self.ui.pushButton_method_1.setEnabled(bool(self.ui.comboBox_game.currentIndex() and self.is_url_correct))
+        # self.ui.pushButton_method_1.setEnabled(bool(self.ui.comboBox_game.currentIndex() and self.is_url_correct))
 
     def languagetool_initialize_finished(self) -> None:
         """slot for signal languagetool_initialize_finished
         """
         self.is_languagetool_available = True
-        self.ui.pushButton_method_2.setEnabled(bool(self.ui.comboBox_game.currentIndex() and self.is_url_correct))
+        # self.ui.pushButton_method_2.setEnabled(bool(self.ui.comboBox_game.currentIndex() and self.is_url_correct))
 
     def orthocheck_process_finished(self, result: list[tuple[int, str]] | int) -> None:
         """slot for signal orthocheck_process_finished
@@ -437,10 +449,11 @@ class MainWindow(QMainWindow):
         else:
             self.update_table(self.ui.tableWidget_1, result)
 
-            json_man.save_result_process(process.id_current_game - 1, self.ui.label_sheetOpened.text(), 1, result)
+            json_man.save_result_process_one_str(process.id_current_game - 1,
+                                                 self.ui.label_sheetOpened.text(), 1, result)
             self.ui.label_lastUdate_1.setText(process.get_current_date())
 
-    def language_tool_process_finished(self, result: list[tuple[int, str]] | int) -> None:
+    def language_tool_process_finished(self, result: list[tuple[int, str, str]] | int) -> None:
         """slot for signal language_tool_process_finished
         """
         self.ui.pushButton_method_2.setEnabled(True)
@@ -448,9 +461,11 @@ class MainWindow(QMainWindow):
             # TODO
             pass
         else:
-            self.update_table(self.ui.tableWidget_2, result)
+            self.update_table(self.ui.tableWidget_2, [(row[0], row[1]) for row in result])
+            process.list_languagetool_current_file_rules = [row[2] for row in result]
 
-            json_man.save_result_process(process.id_current_game - 1, self.ui.label_sheetOpened.text(), 2, result)
+            json_man.save_result_process_two_str(process.id_current_game - 1,
+                                                 self.ui.label_sheetOpened.text(), 2, result)
             self.ui.label_lastUdate_2.setText(process.get_current_date())
 
     def word_check_process_finished(self, result: list[tuple[int, str]] | int) -> None:
@@ -463,7 +478,8 @@ class MainWindow(QMainWindow):
         else:
             self.update_table(self.ui.tableWidget_3, result)
 
-            json_man.save_result_process(process.id_current_game - 1, self.ui.label_sheetOpened.text(), 3, result)
+            json_man.save_result_process_one_str(process.id_current_game - 1,
+                                                 self.ui.label_sheetOpened.text(), 3, result)
             self.ui.label_lastUdate_3.setText(process.get_current_date())
 
     def add_specific_words_finished(self) -> None:
@@ -485,5 +501,4 @@ class MainWindow(QMainWindow):
         if self.m_thread.isRunning():
             self.m_thread.quit()
             self.m_thread.wait()
-        self.urlsheet_timer.stop()
         a0.accept()

@@ -49,7 +49,7 @@ def add_correct_punctuation(id_game: int, new_letter: str) -> None:
         json.dump(data_json, file, ensure_ascii=False, indent=4)
 
 
-def save_result_process(id_game: int, name_file: str, method: int, data: list[tuple[int, str]]) -> None:
+def save_result_process_one_str(id_game: int, name_file: str, method: int, data: list[tuple[int, str]]) -> None:
     folder_name: str = data_json[id_game]["folder_name"]  # type: ignore
     path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[method - 1])
     os.makedirs(path, exist_ok=True)
@@ -58,8 +58,17 @@ def save_result_process(id_game: int, name_file: str, method: int, data: list[tu
         json.dump(data, file, ensure_ascii=False)
 
 
-def load_result_process(id_game: int, name_file: str) -> tuple[list[list[tuple[int, str]]], list[str]]:
-    result: list[list[tuple[int, str]]] = [[], [], []]
+def save_result_process_two_str(id_game: int, name_file: str, method: int, data: list[tuple[int, str, str]]) -> None:
+    folder_name: str = data_json[id_game]["folder_name"]  # type: ignore
+    path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[method - 1])
+    os.makedirs(path, exist_ok=True)
+
+    with open(os.path.join(path, name_file + ".json"), "w", encoding="utf-8") as file:
+        json.dump(data, file, ensure_ascii=False)
+
+
+def load_result_process(id_game: int, name_file: str) -> tuple[list[list[Any]], list[str]]:
+    result: list[list[Any]] = [[], [], []]
     modification_dates: list[str] = []
     folder_name: str = data_json[id_game]["folder_name"]  # type: ignore
     for i in range(len(LIST_METHOD_FOLDER_NAME)):
