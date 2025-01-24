@@ -1,4 +1,4 @@
-import language_tool_python
+import language_tool_python  # type: ignore
 # java needed for that
 
 
@@ -15,7 +15,18 @@ def initialize_tool(language: str = 'fr') -> None:
     tool = language_tool_python.LanguageTool(language)
 
 
-def language_tool_on_text(texts: list[str], specific_words: list[str]) -> list[tuple[int, str]]:
+def close_tool() -> None:
+    """Close the global LanguageTool.
+    """
+    global tool
+    if tool is not None:
+        tool.close()
+        tool = None
+
+
+def language_tool_on_text(texts: list[str], specific_words: list[str],
+                          rules_ignored: list[str]) -> list[tuple[int, str, str]]:
+
     combined_text: str = "\n".join(texts)
 
     matches: list[language_tool_python.Match] = tool.check(combined_text)

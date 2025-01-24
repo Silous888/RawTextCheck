@@ -173,6 +173,12 @@ def language_tool_initialize() -> None:
     languagetool.initialize_tool()
 
 
+def language_tool_close() -> None:
+    """call close_tool of languagetool
+    """
+    languagetool.close_tool()
+
+
 def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, str]] | int:
     """get the list of specific words of a game in the sheet
     and call process_orthocheck of orthocheck and return result

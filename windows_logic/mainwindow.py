@@ -477,9 +477,11 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_gameDictionary.setToolTip("")
 
     def closeEvent(self, a0: QCloseEvent) -> None:
+        process.language_tool_close()
         if len(process.list_specific_word_to_upload) > 0:
             self.exit_widget = ConfirmExit()
             self.exit_widget.exec()
+        self.urlsheet_timer.stop()
         if self.m_thread.isRunning():
             self.m_thread.quit()
             self.m_thread.wait()
