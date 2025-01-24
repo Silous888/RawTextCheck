@@ -1,3 +1,4 @@
+"""start file of the application"""
 # -------------------- Import Lib Standard -------------------
 import sys
 
@@ -5,12 +6,17 @@ import sys
 from PyQt5.QtWidgets import QApplication
 
 # -------------------- Import Lib User -------------------
-from mainwindow import MainWindow
+from windows_logic.mainwindow import MainWindow
+import json_management
 
 # pyinstaller --onefile --noconsole --name FautesCheck --icon=./ressource/DreamteamLogo.ico main.py
 
 # -------------------- Main code -------------------
 if __name__ == "__main__":
+    # load data
+    json_management.load_json()
+
+    # create qt application
     app = QApplication(sys.argv)
     program = MainWindow()
     program.show()
