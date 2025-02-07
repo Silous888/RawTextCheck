@@ -468,7 +468,7 @@ class MainWindow(QMainWindow):
         self.add_character_action.triggered.connect(lambda: self.add_character(item))
         self.add_punctuation_action.triggered.connect(lambda: self.add_punctuation(item))
 
-        if item.text().endswith(", caractère non autorisé"):
+        if item.text().endswith("non autorisé") or item.text().endswith("non autorisée"):
             menu.addAction(self.add_character_action)
             menu.addAction(self.add_punctuation_action)
         else:

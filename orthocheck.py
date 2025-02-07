@@ -61,9 +61,9 @@ def check_string(string: str, correct_char: str, correct_punct: str) -> list[str
     while True:
         if char not in (CHARS + correct_char + correct_punct) and char != "":
             if char not in correct_punct and char != "":
-                output.append(char + ", caractère non autorisé")
+                output.append(char + " => caractère non autorisé")
             else:
-                output.append(char + ", ponctuation non autorisée")
+                output.append(char + " => ponctuation non autorisée")
         if char in (CHARS + correct_char) and char != "":
             current_word += char
         else:
@@ -104,5 +104,5 @@ def process_orthocheck(list_sentences: list[str], list_specific_words: list[str]
         output_ortho: list[str] = check_string(sentence, correct_char, correct_punct)
         if output_ortho:  # Check if output_ortho is not empty
             for mistake in output_ortho:
-                output_process.append((index, mistake))
+                output_process.append((index + 1, mistake))
     return output_process
