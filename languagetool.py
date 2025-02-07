@@ -46,6 +46,6 @@ def language_tool_on_text(texts: list[str], specific_words: list[str],
             i for i, offset in enumerate(line_offsets) if offset > int(match.offset)  # type: ignore
         ) - 1
         output.append((line_number + 1,
-                       str(match.matchedText) + ", " + str(match.message),  # type: ignore
+                       str(match.matchedText) + " => " + str(match.message),  # type: ignore
                        str(match.ruleId)))
     return output
