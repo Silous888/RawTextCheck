@@ -152,13 +152,18 @@ def add_list_specific_word() -> None:
     list_specific_word_to_upload.clear()
 
 
-def get_name_sheet(sheet_url: str) -> str | int:
-    """call get_name_by_id of google_drive_api
+def get_name_and_type_of_url(url: str) -> tuple[str, str] | int:
+    """call get_file_metadata of google_drive_api and return name and mimeType of the file
+    Args:
+        url (str): url of the file
+
+    Returns:
+        tuple[str, str] | int : name and mimeType of the file, error code otherwise
     """
     try:
-        output: str | int = gdrive.get_name_by_id(utils.extract_google_drive_id(sheet_url))
-        if isinstance(output, str):
-            return output
+        output: dict[str, str] | int = gdrive.get_file_metadata(utils.extract_google_drive_id(url))
+        if not isinstance(output, int):
+            return output["name"], output["mimeType"]
     except Exception:
         return -1
     return -2

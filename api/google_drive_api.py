@@ -239,6 +239,30 @@ def get_name_by_id(file_id: str) -> (str | int):
             return -2
 
 
+def get_file_metadata(file_id: str) -> (dict[str, str] | int):
+    """get the metadata of a file or folder
+
+    Args:
+        file_id (str): id of the element
+
+    Returns:
+        (dict | int): metadata of the element. Error code otherwise.
+
+    error code:
+    -1 if no credentials file found
+    -2 if credentials not correct
+    -3 if no file with this ID
+    """
+    ret: int = __init()
+    if ret != 0:
+        return ret
+    try:
+        file = _drive_service.files().get(fileId=file_id).execute()
+        return file
+    except Exception:
+        return -3
+
+
 def download_file(file_id: str, local_folder=".\\") -> int:
     """download a file from google drive, by id.
     Can download every binary file (so png, txt, bin, ...).
