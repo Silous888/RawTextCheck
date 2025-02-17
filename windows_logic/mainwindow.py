@@ -45,7 +45,7 @@ class _WorkerMainWindow(QObject):
         self.signal_load_word_excluded_finished.emit()
 
     def get_name_sheet_thread(self, url: str) -> None:
-        result: str | int = process.get_name_sheet(url)
+        result: tuple[str, str] | int = process.get_name_and_type_of_url(url)
         self.signal_get_name_sheet_finished.emit(result)
 
     def orthocheck_load_dictionary_thread(self) -> None:
@@ -430,7 +430,7 @@ class MainWindow(QMainWindow):
             self.toggle_ui_enabled_tabWidget_result(False)
 
     def check_urlsheet_access(self) -> None:
-        """Vérifier l'accès à l'élément après un délai"""
+        """test after some time if url can be accessed"""
         text: str = self.ui.lineEdit_urlSheet.text()
         self.m_worker.signal_get_name_sheet_start.emit(text)
 
@@ -508,16 +508,17 @@ class MainWindow(QMainWindow):
         self.dialog_dict.exec()
         self.ui.pushButton_gameDictionary.setEnabled(True)
 
-    def get_name_sheet_finished(self, result: str | int) -> None:
+    def get_name_sheet_finished(self, result: tuple[str, str] | int) -> None:
         """slot for signal get_name_sheet_finished
         """
-        self.is_url_correct = isinstance(result, str)
-        if self.is_url_correct:
+        self.is_url_correct = isinstance(result, tuple)
+        if isinstance(result, tuple):
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(0, 200, 0);")
             self.toggle_ui_enabled_buttons_methods(True)
             self.toggle_ui_enabled_tabWidget_result(True)
-            self.ui.label_sheetOpened.setText(str(result))
-            self.load_last_results(str(result))
+            self.ui.label_sheetOpened.setText(str(result[0]))
+            if result[1].endswith("spreadsheet"):
+                self.load_last_results(str(result[0]))
         else:
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(200, 0, 0);")
             self.toggle_ui_enabled_buttons_methods(False)
