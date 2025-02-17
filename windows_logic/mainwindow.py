@@ -459,8 +459,8 @@ class MainWindow(QMainWindow):
         self.add_to_specific_dictionary_action = QAction("Ajouter aux termes du jeu", self)
         self.add_to_global_dictionary_action = QAction("Ajouter au dictionnaire de la méthode", self)
         self.delete_action = QAction("Faute traitée", self)
-        self.add_character_action = QAction("Ajouter le caractère", self)
-        self.add_punctuation_action = QAction("Ajouter la ponctuation", self)
+        self.add_character_action = QAction("Ajouter en tant que lettre autorisée", self)
+        self.add_punctuation_action = QAction("Ajouter en tant que ponctuation autorisée", self)
 
         self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
         self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
