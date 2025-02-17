@@ -180,6 +180,50 @@ def list_files_in_folder(folder_id: str) -> (list[str] | int):
     except Exception:
         return -3
 
+def list_spreadsheet_in_folder(folder_id: str) -> (list[str] | int):
+    """give the list of every element the gmail adress has access in a specific folder
+
+    Args:
+        folder_id (str): ID of the folder to list files from.
+
+    Returns:
+        (list(list(str,3)) | int): list with for each element, 0: name, 1: id, 2: type. Error code otherwise
+
+
+    error code:
+    -1 if no credentials file found
+    -2 if credentials not correct
+    -3 if folder_id is not correct
+    """
+    ret = __init()
+    if ret != 0:
+        return ret
+
+    try:
+        file_info_list = []
+        page_token = None
+
+        while True:
+            query = "'{}' in parents and mimeType='application/vnd.google-apps.spreadsheet'".format(folder_id)
+            results = _drive_service.files().list(q=query, pageToken=page_token).execute()
+            files = results.get('files', [])
+
+            for file in files:
+                file_info_list.append([
+                    file.get('name', 'N/A'),
+                    file.get('id', 'N/A'),
+                    file.get('mimeType', 'N/A')
+                ])
+
+            page_token = results.get('nextPageToken')
+            if not page_token:
+                break  # No more pages
+
+        return file_info_list
+
+    except Exception:
+        return -3
+
 
 def get_id_by_name(name_element: str) -> (str | int):
     """get the id by the name of a file or folder

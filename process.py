@@ -163,6 +163,7 @@ def get_name_and_type_of_url(url: str) -> tuple[str, str] | int:
     try:
         output: dict[str, str] | int = gdrive.get_file_metadata(utils.extract_google_drive_id(url))
         if not isinstance(output, int):
+            print(gdrive.list_spreadsheet_in_folder(utils.extract_google_drive_id(url)))
             return output["name"], output["mimeType"]
     except Exception:
         return -1
