@@ -2,21 +2,20 @@ import re
 from io import StringIO
 
 
-def extract_google_sheet_id(url_or_id: str) -> str:
-    """Extract the Google Sheets ID from a given URL.
+def extract_google_drive_id(url_or_id: str) -> str:
+    """Extract the Google Drive ID (Sheets, Folders, or Files) from a given URL or return the ID if already valid.
 
     Args:
-        url (str): The Google Sheets URL.
+        url_or_id (str): The Google Drive URL or ID.
 
     Returns:
         str: The extracted ID, or an empty string if no match is found.
     """
     if re.match(r"^[a-zA-Z0-9-_]+$", url_or_id):
         return url_or_id
-    match: re.Match[str] | None = re.search(r"/d/([a-zA-Z0-9-_]+)", url_or_id)
-    if match:
-        return match.group(1)
-    return ""
+
+    match: re.Match[str] | None = re.search(r"/(?:d|folders)/([a-zA-Z0-9-_]+)", url_or_id)
+    return match.group(1) if match else ""
 
 
 def get_position_letter_alphabet(letter: str) -> int:

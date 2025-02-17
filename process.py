@@ -107,7 +107,7 @@ def get_list_sentence_sheet(url_sheet: str, column_letter: str,
         int : 0 if no problem, error code otherwise
     """
     global list_sentences_current_sheet
-    gsheet.open_spreadsheet(utils.extract_google_sheet_id(url_sheet))
+    gsheet.open_spreadsheet(utils.extract_google_drive_id(url_sheet))
     num_column: int = utils.get_position_letter_alphabet(column_letter)
     sheet_extraction: list[str] | int = gsheet.get_value_column(0, num_column)
     if isinstance(sheet_extraction, int):
@@ -153,10 +153,10 @@ def add_list_specific_word() -> None:
 
 
 def get_name_sheet(sheet_url: str) -> str | int:
-    """call has_access_to_element of google_drive_api
+    """call get_name_by_id of google_drive_api
     """
     try:
-        output: str | int = gdrive.get_name_by_id(utils.extract_google_sheet_id(sheet_url))
+        output: str | int = gdrive.get_name_by_id(utils.extract_google_drive_id(sheet_url))
         if isinstance(output, str):
             return output
     except Exception:

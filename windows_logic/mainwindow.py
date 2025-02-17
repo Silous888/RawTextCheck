@@ -430,7 +430,7 @@ class MainWindow(QMainWindow):
             self.toggle_ui_enabled_tabWidget_result(False)
 
     def check_urlsheet_access(self) -> None:
-        """Vérifier l'accès à l'élément après un délai"""
+        """test after some time if url can be accessed"""
         text: str = self.ui.lineEdit_urlSheet.text()
         self.m_worker.signal_get_name_sheet_start.emit(text)
 
