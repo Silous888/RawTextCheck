@@ -428,6 +428,11 @@
               </row>
               <column>
                <property name="text">
+                <string>fichier</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>ligne</string>
                </property>
               </column>

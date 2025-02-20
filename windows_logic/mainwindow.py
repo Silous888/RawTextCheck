@@ -281,26 +281,26 @@ class MainWindow(QMainWindow):
         json_man.load_json()
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
 
+    def clear_table(self, table: QTableWidget) -> None:
+        table.setRowCount(0)
+        table.setColumnCount(0)
+        table.insertColumn(0)
+        table.insertColumn(1)
+        table.insertColumn(2)
+        table.setHorizontalHeaderLabels(["fichier", "ligne", "faute"])
+
     def update_table(
-        self, table: QTableWidget, data: Sequence[Union[tuple[int, str], tuple[int, str, str]]],
-        clear: bool = True
+        self, table: QTableWidget, data: Sequence[Union[tuple[str, int, str], tuple[int, str, str]]]
     ) -> None:
         """Update the table with the given data."""
-        if clear:
-            table.setRowCount(0)
-        last_column: int = table.rowCount()
-        table.setRowCount(last_column + len(data))
-
         if not data:
             return
-
-        num_columns: int = len(data[0])
-        table.setColumnCount(num_columns)
-
+        last_row: int = table.rowCount()
+        table.setRowCount(last_row + len(data))
         for row_index, row_data in enumerate(data):
             for col_index, value in enumerate(row_data):
                 item = QTableWidgetItem(str(value))
-                table.setItem(last_column + row_index, col_index, item)
+                table.setItem(last_row + row_index, col_index, item)
 
     def load_last_results_folder(self, url_folder: str) -> None:
         """load every tables with last check data, and show
@@ -309,6 +309,9 @@ class MainWindow(QMainWindow):
         Args:
             list_file_name (list[str]): list of file name
         """
+        self.clear_table(self.ui.tableWidget_1)
+        self.clear_table(self.ui.tableWidget_2)
+        self.clear_table(self.ui.tableWidget_3)
         list_file_name: list[str] | int = process.get_sheet_name_in_folder(url_folder)
         if isinstance(list_file_name, int):
             return
@@ -325,9 +328,14 @@ class MainWindow(QMainWindow):
         results: list[list[Any]]
         date: list[str]
         results, date = json_man.load_result_process(process.id_current_game - 1, file_name)
-        self.update_table(self.ui.tableWidget_1, [(row[0], row[1]) for row in results[0]], clear=(not isFromFolder))
-        self.update_table(self.ui.tableWidget_2, [(row[0], row[1]) for row in results[1]], clear=(not isFromFolder))
-        self.update_table(self.ui.tableWidget_3, [(row[0], row[1]) for row in results[2]], clear=(not isFromFolder))
+
+        if not isFromFolder:
+            self.clear_table(self.ui.tableWidget_1)
+            self.clear_table(self.ui.tableWidget_2)
+            self.clear_table(self.ui.tableWidget_3)
+        self.update_table(self.ui.tableWidget_1, [(file_name, row[0], row[1]) for row in results[0]])
+        self.update_table(self.ui.tableWidget_2, [(file_name, row[0], row[1]) for row in results[1]])
+        self.update_table(self.ui.tableWidget_3, [(file_name, row[0], row[1]) for row in results[2]])
 
         if not isFromFolder:
             self.ui.label_lastUdate_1.setText(date[0])
