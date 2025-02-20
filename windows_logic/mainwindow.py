@@ -3,7 +3,7 @@
 from typing import Union, Sequence, Any
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem, QMenu, QAction, QTableWidget
-from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, QTimer, QPoint
+from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, QTimer, QPoint, QEventLoop
 from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
@@ -33,6 +33,7 @@ class _WorkerMainWindow(QObject):
     signal_orthocheck_load_dictionary_finished = pyqtSignal()
     signal_languagetool_initialize_finished = pyqtSignal()
     signal_orthocheck_process_finished = pyqtSignal(object)
+    signal_orthocheck_process_finished_loop = pyqtSignal()
     signal_language_tool_process_finished = pyqtSignal(object)
     signal_word_check_process_finished = pyqtSignal(object)
     signal_add_specific_words_finished = pyqtSignal()
@@ -58,15 +59,34 @@ class _WorkerMainWindow(QObject):
 
     def orthocheck_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str]] | int = process.orthocheck_process(url, column_letter)
-        self.signal_orthocheck_process_finished.emit(output)
+        if isinstance(output, int):
+            return
+        output_name: list[tuple[str, int, str]] = process.add_filename_to_output(url, output)  # type: ignore
+        name_file: str | int = process.gdrive.get_name_by_id(process.utils.extract_google_drive_id(url))
+        if isinstance(name_file, int):
+            name_file = ""
+        self.signal_orthocheck_process_finished.emit((output_name, name_file))
+        self.signal_orthocheck_process_finished_loop.emit()
 
     def language_tool_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str, str]] | int = process.language_tool_process(url, column_letter)
-        self.signal_language_tool_process_finished.emit(output)
+        if isinstance(output, int):
+            return
+        output_name: list[tuple[str, int, str]] = process.add_filename_to_output2(url, output)  # type: ignore
+        name_file: str | int = process.gdrive.get_name_by_id(process.utils.extract_google_drive_id(url))
+        if isinstance(name_file, int):
+            name_file = ""
+        self.signal_language_tool_process_finished.emit((output_name, name_file))
 
     def word_check_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str]] | int = process.word_check_process(url, column_letter)
-        self.signal_word_check_process_finished.emit(output)
+        if isinstance(output, int):
+            return
+        output_name: list[tuple[str, int, str]] = process.add_filename_to_output(url, output)  # type: ignore
+        name_file: str | int = process.gdrive.get_name_by_id(process.utils.extract_google_drive_id(url))
+        if isinstance(name_file, int):
+            name_file = ""
+        self.signal_word_check_process_finished.emit((output_name, name_file))
 
     def add_specific_words_thread(self) -> None:
         process.add_list_specific_word()
@@ -111,6 +131,8 @@ class MainWindow(QMainWindow):
         self.urlsheet_timer = QTimer(self)
         self.urlsheet_timer.setSingleShot(True)
         self.urlsheet_timer.setInterval(1000)
+
+        self.url_type: str = ""  # spreadsheet, folder
 
         self.populate_combobox_game()
         self.toggle_ui_enabled_except_combobox_game(False)
@@ -318,7 +340,7 @@ class MainWindow(QMainWindow):
         for file_name in list_file_name:
             self.load_last_results(file_name, isFromFolder=True)
 
-    def load_last_results(self, file_name: str, isFromFolder: bool = True) -> None:
+    def load_last_results(self, file_name: str, isFromFolder: bool = False) -> None:
         """load every tables with last check data, and show
         last modified date
 
@@ -414,8 +436,26 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_method_1.setEnabled(False)
         if not self.is_orthocheck_available:
             self.m_worker.signal_orthocheck_load_dictionary_start.emit()
-        self.m_worker.signal_orthocheck_process_start.emit(self.ui.lineEdit_urlSheet.text(),
-                                                           self.ui.lineEdit_frenchColumn.text())
+        self.clear_table(self.ui.tableWidget_1)
+        if self.url_type == "spreadsheet":
+            self.m_worker.signal_orthocheck_process_start.emit(self.ui.lineEdit_urlSheet.text(),
+                                                               self.ui.lineEdit_frenchColumn.text())
+        elif self.url_type == "folder":
+            list_file_url: list[str] | int = process.get_sheet_url_in_folder(self.ui.lineEdit_urlSheet.text())
+            if isinstance(list_file_url, int):
+                return
+            for index, file_url in enumerate(list_file_url):
+
+                print(str(index + 1) + "/" + str(len(list_file_url)))
+                print(file_url)
+
+                loop = QEventLoop()
+                self.m_worker.signal_orthocheck_process_finished_loop.connect(loop.quit)
+                self.m_worker.signal_orthocheck_process_start.emit(
+                    file_url, self.ui.lineEdit_frenchColumn.text()
+                )
+                loop.exec_()
+                self.m_worker.signal_orthocheck_process_finished_loop.disconnect(loop.quit)
 
     def pushbutton_method_2_clicked(self) -> None:
         """slot for pushButton_method_2
@@ -544,8 +584,10 @@ class MainWindow(QMainWindow):
             self.toggle_ui_enabled_tabWidget_result(True)
             self.ui.label_sheetOpened.setText(str(result[0]))
             if result[1].endswith("spreadsheet"):
+                self.url_type = "spreadsheet"
                 self.load_last_results(str(result[0]))
             else:
+                self.url_type = "folder"
                 self.load_last_results_folder(self.ui.lineEdit_urlSheet.text())
         else:
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(200, 0, 0);")
@@ -565,7 +607,7 @@ class MainWindow(QMainWindow):
         self.is_languagetool_available = True
         # self.ui.pushButton_method_2.setEnabled(bool(self.ui.comboBox_game.currentIndex() and self.is_url_correct))
 
-    def orthocheck_process_finished(self, result: list[tuple[int, str]] | int) -> None:
+    def orthocheck_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
         """slot for signal orthocheck_process_finished
         """
         self.ui.pushButton_method_1.setEnabled(True)
@@ -573,14 +615,15 @@ class MainWindow(QMainWindow):
             # TODO
             pass
         else:
-            self.update_table(self.ui.tableWidget_1, result)
+            self.update_table(self.ui.tableWidget_1, result[0])
 
             json_man.save_result_process_one_str(process.id_current_game - 1,
-                                                 self.ui.label_sheetOpened.text(), 1, result)
+                                                 result[1], 1,
+                                                 [(row[1], row[2]) for row in result[0]])
             self.ui.label_lastUdate_1.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(0)
 
-    def language_tool_process_finished(self, result: list[tuple[int, str, str]] | int) -> None:
+    def language_tool_process_finished(self, result: tuple[list[tuple[str, int, str, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
         """
         self.ui.pushButton_method_2.setEnabled(True)
@@ -588,15 +631,16 @@ class MainWindow(QMainWindow):
             # TODO
             pass
         else:
-            self.update_table(self.ui.tableWidget_2, [(row[0], row[1]) for row in result])
-            process.list_ignored_languagetool_rules_current_file = [row[2] for row in result]
+            self.update_table(self.ui.tableWidget_2, [(row[0], row[1], row[2]) for row in result[0]])
+            process.list_ignored_languagetool_rules_current_file = [row[3] for row in result]
 
             json_man.save_result_process_two_str(process.id_current_game - 1,
-                                                 self.ui.label_sheetOpened.text(), 2, result)
+                                                 result[1], 2,
+                                                 [(row[1], row[2], row[3]) for row in result[0]])
             self.ui.label_lastUdate_2.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(1)
 
-    def word_check_process_finished(self, result: list[tuple[int, str]] | int) -> None:
+    def word_check_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
         """
         self.ui.pushButton_method_3.setEnabled(True)
@@ -604,10 +648,11 @@ class MainWindow(QMainWindow):
             # TODO
             pass
         else:
-            self.update_table(self.ui.tableWidget_3, result)
+            self.update_table(self.ui.tableWidget_3, result[0])
 
             json_man.save_result_process_one_str(process.id_current_game - 1,
-                                                 self.ui.label_sheetOpened.text(), 3, result)
+                                                 result[1], 3,
+                                                 [(row[1], row[2]) for row in result[0]])
             self.ui.label_lastUdate_3.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(2)
 
