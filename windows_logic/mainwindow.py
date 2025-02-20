@@ -302,7 +302,20 @@ class MainWindow(QMainWindow):
                 item = QTableWidgetItem(str(value))
                 table.setItem(last_column + row_index, col_index, item)
 
-    def load_last_results(self, file_name: str) -> None:
+    def load_last_results_folder(self, url_folder: str) -> None:
+        """load every tables with last check data, and show
+        last modified date
+
+        Args:
+            list_file_name (list[str]): list of file name
+        """
+        list_file_name: list[str] | int = process.get_sheet_name_in_folder(url_folder)
+        if isinstance(list_file_name, int):
+            return
+        for file_name in list_file_name:
+            self.load_last_results(file_name, isFromFolder=True)
+
+    def load_last_results(self, file_name: str, isFromFolder: bool = True) -> None:
         """load every tables with last check data, and show
         last modified date
 
@@ -312,13 +325,14 @@ class MainWindow(QMainWindow):
         results: list[list[Any]]
         date: list[str]
         results, date = json_man.load_result_process(process.id_current_game - 1, file_name)
-        self.update_table(self.ui.tableWidget_1, [(row[0], row[1]) for row in results[0]])
-        self.update_table(self.ui.tableWidget_2, [(row[0], row[1]) for row in results[1]])
-        self.update_table(self.ui.tableWidget_3, [(row[0], row[1]) for row in results[2]])
+        self.update_table(self.ui.tableWidget_1, [(row[0], row[1]) for row in results[0]], clear=(not isFromFolder))
+        self.update_table(self.ui.tableWidget_2, [(row[0], row[1]) for row in results[1]], clear=(not isFromFolder))
+        self.update_table(self.ui.tableWidget_3, [(row[0], row[1]) for row in results[2]], clear=(not isFromFolder))
 
-        self.ui.label_lastUdate_1.setText(date[0])
-        self.ui.label_lastUdate_2.setText(date[1])
-        self.ui.label_lastUdate_3.setText(date[2])
+        if not isFromFolder:
+            self.ui.label_lastUdate_1.setText(date[0])
+            self.ui.label_lastUdate_2.setText(date[1])
+            self.ui.label_lastUdate_3.setText(date[2])
 
         # languageTool
         process.list_ignored_languagetool_rules_current_file = [row[2] for row in results[1]]
@@ -523,6 +537,8 @@ class MainWindow(QMainWindow):
             self.ui.label_sheetOpened.setText(str(result[0]))
             if result[1].endswith("spreadsheet"):
                 self.load_last_results(str(result[0]))
+            else:
+                self.load_last_results_folder(self.ui.lineEdit_urlSheet.text())
         else:
             self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(200, 0, 0);")
             self.toggle_ui_enabled_buttons_methods(False)

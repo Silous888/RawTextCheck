@@ -180,7 +180,8 @@ def list_files_in_folder(folder_id: str) -> (list[str] | int):
     except Exception:
         return -3
 
-def list_spreadsheet_in_folder(folder_id: str) -> (list[str] | int):
+
+def list_spreadsheet_in_folder(folder_id: str) -> (list[list[str]] | int):
     """give the list of every element the gmail adress has access in a specific folder
 
     Args:
