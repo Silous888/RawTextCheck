@@ -282,10 +282,14 @@ class MainWindow(QMainWindow):
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
 
     def update_table(
-        self, table: QTableWidget, data: Sequence[Union[tuple[int, str], tuple[int, str, str]]]
+        self, table: QTableWidget, data: Sequence[Union[tuple[int, str], tuple[int, str, str]]],
+        clear: bool = True
     ) -> None:
-        table.setRowCount(0)
-        table.setRowCount(len(data))
+        """Update the table with the given data."""
+        if clear:
+            table.setRowCount(0)
+        last_column: int = table.rowCount()
+        table.setRowCount(last_column + len(data))
 
         if not data:
             return
@@ -296,7 +300,7 @@ class MainWindow(QMainWindow):
         for row_index, row_data in enumerate(data):
             for col_index, value in enumerate(row_data):
                 item = QTableWidgetItem(str(value))
-                table.setItem(row_index, col_index, item)
+                table.setItem(last_column + row_index, col_index, item)
 
     def load_last_results(self, file_name: str) -> None:
         """load every tables with last check data, and show
