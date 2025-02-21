@@ -26,6 +26,7 @@ class _WorkerMainWindow(QObject):
     signal_orthocheck_process_start = pyqtSignal(str, str)
     signal_language_tool_process_start = pyqtSignal(str, str)
     signal_word_check_process_start = pyqtSignal(str, str)
+    signal_find_string_process_start = pyqtSignal(str, str, str)
     signal_add_specific_words_start = pyqtSignal()
 
     signal_load_word_excluded_finished = pyqtSignal()
@@ -35,7 +36,10 @@ class _WorkerMainWindow(QObject):
     signal_orthocheck_process_finished = pyqtSignal(object)
     signal_orthocheck_process_finished_loop = pyqtSignal()
     signal_language_tool_process_finished = pyqtSignal(object)
+    signal_language_tool_process_finished_loop = pyqtSignal()
     signal_word_check_process_finished = pyqtSignal(object)
+    signal_find_string_process_finished = pyqtSignal(object)
+    signal_find_string_process_finished_loop = pyqtSignal()
     signal_add_specific_words_finished = pyqtSignal()
 
     def __init__(self) -> None:
@@ -77,6 +81,7 @@ class _WorkerMainWindow(QObject):
         if isinstance(name_file, int):
             name_file = ""
         self.signal_language_tool_process_finished.emit((output_name, name_file))
+        self.signal_language_tool_process_finished_loop.emit()
 
     def word_check_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str]] | int = process.word_check_process(url, column_letter)
@@ -87,6 +92,17 @@ class _WorkerMainWindow(QObject):
         if isinstance(name_file, int):
             name_file = ""
         self.signal_word_check_process_finished.emit((output_name, name_file))
+
+    def find_string_process_thread(self, url: str, column_letter: str, string_to_search: str) -> None:
+        output: list[tuple[int, str]] | int = process.search_string_in_sheet(url, column_letter, string_to_search)
+        if isinstance(output, int):
+            return
+        output_name: list[tuple[str, int, str]] = process.add_filename_to_output(url, output)  # type: ignore
+        name_file: str | int = process.gdrive.get_name_by_id(process.utils.extract_google_drive_id(url))
+        if isinstance(name_file, int):
+            name_file = ""
+        self.signal_find_string_process_finished.emit((output_name, name_file))
+        self.signal_find_string_process_finished_loop.emit()
 
     def add_specific_words_thread(self) -> None:
         process.add_list_specific_word()
@@ -180,6 +196,16 @@ class MainWindow(QMainWindow):
         """
         if not enabled or self.is_url_correct:
             self.ui.tabWidget_result.setEnabled(enabled)
+
+    def toggle_ui_replace(self, enabled: bool) -> None:
+        """toggle the enabled state of the "replace" ui element
+
+        Args:
+            enabled (bool): enabled state
+        """
+        self.ui.pushButton_method_replace.setEnabled(enabled)
+        self.ui.lineEdit_search_result.setEnabled(enabled)
+        self.ui.lineEdit_replace.setEnabled(enabled)
 
     def add_to_specific_dictionary(self, item: QTableWidgetItem) -> None:
         """add to specific dictionary of the game
@@ -393,6 +419,7 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_method_1.clicked.connect(self.pushbutton_method_1_clicked)
         self.ui.pushButton_method_2.clicked.connect(self.pushbutton_method_2_clicked)
         self.ui.pushButton_method_3.clicked.connect(self.pushbutton_method_3_clicked)
+        self.ui.pushButton_method_search.clicked.connect(self.pushButton_method_search_clicked)
         self.ui.pushButton_uploadSpecificWords.clicked.connect(self.pushbutton_uploadspecificwords_clicked)
         # lineEdit
         self.ui.lineEdit_urlSheet.textChanged.connect(self.lineedit_urlsheet_textchanged)
@@ -411,6 +438,7 @@ class MainWindow(QMainWindow):
         self.m_worker.signal_orthocheck_process_start.connect(self.m_worker.orthocheck_process_thread)
         self.m_worker.signal_language_tool_process_start.connect(self.m_worker.language_tool_process_thread)
         self.m_worker.signal_word_check_process_start.connect(self.m_worker.word_check_process_thread)
+        self.m_worker.signal_find_string_process_start.connect(self.m_worker.find_string_process_thread)
         self.m_worker.signal_add_specific_words_start.connect(self.m_worker.add_specific_words_thread)
         # thread finish
         self.m_worker.signal_load_word_excluded_finished.connect(self.load_dialog_finished)
@@ -420,6 +448,7 @@ class MainWindow(QMainWindow):
         self.m_worker.signal_orthocheck_process_finished.connect(self.orthocheck_process_finished)
         self.m_worker.signal_language_tool_process_finished.connect(self.language_tool_process_finished)
         self.m_worker.signal_word_check_process_finished.connect(self.word_check_process_finished)
+        self.m_worker.signal_find_string_process_finished.connect(self.find_string_process_finished)
         self.m_worker.signal_add_specific_words_finished.connect(self.add_specific_words_finished)
         # help
 
@@ -463,8 +492,26 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_method_2.setEnabled(False)
         if not self.is_languagetool_available:
             self.m_worker.signal_languagetool_initialize_start.emit()
-        self.m_worker.signal_language_tool_process_start.emit(self.ui.lineEdit_urlSheet.text(),
-                                                              self.ui.lineEdit_frenchColumn.text())
+        self.clear_table(self.ui.tableWidget_2)
+        if self.url_type == "spreadsheet":
+            self.m_worker.signal_language_tool_process_start.emit(self.ui.lineEdit_urlSheet.text(),
+                                                                  self.ui.lineEdit_frenchColumn.text())
+        elif self.url_type == "folder":
+            list_file_url: list[str] | int = process.get_sheet_url_in_folder(self.ui.lineEdit_urlSheet.text())
+            if isinstance(list_file_url, int):
+                return
+            for index, file_url in enumerate(list_file_url):
+
+                print(str(index + 1) + "/" + str(len(list_file_url)))
+                print(file_url)
+
+                loop = QEventLoop()
+                self.m_worker.signal_language_tool_process_finished_loop.connect(loop.quit)
+                self.m_worker.signal_language_tool_process_start.emit(
+                    file_url, self.ui.lineEdit_frenchColumn.text()
+                )
+                loop.exec_()
+                self.m_worker.signal_language_tool_process_finished_loop.disconnect(loop.quit)
 
     def pushbutton_method_3_clicked(self) -> None:
         """slot for pushButton_method_3
@@ -472,6 +519,34 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_method_3.setEnabled(False)
         self.m_worker.signal_word_check_process_start.emit(self.ui.lineEdit_urlSheet.text(),
                                                            self.ui.lineEdit_frenchColumn.text())
+
+    def pushButton_method_search_clicked(self) -> None:
+        """slot for pushButton_method_search
+        """
+        self.ui.pushButton_method_search.setEnabled(False)
+        self.ui.lineEdit_search.setEnabled(False)
+        self.toggle_ui_replace(False)
+        self.clear_table(self.ui.tableWidget_4)
+        if self.url_type == "spreadsheet":
+            self.m_worker.signal_find_string_process_start.emit(self.ui.lineEdit_urlSheet.text(),
+                                                                self.ui.lineEdit_frenchColumn.text(),
+                                                                self.ui.lineEdit_search.text())
+        elif self.url_type == "folder":
+            list_file_url: list[str] | int = process.get_sheet_url_in_folder(self.ui.lineEdit_urlSheet.text())
+            if isinstance(list_file_url, int):
+                return
+            for index, file_url in enumerate(list_file_url):
+
+                print(str(index + 1) + "/" + str(len(list_file_url)))
+                print(file_url)
+
+                loop = QEventLoop()
+                self.m_worker.signal_find_string_process_finished_loop.connect(loop.quit)
+                self.m_worker.signal_find_string_process_start.emit(
+                    file_url, self.ui.lineEdit_frenchColumn.text(), self.ui.lineEdit_search.text()
+                )
+                loop.exec_()
+                self.m_worker.signal_find_string_process_finished_loop.disconnect(loop.quit)
 
     def pushbutton_uploadspecificwords_clicked(self) -> None:
         """slot for pushButton_uploadSpecificWords
@@ -655,6 +730,21 @@ class MainWindow(QMainWindow):
                                                  [(row[1], row[2]) for row in result[0]])
             self.ui.label_lastUdate_3.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(2)
+
+    def find_string_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
+        """slot for signal language_tool_process_finished
+        """
+        self.ui.pushButton_method_search.setEnabled(True)
+        self.ui.lineEdit_search.setEnabled(True)
+        self.toggle_ui_replace(True)
+        self.ui.lineEdit_search_result.setText(self.ui.lineEdit_search.text())
+
+        if isinstance(result, int):
+            # TODO
+            pass
+        else:
+            self.update_table(self.ui.tableWidget_4, result[0])
+            self.ui.tabWidget_result.setCurrentIndex(3)
 
     def add_specific_words_finished(self) -> None:
         """slot for signal add_specific_words_finished

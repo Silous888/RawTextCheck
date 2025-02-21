@@ -342,3 +342,10 @@ def word_check_process(url_sheet: str, column_letter: str) -> list[tuple[int, st
         return word_check.word_on_text(list_sentences_current_sheet, list_specific_word_current_game)
     else:
         return error_code
+
+
+def search_string_in_sheet(url_sheet: str, column_letter: str, string_to_search: str) -> list[tuple[int, str]] | int:
+    error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
+    if error_code != 0:
+        return error_code
+    return [(i, sentence) for i, sentence in enumerate(list_sentences_current_sheet) if string_to_search in sentence]
