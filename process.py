@@ -25,7 +25,7 @@ list_specific_word_to_upload: list[str] = []
 
 list_ignored_languagetool_rules_current_game: list[str] = []
 
-list_ignored_languagetool_rules_current_file: list[str] = []
+list_ignored_languagetool_rules_current_data: list[str] = []
 
 
 def get_current_date() -> str:
@@ -76,7 +76,7 @@ def get_index_item_with_rule(rule: str) -> list[int]:
     Returns:
         list[int] : list of index of the item with the rule
     """
-    return [i for i, x in enumerate(list_ignored_languagetool_rules_current_file) if x == rule]
+    return [i for i, x in enumerate(list_ignored_languagetool_rules_current_data) if x == rule]
 
 
 def remove_rule_current_file(rule: str) -> None:
@@ -88,9 +88,9 @@ def remove_rule_current_file(rule: str) -> None:
     Returns:
         list[int] : list of index of the item with the rule
     """
-    global list_ignored_languagetool_rules_current_file
-    list_ignored_languagetool_rules_current_file = [
-        x for x in list_ignored_languagetool_rules_current_file if x != rule
+    global list_ignored_languagetool_rules_current_data
+    list_ignored_languagetool_rules_current_data = [
+        x for x in list_ignored_languagetool_rules_current_data if x != rule
     ]
 
 

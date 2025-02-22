@@ -3,7 +3,7 @@
 from typing import Union, Sequence, Any
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem, QMenu, QAction, QTableWidget
-from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, QTimer, QPoint, QEventLoop
+from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, QTimer, QPoint, QEventLoop, pyqtBoundSignal
 from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
@@ -34,13 +34,11 @@ class _WorkerMainWindow(QObject):
     signal_orthocheck_load_dictionary_finished = pyqtSignal()
     signal_languagetool_initialize_finished = pyqtSignal()
     signal_orthocheck_process_finished = pyqtSignal(object)
-    signal_orthocheck_process_finished_loop = pyqtSignal()
     signal_language_tool_process_finished = pyqtSignal(object)
-    signal_language_tool_process_finished_loop = pyqtSignal()
     signal_word_check_process_finished = pyqtSignal(object)
     signal_find_string_process_finished = pyqtSignal(object)
-    signal_find_string_process_finished_loop = pyqtSignal()
     signal_add_specific_words_finished = pyqtSignal()
+    signal_process_loop = pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -70,7 +68,7 @@ class _WorkerMainWindow(QObject):
         if isinstance(name_file, int):
             name_file = ""
         self.signal_orthocheck_process_finished.emit((output_name, name_file))
-        self.signal_orthocheck_process_finished_loop.emit()
+        self.signal_process_loop.emit()
 
     def language_tool_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str, str]] | int = process.language_tool_process(url, column_letter)
@@ -81,7 +79,7 @@ class _WorkerMainWindow(QObject):
         if isinstance(name_file, int):
             name_file = ""
         self.signal_language_tool_process_finished.emit((output_name, name_file))
-        self.signal_language_tool_process_finished_loop.emit()
+        self.signal_process_loop.emit()
 
     def word_check_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str]] | int = process.word_check_process(url, column_letter)
@@ -102,7 +100,7 @@ class _WorkerMainWindow(QObject):
         if isinstance(name_file, int):
             name_file = ""
         self.signal_find_string_process_finished.emit((output_name, name_file))
-        self.signal_find_string_process_finished_loop.emit()
+        self.signal_process_loop.emit()
 
     def add_specific_words_thread(self) -> None:
         process.add_list_specific_word()
@@ -149,6 +147,7 @@ class MainWindow(QMainWindow):
         self.urlsheet_timer.setInterval(1000)
 
         self.url_type: str = ""  # spreadsheet, folder
+        self.folder_process_finished: bool = False
 
         self.populate_combobox_game()
         self.toggle_ui_enabled_except_combobox_game(False)
@@ -246,14 +245,14 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        rule: str = process.list_ignored_languagetool_rules_current_file[item.row()]
+        rule: str = process.list_ignored_languagetool_rules_current_data[item.row()]
         json_man.add_ignored_rules(process.id_current_game - 1, rule)
         process.get_list_ignored_languagetool_rules()
         self.remove_rows_by_index(self.ui.tableWidget_2, process.get_index_item_with_rule(rule))
         process.remove_rule_current_file(rule)
         data: list[tuple[int, str]] = self.get_table_data(self.ui.tableWidget_2)
         data_with_rules: list[tuple[int, str, str]] = [
-            (row[0], row[1], process.list_ignored_languagetool_rules_current_file[x])
+            (row[0], row[1], process.list_ignored_languagetool_rules_current_data[x])
             for x, row in enumerate(data)
         ]
         json_man.save_result_process_two_str(process.id_current_game - 1,
@@ -298,11 +297,11 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        process.list_ignored_languagetool_rules_current_file.pop(item.row())
+        process.list_ignored_languagetool_rules_current_data.pop(item.row())
         self.ui.tableWidget_2.removeRow(item.row())
         data: list[tuple[int, str]] = self.get_table_data(self.ui.tableWidget_2)
         data_with_rules: list[tuple[int, str, str]] = [
-            (row[0], row[1], process.list_ignored_languagetool_rules_current_file[x])
+            (row[0], row[1], process.list_ignored_languagetool_rules_current_data[x])
             for x, row in enumerate(data)
         ]
         json_man.save_result_process_two_str(process.id_current_game - 1,
@@ -391,7 +390,7 @@ class MainWindow(QMainWindow):
             self.ui.label_lastUdate_3.setText(date[2])
 
         # languageTool
-        process.list_ignored_languagetool_rules_current_file = [row[2] for row in results[1]]
+        process.list_ignored_languagetool_rules_current_data = [row[2] for row in results[1]]
 
     def get_table_data(self, table: QTableWidget) -> list[tuple[int, str]]:
         """Get all data from the table in the same format as result.
@@ -459,94 +458,59 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_gameDictionary.setEnabled(False)
         self.m_worker.signal_load_word_excluded_start.emit(self.ui.comboBox_game.currentIndex()-1)
 
+    def process_files(self, signal_start: pyqtBoundSignal, *args: Any) -> None:
+        """Generic method to process files in a folder or a spreadsheet."""
+        process.list_ignored_languagetool_rules_current_data = []
+        if self.url_type == "spreadsheet":
+            signal_start.emit(self.ui.lineEdit_urlSheet.text(), *args)
+        elif self.url_type == "folder":
+            list_file_url: list[str] | int = process.get_sheet_url_in_folder(self.ui.lineEdit_urlSheet.text())
+            if isinstance(list_file_url, int):
+                return
+
+            for index, file_url in enumerate(list_file_url):
+                print(f"{index + 1}/{len(list_file_url)}\n{file_url}")
+
+                loop = QEventLoop()
+                self.m_worker.signal_process_loop.connect(loop.quit)
+                signal_start.emit(file_url, *args)
+                loop.exec_()
+                self.m_worker.signal_process_loop.disconnect(loop.quit)
+            self.folder_process_finished = True
+
     def pushbutton_method_1_clicked(self) -> None:
-        """slot for pushButton_method_1
-        """
-        self.ui.pushButton_method_1.setEnabled(False)
+        """Slot for pushButton_method_1."""
+        self.ui.groupBox_1_2_1.setEnabled(False)
         if not self.is_orthocheck_available:
             self.m_worker.signal_orthocheck_load_dictionary_start.emit()
         self.clear_table(self.ui.tableWidget_1)
-        if self.url_type == "spreadsheet":
-            self.m_worker.signal_orthocheck_process_start.emit(self.ui.lineEdit_urlSheet.text(),
-                                                               self.ui.lineEdit_frenchColumn.text())
-        elif self.url_type == "folder":
-            list_file_url: list[str] | int = process.get_sheet_url_in_folder(self.ui.lineEdit_urlSheet.text())
-            if isinstance(list_file_url, int):
-                return
-            for index, file_url in enumerate(list_file_url):
-
-                print(str(index + 1) + "/" + str(len(list_file_url)))
-                print(file_url)
-
-                loop = QEventLoop()
-                self.m_worker.signal_orthocheck_process_finished_loop.connect(loop.quit)
-                self.m_worker.signal_orthocheck_process_start.emit(
-                    file_url, self.ui.lineEdit_frenchColumn.text()
-                )
-                loop.exec_()
-                self.m_worker.signal_orthocheck_process_finished_loop.disconnect(loop.quit)
+        self.process_files(self.m_worker.signal_orthocheck_process_start, self.ui.lineEdit_frenchColumn.text())
 
     def pushbutton_method_2_clicked(self) -> None:
-        """slot for pushButton_method_2
-        """
-        self.ui.pushButton_method_2.setEnabled(False)
+        """Slot for pushButton_method_2."""
+        self.ui.groupBox_1_2_1.setEnabled(False)
         if not self.is_languagetool_available:
             self.m_worker.signal_languagetool_initialize_start.emit()
         self.clear_table(self.ui.tableWidget_2)
-        if self.url_type == "spreadsheet":
-            self.m_worker.signal_language_tool_process_start.emit(self.ui.lineEdit_urlSheet.text(),
-                                                                  self.ui.lineEdit_frenchColumn.text())
-        elif self.url_type == "folder":
-            list_file_url: list[str] | int = process.get_sheet_url_in_folder(self.ui.lineEdit_urlSheet.text())
-            if isinstance(list_file_url, int):
-                return
-            for index, file_url in enumerate(list_file_url):
-
-                print(str(index + 1) + "/" + str(len(list_file_url)))
-                print(file_url)
-
-                loop = QEventLoop()
-                self.m_worker.signal_language_tool_process_finished_loop.connect(loop.quit)
-                self.m_worker.signal_language_tool_process_start.emit(
-                    file_url, self.ui.lineEdit_frenchColumn.text()
-                )
-                loop.exec_()
-                self.m_worker.signal_language_tool_process_finished_loop.disconnect(loop.quit)
+        self.process_files(self.m_worker.signal_language_tool_process_start, self.ui.lineEdit_frenchColumn.text())
 
     def pushbutton_method_3_clicked(self) -> None:
         """slot for pushButton_method_3
         """
-        self.ui.pushButton_method_3.setEnabled(False)
+        self.ui.groupBox_1_2_1.setEnabled(False)
         self.m_worker.signal_word_check_process_start.emit(self.ui.lineEdit_urlSheet.text(),
                                                            self.ui.lineEdit_frenchColumn.text())
 
     def pushButton_method_search_clicked(self) -> None:
-        """slot for pushButton_method_search
-        """
-        self.ui.pushButton_method_search.setEnabled(False)
-        self.ui.lineEdit_search.setEnabled(False)
+        """Slot for pushButton_method_search."""
+        self.ui.groupBox_1_2_1.setEnabled(False)
         self.toggle_ui_replace(False)
         self.clear_table(self.ui.tableWidget_4)
-        if self.url_type == "spreadsheet":
-            self.m_worker.signal_find_string_process_start.emit(self.ui.lineEdit_urlSheet.text(),
-                                                                self.ui.lineEdit_frenchColumn.text(),
-                                                                self.ui.lineEdit_search.text())
-        elif self.url_type == "folder":
-            list_file_url: list[str] | int = process.get_sheet_url_in_folder(self.ui.lineEdit_urlSheet.text())
-            if isinstance(list_file_url, int):
-                return
-            for index, file_url in enumerate(list_file_url):
-
-                print(str(index + 1) + "/" + str(len(list_file_url)))
-                print(file_url)
-
-                loop = QEventLoop()
-                self.m_worker.signal_find_string_process_finished_loop.connect(loop.quit)
-                self.m_worker.signal_find_string_process_start.emit(
-                    file_url, self.ui.lineEdit_frenchColumn.text(), self.ui.lineEdit_search.text()
-                )
-                loop.exec_()
-                self.m_worker.signal_find_string_process_finished_loop.disconnect(loop.quit)
+        self.process_files(
+            self.m_worker.signal_find_string_process_start,
+            self.ui.lineEdit_frenchColumn.text(),
+            self.ui.lineEdit_search.text()
+        )
 
     def pushbutton_uploadspecificwords_clicked(self) -> None:
         """slot for pushButton_uploadSpecificWords
@@ -627,7 +591,7 @@ class MainWindow(QMainWindow):
             return
         menu = QMenu(self)
 
-        rule_text: str = process.list_ignored_languagetool_rules_current_file[item.row()]
+        rule_text: str = process.list_ignored_languagetool_rules_current_data[item.row()]
         self.add_to_ignored_rules_action = QAction("ignorer " + rule_text + " pour ce jeu", self)
         self.delete_languagetool_item_action = QAction("Faute traitée", self)
 
@@ -685,65 +649,65 @@ class MainWindow(QMainWindow):
     def orthocheck_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
         """slot for signal orthocheck_process_finished
         """
-        self.ui.pushButton_method_1.setEnabled(True)
         if isinstance(result, int):
-            # TODO
-            pass
-        else:
-            self.update_table(self.ui.tableWidget_1, result[0])
+            return
+        self.update_table(self.ui.tableWidget_1, result[0])
 
-            json_man.save_result_process_one_str(process.id_current_game - 1,
-                                                 result[1], 1,
-                                                 [(row[1], row[2]) for row in result[0]])
+        json_man.save_result_process_one_str(process.id_current_game - 1,
+                                             result[1], 1,
+                                             [(row[1], row[2]) for row in result[0]])
+
+        if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
+            self.ui.groupBox_1_2_1.setEnabled(True)
             self.ui.label_lastUdate_1.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(0)
+            self.folder_process_finished = False
 
     def language_tool_process_finished(self, result: tuple[list[tuple[str, int, str, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
         """
-        self.ui.pushButton_method_2.setEnabled(True)
         if isinstance(result, int):
-            # TODO
-            pass
-        else:
-            self.update_table(self.ui.tableWidget_2, [(row[0], row[1], row[2]) for row in result[0]])
-            process.list_ignored_languagetool_rules_current_file = [row[3] for row in result]
+            return
+        self.update_table(self.ui.tableWidget_2, [(row[0], row[1], row[2]) for row in result[0]])
+        if self.url_type == "spreadsheet":
+            process.list_ignored_languagetool_rules_current_data = [row[3] for row in result[0]]
+        elif self.url_type == "folder":
+            process.list_ignored_languagetool_rules_current_data += [row[3] for row in result[0]]
 
-            json_man.save_result_process_two_str(process.id_current_game - 1,
-                                                 result[1], 2,
-                                                 [(row[1], row[2], row[3]) for row in result[0]])
+        json_man.save_result_process_two_str(process.id_current_game - 1,
+                                             result[1], 2,
+                                             [(row[1], row[2], row[3]) for row in result[0]])
+
+        if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
+            self.ui.groupBox_1_2_1.setEnabled(True)
             self.ui.label_lastUdate_2.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(1)
+            self.folder_process_finished = False
 
     def word_check_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
         """
-        self.ui.pushButton_method_3.setEnabled(True)
         if isinstance(result, int):
-            # TODO
-            pass
-        else:
-            self.update_table(self.ui.tableWidget_3, result[0])
+            return
+        self.update_table(self.ui.tableWidget_3, result[0])
 
-            json_man.save_result_process_one_str(process.id_current_game - 1,
-                                                 result[1], 3,
-                                                 [(row[1], row[2]) for row in result[0]])
-            self.ui.label_lastUdate_3.setText(process.get_current_date())
-            self.ui.tabWidget_result.setCurrentIndex(2)
+        json_man.save_result_process_one_str(process.id_current_game - 1,
+                                             result[1], 3,
+                                             [(row[1], row[2]) for row in result[0]])
+        self.ui.label_lastUdate_3.setText(process.get_current_date())
+        self.ui.tabWidget_result.setCurrentIndex(2)
 
     def find_string_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
         """
-        self.ui.pushButton_method_search.setEnabled(True)
-        self.ui.lineEdit_search.setEnabled(True)
-        self.toggle_ui_replace(True)
-        self.ui.lineEdit_search_result.setText(self.ui.lineEdit_search.text())
-
         if isinstance(result, int):
-            # TODO
-            pass
-        else:
-            self.update_table(self.ui.tableWidget_4, result[0])
+            return
+        self.update_table(self.ui.tableWidget_4, result[0])
+        if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
+            self.ui.groupBox_1_2_1.setEnabled(True)
+            self.ui.lineEdit_search.setEnabled(True)
+            self.toggle_ui_replace(True)
+            self.ui.lineEdit_search_result.setText(self.ui.lineEdit_search.text())
             self.ui.tabWidget_result.setCurrentIndex(3)
 
     def add_specific_words_finished(self) -> None:
