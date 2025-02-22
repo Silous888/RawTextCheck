@@ -12,7 +12,6 @@ from windows_logic.dialog_excluded_words import DialogExcludedWords
 from windows_logic.confirm_exit import ConfirmExit
 import process
 import json_management as json_man
-import utils
 
 
 # -------------------------------------------------------------------#
@@ -290,6 +289,14 @@ class MainWindow(QMainWindow):
         process.list_ignored_languagetool_rules_current_data.pop(item.row())
         self.ui.tableWidget_2.removeRow(item.row())
 
+    def delete_search_result_item(self, item: QTableWidgetItem) -> None:
+        """Delete the selected item from the table.
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
+        self.ui.tableWidget_3.removeRow(item.row())
+
     def add_character(self, item: QTableWidgetItem) -> None:
         """Add the character to the authorized character for this game.
 
@@ -412,6 +419,7 @@ class MainWindow(QMainWindow):
         # tab
         self.ui.tableWidget_1.customContextMenuRequested.connect(self.tablewidget_1_contextmenu)
         self.ui.tableWidget_2.customContextMenuRequested.connect(self.tablewidget_2_contextmenu)
+        self.ui.tableWidget_3.customContextMenuRequested.connect(self.tablewidget_3_contextmenu)
         # thread start
         self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
         self.m_worker.signal_get_name_sheet_start.connect(self.m_worker.get_name_sheet_thread)
@@ -557,8 +565,6 @@ class MainWindow(QMainWindow):
         menu.exec_(self.ui.tableWidget_1.viewport().mapToGlobal(pos))
 
     def tablewidget_2_contextmenu(self, pos: QPoint) -> None:
-        """slot for tableWidget_excludedWords
-        """
         item: QTableWidgetItem = self.ui.tableWidget_2.itemAt(pos)
         if item is None:  # type: ignore
             return
@@ -576,6 +582,20 @@ class MainWindow(QMainWindow):
         menu.addAction(self.delete_languagetool_item_action)
 
         menu.exec_(self.ui.tableWidget_2.viewport().mapToGlobal(pos))
+
+    def tablewidget_3_contextmenu(self, pos: QPoint) -> None:
+        item: QTableWidgetItem = self.ui.tableWidget_3.itemAt(pos)
+        if item is None:  # type: ignore
+            return
+        menu = QMenu(self)
+
+        self.delete_search_result_item_action = QAction("Exclure des résultats de la recherche", self)
+
+        self.delete_search_result_item_action.triggered.connect(lambda: self.delete_search_result_item(item))
+
+        menu.addAction(self.delete_search_result_item_action)
+
+        menu.exec_(self.ui.tableWidget_3.viewport().mapToGlobal(pos))
 
     def load_dialog_finished(self) -> None:
         """slot for signal load_dialog_finished
