@@ -12,6 +12,7 @@ from windows_logic.dialog_excluded_words import DialogExcludedWords
 from windows_logic.confirm_exit import ConfirmExit
 import process
 import json_management as json_man
+import utils
 
 
 # -------------------------------------------------------------------#
@@ -266,11 +267,11 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        json_man.remove_entry_by_line_number(process.id_current_game - 1,
-                                             self.ui.tableWidget_1.item(item.row(), 0).text(),
-                                             1,
-                                             self.ui.tableWidget_1.item(item.row(), 1).text(),
-                                             self.ui.tableWidget_1.item(item.row(), 2).text())
+        json_man.remove_entry(process.id_current_game - 1,
+                              self.ui.tableWidget_1.item(item.row(), 0).text(),
+                              1,
+                              self.ui.tableWidget_1.item(item.row(), 1).text(),
+                              self.ui.tableWidget_1.item(item.row(), 2).text())
         self.ui.tableWidget_1.removeRow(item.row())
 
     def delete_languagetool_item(self, item: QTableWidgetItem) -> None:
@@ -279,17 +280,15 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
+
+        json_man.remove_entry(process.id_current_game - 1,
+                              self.ui.tableWidget_2.item(item.row(), 0).text(),
+                              2,
+                              self.ui.tableWidget_2.item(item.row(), 1).text(),
+                              self.ui.tableWidget_2.item(item.row(), 2).text())
+
         process.list_ignored_languagetool_rules_current_data.pop(item.row())
-        file: str = self.ui.tableWidget_1.item(item.row(), 0).text()
         self.ui.tableWidget_2.removeRow(item.row())
-        data: list[tuple[int, str]] = self.get_table_data(self.ui.tableWidget_2)
-        data_with_rules: list[tuple[int, str, str]] = [
-            (row[0], row[1], process.list_ignored_languagetool_rules_current_data[x])
-            for x, row in enumerate(data)
-        ]
-        json_man.save_result_process_two_str(process.id_current_game - 1,
-                                             file, 2,
-                                             data_with_rules)
 
     def add_character(self, item: QTableWidgetItem) -> None:
         """Add the character to the authorized character for this game.
@@ -565,7 +564,6 @@ class MainWindow(QMainWindow):
             return
         menu = QMenu(self)
 
-        print(process.list_ignored_languagetool_rules_current_data)
         rule_text: str = process.list_ignored_languagetool_rules_current_data[item.row()]
         self.add_to_ignored_rules_action = QAction("ignorer " + rule_text + " pour ce jeu", self)
         self.delete_languagetool_item_action = QAction("Faute traitée", self)

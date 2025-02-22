@@ -103,7 +103,7 @@ def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) 
         try:
             return method(*args, **kwargs)
         except Exception as e:
-            if "429" or "500" not in str(e):
+            if "429" not in str(e) and "500" not in str(e):
                 print(e)
                 return -11  # to define later
         _time.sleep(_WAIT_TIME)

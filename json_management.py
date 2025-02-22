@@ -99,8 +99,9 @@ def load_result_process(id_game: int, name_file: str) -> tuple[list[list[Any]], 
     return result, modification_dates
 
 
-def remove_entry_by_line_number(id_game: int, name_file: str, method: int, value: str, text: str) -> None:
+def remove_entry(id_game: int, name_file: str, method: int, value: str, text: str) -> None:
 
+    print(id, name_file, method, value, text)
     folder_name: str = data_json[id_game]["folder_name"]  # type: ignore
     path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[method - 1])
     with open(os.path.join(path, name_file + ".json"), "r", encoding="utf-8") as file:
@@ -109,7 +110,7 @@ def remove_entry_by_line_number(id_game: int, name_file: str, method: int, value
     value_int: int | None = utils.safe_str_to_int(value)
     if value_int is None:
         return
-    data: list[str] = [entry for entry in data if entry != [value_int, text]]  # type: ignore
+    data: list[str] = [entry for entry in data if entry[:2] != [value_int, text]]  # type: ignore
 
     with open(os.path.join(path, name_file + ".json"), "w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False)
