@@ -260,16 +260,18 @@ class MainWindow(QMainWindow):
         for row in reversed(rows_to_delete):
             table.removeRow(row)
 
-    def delete_item(self, item: QTableWidgetItem) -> None:
+    def delete_orthocheck_item(self, item: QTableWidgetItem) -> None:
         """Delete the selected item from the table.
 
         Args:
             item (QTableWidgetItem): item from the table
         """
+        json_man.remove_entry_by_line_number(process.id_current_game - 1,
+                                             self.ui.tableWidget_1.item(item.row(), 0).text(),
+                                             1,
+                                             self.ui.tableWidget_1.item(item.row(), 1).text(),
+                                             self.ui.tableWidget_1.item(item.row(), 2).text())
         self.ui.tableWidget_1.removeRow(item.row())
-        json_man.save_result_process_one_str(process.id_current_game - 1,
-                                             self.ui.label_sheetOpened.text(), 1,
-                                             self.get_table_data(self.ui.tableWidget_1))
 
     def delete_languagetool_item(self, item: QTableWidgetItem) -> None:
         """Delete the selected item from the table.
@@ -278,6 +280,7 @@ class MainWindow(QMainWindow):
             item (QTableWidgetItem): item from the table
         """
         process.list_ignored_languagetool_rules_current_data.pop(item.row())
+        file: str = self.ui.tableWidget_1.item(item.row(), 0).text()
         self.ui.tableWidget_2.removeRow(item.row())
         data: list[tuple[int, str]] = self.get_table_data(self.ui.tableWidget_2)
         data_with_rules: list[tuple[int, str, str]] = [
@@ -285,7 +288,7 @@ class MainWindow(QMainWindow):
             for x, row in enumerate(data)
         ]
         json_man.save_result_process_two_str(process.id_current_game - 1,
-                                             self.ui.label_sheetOpened.text(), 2,
+                                             file, 2,
                                              data_with_rules)
 
     def add_character(self, item: QTableWidgetItem) -> None:
@@ -318,7 +321,7 @@ class MainWindow(QMainWindow):
 
     def update_table(
         self, table: QTableWidget, data: Sequence[Union[tuple[str, int, str], tuple[int, str, str]]],
-        color: QColor  = QColor(255, 255, 255)
+        color: QColor = QColor(255, 255, 255)
     ) -> None:
         """Update the table with the given data."""
         if not data:
@@ -540,7 +543,7 @@ class MainWindow(QMainWindow):
 
         self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
         self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
-        self.delete_action.triggered.connect(lambda: self.delete_item(item))
+        self.delete_action.triggered.connect(lambda: self.delete_orthocheck_item(item))
         self.add_character_action.triggered.connect(lambda: self.add_character(item))
         self.add_punctuation_action.triggered.connect(lambda: self.add_punctuation(item))
 

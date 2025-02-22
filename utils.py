@@ -35,3 +35,10 @@ def read_until_occurrence(f: str, end_char: str) -> None:
     char: str = fs.read(1)
     while char not in [end_char, ""]:
         char = fs.read(1)
+
+
+def safe_str_to_int(value: str) -> int | None:
+    try:
+        return int(value)
+    except ValueError:
+        return None
