@@ -338,7 +338,7 @@ class MainWindow(QMainWindow):
         """
         self.clear_table(self.ui.tableWidget_1)
         self.clear_table(self.ui.tableWidget_2)
-        self.clear_table(self.ui.tableWidget_3)
+        process.list_ignored_languagetool_rules_current_data = []
         list_file_name: list[str] | int = process.get_sheet_name_in_folder(url_folder)
         if isinstance(list_file_name, int):
             return
@@ -355,20 +355,18 @@ class MainWindow(QMainWindow):
         results: list[list[Any]]
         date: list[str]
         results, date = json_man.load_result_process(process.id_current_game - 1, file_name)
-
         if not isFromFolder:
             self.clear_table(self.ui.tableWidget_1)
             self.clear_table(self.ui.tableWidget_2)
-            self.clear_table(self.ui.tableWidget_3)
+            process.list_ignored_languagetool_rules_current_data = [row[2] for row in results[1]]
+        else:
+            process.list_ignored_languagetool_rules_current_data.extend([row[2] for row in results[1]])
         self.update_table(self.ui.tableWidget_1, [(file_name, row[0], row[1]) for row in results[0]])
         self.update_table(self.ui.tableWidget_2, [(file_name, row[0], row[1]) for row in results[1]])
 
         if not isFromFolder:
             self.ui.label_lastUdate_1.setText(date[0])
             self.ui.label_lastUdate_2.setText(date[1])
-
-        # languageTool
-        process.list_ignored_languagetool_rules_current_data = [row[2] for row in results[1]]
 
     def get_table_data(self, table: QTableWidget) -> list[tuple[int, str]]:
         """Get all data from the table in the same format as result.
@@ -558,6 +556,7 @@ class MainWindow(QMainWindow):
             return
         menu = QMenu(self)
 
+        print(process.list_ignored_languagetool_rules_current_data)
         rule_text: str = process.list_ignored_languagetool_rules_current_data[item.row()]
         self.add_to_ignored_rules_action = QAction("ignorer " + rule_text + " pour ce jeu", self)
         self.delete_languagetool_item_action = QAction("Faute traitée", self)
@@ -639,7 +638,7 @@ class MainWindow(QMainWindow):
         if self.url_type == "spreadsheet":
             process.list_ignored_languagetool_rules_current_data = [row[3] for row in result[0]]
         elif self.url_type == "folder":
-            process.list_ignored_languagetool_rules_current_data += [row[3] for row in result[0]]
+            process.list_ignored_languagetool_rules_current_data.extend([row[3] for row in result[0]])
 
         json_man.save_result_process_two_str(process.id_current_game - 1,
                                              result[1], 2,
