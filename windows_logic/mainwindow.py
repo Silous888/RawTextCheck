@@ -4,7 +4,7 @@ from typing import Union, Sequence, Any
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem, QMenu, QAction, QTableWidget
 from PyQt5.QtCore import QObject, QThread, Qt, pyqtSignal, QTimer, QPoint, QEventLoop, pyqtBoundSignal
-from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtGui import QCloseEvent, QColor
 
 # -------------------- Import Lib User -------------------
 from qt_files.Ui_mainwindow import Ui_MainWindow
@@ -317,7 +317,8 @@ class MainWindow(QMainWindow):
         table.setHorizontalHeaderLabels(["fichier", "ligne", "faute"])
 
     def update_table(
-        self, table: QTableWidget, data: Sequence[Union[tuple[str, int, str], tuple[int, str, str]]]
+        self, table: QTableWidget, data: Sequence[Union[tuple[str, int, str], tuple[int, str, str]]],
+        color: QColor  = QColor(255, 255, 255)
     ) -> None:
         """Update the table with the given data."""
         if not data:
@@ -328,6 +329,7 @@ class MainWindow(QMainWindow):
             for col_index, value in enumerate(row_data):
                 item = QTableWidgetItem(str(value))
                 table.setItem(last_row + row_index, col_index, item)
+                table.item(last_row + row_index, col_index).setBackground(color)
 
     def load_last_results_folder(self, url_folder: str) -> None:
         """load every tables with last check data, and show
@@ -342,10 +344,14 @@ class MainWindow(QMainWindow):
         list_file_name: list[str] | int = process.get_sheet_name_in_folder(url_folder)
         if isinstance(list_file_name, int):
             return
-        for file_name in list_file_name:
-            self.load_last_results(file_name, isFromFolder=True)
+        for index, file_name in enumerate(list_file_name):
+            if index % 2 == 1:
+                self.load_last_results(file_name, isFromFolder=True, color=QColor(230, 230, 230))
+            else:
+                self.load_last_results(file_name, isFromFolder=True)
 
-    def load_last_results(self, file_name: str, isFromFolder: bool = False) -> None:
+    def load_last_results(self, file_name: str, isFromFolder: bool = False,
+                          color: QColor = QColor(255, 255, 255)) -> None:
         """load every tables with last check data, and show
         last modified date
 
@@ -361,8 +367,8 @@ class MainWindow(QMainWindow):
             process.list_ignored_languagetool_rules_current_data = [row[2] for row in results[1]]
         else:
             process.list_ignored_languagetool_rules_current_data.extend([row[2] for row in results[1]])
-        self.update_table(self.ui.tableWidget_1, [(file_name, row[0], row[1]) for row in results[0]])
-        self.update_table(self.ui.tableWidget_2, [(file_name, row[0], row[1]) for row in results[1]])
+        self.update_table(self.ui.tableWidget_1, [(file_name, row[0], row[1]) for row in results[0]], color)
+        self.update_table(self.ui.tableWidget_2, [(file_name, row[0], row[1]) for row in results[1]], color)
 
         if not isFromFolder:
             self.ui.label_lastUdate_1.setText(date[0])
