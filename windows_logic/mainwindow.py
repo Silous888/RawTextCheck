@@ -409,6 +409,7 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_method_1.clicked.connect(self.pushbutton_method_1_clicked)
         self.ui.pushButton_method_2.clicked.connect(self.pushbutton_method_2_clicked)
         self.ui.pushButton_method_search.clicked.connect(self.pushButton_method_search_clicked)
+        self.ui.pushButton_method_replace.clicked.connect(self.pushButton_method_replace_clicked)
         self.ui.pushButton_uploadSpecificWords.clicked.connect(self.pushbutton_uploadspecificwords_clicked)
         # lineEdit
         self.ui.lineEdit_urlSheet.textChanged.connect(self.lineedit_urlsheet_textchanged)
@@ -459,13 +460,14 @@ class MainWindow(QMainWindow):
 
             for index, file_url in enumerate(list_file_url):
                 print(f"{index + 1}/{len(list_file_url)}\n{file_url}")
+                if index == len(list_file_url) - 1:
+                    self.folder_process_finished = True
 
                 loop = QEventLoop()
                 self.m_worker.signal_process_loop.connect(loop.quit)
                 signal_start.emit(file_url, *args)
                 loop.exec_()
                 self.m_worker.signal_process_loop.disconnect(loop.quit)
-            self.folder_process_finished = True
 
     def pushbutton_method_1_clicked(self) -> None:
         """Slot for pushButton_method_1."""
@@ -493,6 +495,18 @@ class MainWindow(QMainWindow):
             self.ui.lineEdit_frenchColumn.text(),
             self.ui.lineEdit_search.text()
         )
+
+    def pushButton_method_replace_clicked(self) -> None:
+        """Slot for pushButton_method_replace."""
+        table: QTableWidget = self.ui.tableWidget_3
+        for row in range(table.rowCount()):
+            process.replace_text_in_cell(
+                table.item(row, 0).text(),
+                self.ui.lineEdit_frenchColumn.text(),
+                table.item(row, 1).text(),
+                self.ui.lineEdit_search_result.text(),
+                self.ui.lineEdit_replace.text()
+            )
 
     def pushbutton_uploadspecificwords_clicked(self) -> None:
         """slot for pushButton_uploadSpecificWords
@@ -683,12 +697,13 @@ class MainWindow(QMainWindow):
         if isinstance(result, int):
             return
         self.update_table(self.ui.tableWidget_3, result[0])
+        print(self.url_type, self.folder_process_finished)
         if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
             self.ui.groupBox_1_2_1.setEnabled(True)
             self.ui.lineEdit_search.setEnabled(True)
             self.toggle_ui_replace(True)
             self.ui.lineEdit_search_result.setText(self.ui.lineEdit_search.text())
-            self.ui.tabWidget_result.setCurrentIndex(3)
+            self.ui.tabWidget_result.setCurrentIndex(2)
 
     def add_specific_words_finished(self) -> None:
         """slot for signal add_specific_words_finished

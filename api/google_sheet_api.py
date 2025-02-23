@@ -175,7 +175,7 @@ def _open_sheet(sheet_index: int) -> int:
         # need to check exception
         _last_sheet = last_sheet
         _last_sheet_index = sheet_index
-        return 0
+    return 0
 
 
 def get_sheet(sheet_index: int) -> (list[list[str]] | int):
@@ -259,7 +259,7 @@ def get_cell(sheet_index: int, row: int, col: int) -> (str | int):
     ret = _open_sheet(sheet_index)
     if ret != 0:
         return ret
-    return _safe_execute_method(_last_sheet, "cell", row, col)
+    return _safe_execute_method(_last_sheet, "cell", row, col).value
 
 
 def set_cell(sheet_index: int, row: int, col: int, value: str) -> int:
@@ -280,8 +280,9 @@ def set_cell(sheet_index: int, row: int, col: int, value: str) -> int:
     """
     ret = _open_sheet(sheet_index)
     if ret != 0:
+        print(ret)
         return ret
-    _safe_execute_method(_last_sheet, "update_cell", row, col)
+    _safe_execute_method(_last_sheet, "update_cell", row, col, value)
     return 0
 
 

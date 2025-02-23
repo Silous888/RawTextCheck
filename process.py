@@ -203,13 +203,14 @@ def get_sheet_url_in_folder(url_folder: str) -> list[str] | int:
     return -2
 
 
-def replace_text_in_cell(filename: str, column_letter: str, line: int, old_text: str, new_text: str) -> int:
+def replace_text_in_cell(filename: str, column_letter: str, line: str, old_text: str, new_text: str) -> int:
     id_sheet: str | int = gdrive.get_id_by_name(filename)
     if isinstance(id_sheet, int):
         return id_sheet
     num_column: int = utils.get_position_letter_alphabet(column_letter)
+    line_int: int = utils.safe_str_to_int(line)
     gsheet.open_spreadsheet(id_sheet)
-    return gsheet.replace_text_in_cell(0, num_column, line - 1, old_text, new_text)
+    return gsheet.replace_text_in_cell(0, line_int, num_column, old_text, new_text)
 
 
 def remove_ignored_substrings(text: str, ignored_substrings: dict[str, str], insert_space: bool) -> str:
@@ -357,4 +358,4 @@ def search_string_in_sheet(url_sheet: str, column_letter: str, string_to_search:
     error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
     if error_code != 0:
         return error_code
-    return [(i, sentence) for i, sentence in enumerate(list_sentences_current_sheet) if string_to_search in sentence]
+    return [(i + 1, sentence) for i, sentence in enumerate(list_sentences_current_sheet) if string_to_search in sentence]

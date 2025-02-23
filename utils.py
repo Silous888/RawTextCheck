@@ -29,11 +29,11 @@ def get_position_letter_alphabet(letter: str) -> int:
     return ord(letter.upper()) - ord("A") + 1
 
 
-def safe_str_to_int(value: str) -> int | None:
+def safe_str_to_int(value: str) -> int:
     try:
         return int(value)
     except ValueError:
-        return None
+        return -1
 
 
 def extract_before_arrow(text: str) -> str:
