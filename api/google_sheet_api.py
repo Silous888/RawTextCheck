@@ -241,14 +241,15 @@ def get_value_column(sheet_index: int, column: int) -> (list[str] | int):
 
 
 def get_cell(sheet_index: int, row: int, col: int) -> (str | int):
-    """get the values in the selected range in a sheet
+    """get the values in the selected cell in a sheet
 
     Args:
         sheet_index (int): index of the sheet, first is 0
-        range (str): range of the values wanted (ex: 'A1:C3')
+        row (int): row of the cell
+        col (int): column of the cell
 
     Returns:
-        str | int: values in the sheet, error code otherwise
+        str | int: value in the cell, error code otherwise
 
     error code:
     -3 if no token, end of waiting time
@@ -259,6 +260,39 @@ def get_cell(sheet_index: int, row: int, col: int) -> (str | int):
     if ret != 0:
         return ret
     return _safe_execute_method(_last_sheet, "cell", row, col)
+
+
+def set_cell(sheet_index: int, row: int, col: int, value: str) -> int:
+    """get the values in the selected cell in a sheet
+
+    Args:
+        sheet_index (int): index of the sheet, first is 0
+        row (int): row of the cell
+        col (int): column of the cell
+
+    Returns:
+        str | int: value in the cell, error code otherwise
+
+    error code:
+    -3 if no token, end of waiting time
+    -4 if no spreadsheet opened
+    -5 if index not found
+    """
+    ret = _open_sheet(sheet_index)
+    if ret != 0:
+        return ret
+    _safe_execute_method(_last_sheet, "update_cell", row, col)
+    return 0
+
+
+def replace_text_in_cell(sheet_index: int, row: int, col: int, original_text: str, new_text: str) -> int:
+    """replace part of the text in the selected cell in a sheet"""
+    cell_text: str | int = get_cell(sheet_index, row, col)
+    if isinstance(cell_text, int):
+        return cell_text
+    new_cell_text: str = cell_text.replace(original_text, new_text)
+    set_cell(sheet_index, row, col, new_cell_text)
+    return 0
 
 
 def set_sheet_values(sheet_index: int, values: list[list[str]]) -> int:
