@@ -495,7 +495,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget_result">
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab_1">
            <attribute name="title">
@@ -562,6 +562,12 @@
               <property name="contextMenuPolicy">
                <enum>Qt::CustomContextMenu</enum>
               </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOn</enum>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
               <property name="selectionMode">
                <enum>QAbstractItemView::SingleSelection</enum>
               </property>
@@ -613,6 +619,12 @@
              <widget class="QTableWidget" name="tableWidget_3">
               <property name="contextMenuPolicy">
                <enum>Qt::CustomContextMenu</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOn</enum>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
               </property>
               <property name="selectionMode">
                <enum>QAbstractItemView::SingleSelection</enum>

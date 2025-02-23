@@ -96,18 +96,32 @@ def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) 
         **kwargs (Any): Keyword arguments for the method.
 
     Returns:
-        Any: The result of the method if it succeeds, otherwise None.
+        Any: The result of the method if it succeeds, otherwise an error code.
     """
     method = getattr(obj, method_name)
-    for _ in range(_MAX_RETRIES):
+
+    print(f"[_safe_execute_method] Trying method: {method_name} on {obj}")
+    print(f"[_safe_execute_method] Arguments: {args}, Keyword Arguments: {kwargs}")
+
+    for attempt in range(_MAX_RETRIES):
         try:
-            return method(*args, **kwargs)
+            print(f"[_safe_execute_method] Attempt {attempt + 1}/{_MAX_RETRIES}")
+            result = method(*args, **kwargs)
+            print(f"[_safe_execute_method] Success!")
+            return result
         except Exception as e:
-            if "429" not in str(e) and "500" not in str(e):
-                print(e)
-                return -11  # to define later
-        _time.sleep(_WAIT_TIME)
-    return -10  # max retries reached
+            print(f"[_safe_execute_method] Exception caught: {e}")
+
+            if "429" not in str(e) and "500" not in str(e) and "503" not in str(e):
+                print(f"[_safe_execute_method] Non-retryable error, returning -11")
+                return -11  # Error code to define later
+
+            print(f"[_safe_execute_method] Retrying in {_WAIT_TIME} seconds...")
+            _time.sleep(_WAIT_TIME)
+
+    print(f"[_safe_execute_method] Max retries reached, returning -10")
+    return -10  # Max retries reached
+
 
 
 def open_spreadsheet(sheet_id: str) -> int:

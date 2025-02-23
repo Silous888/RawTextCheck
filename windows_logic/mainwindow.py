@@ -464,12 +464,15 @@ class MainWindow(QMainWindow):
         if self.url_type == "spreadsheet":
             signal_start.emit(self.ui.lineEdit_urlSheet.text(), *args)
         elif self.url_type == "folder":
+            self.ui.label_updateFolder.setEnabled(True)
             list_file_url: list[str] | int = process.get_sheet_url_in_folder(self.ui.lineEdit_urlSheet.text())
             if isinstance(list_file_url, int):
                 return
 
             for index, file_url in enumerate(list_file_url):
                 self.ui.label_updateFolder.setText(f"{index + 1} sur {len(list_file_url)}")
+                print("---------------------------")
+                print(index, file_url)
                 if index == len(list_file_url) - 1:
                     self.folder_process_finished = True
 
@@ -482,6 +485,7 @@ class MainWindow(QMainWindow):
     def pushbutton_method_1_clicked(self) -> None:
         """Slot for pushButton_method_1."""
         self.ui.groupBox_1_2_1.setEnabled(False)
+        self.ui.groupBox_1.setEnabled(False)
         if not self.is_orthocheck_available:
             self.m_worker.signal_orthocheck_load_dictionary_start.emit()
         self.clear_table(self.ui.tableWidget_1)
@@ -490,6 +494,7 @@ class MainWindow(QMainWindow):
     def pushbutton_method_2_clicked(self) -> None:
         """Slot for pushButton_method_2."""
         self.ui.groupBox_1_2_1.setEnabled(False)
+        self.ui.groupBox_1.setEnabled(False)
         if not self.is_languagetool_available:
             self.m_worker.signal_languagetool_initialize_start.emit()
         self.clear_table(self.ui.tableWidget_2)
@@ -498,6 +503,7 @@ class MainWindow(QMainWindow):
     def pushButton_method_search_clicked(self) -> None:
         """Slot for pushButton_method_search."""
         self.ui.groupBox_1_2_1.setEnabled(False)
+        self.ui.groupBox_1.setEnabled(False)
         self.toggle_ui_replace(False)
         self.clear_table(self.ui.tableWidget_3)
         self.process_files(
@@ -509,6 +515,7 @@ class MainWindow(QMainWindow):
     def pushButton_method_replace_clicked(self) -> None:
         """Slot for pushButton_method_replace."""
         self.ui.groupBox_1_2_1.setEnabled(False)
+        self.ui.groupBox_1.setEnabled(False)
         table: QTableWidget = self.ui.tableWidget_3
         for row in range(table.rowCount()):
             if row == table.rowCount() - 1:
@@ -516,6 +523,7 @@ class MainWindow(QMainWindow):
             if self.ui.lineEdit_search_result.text() not in table.item(row, 2).text():
                 if self.folder_process_finished:
                     self.ui.groupBox_1_2_1.setEnabled(True)
+                    self.ui.groupBox_1.setEnabled(True)
                 continue
             self.m_worker.signal_replace_string_process_start.emit(
                 table.item(row, 0).text(),
@@ -671,6 +679,14 @@ class MainWindow(QMainWindow):
         self.is_languagetool_available = True
         # self.ui.pushButton_method_2.setEnabled(bool(self.ui.comboBox_game.currentIndex() and self.is_url_correct))
 
+    def enable_after_process(self) -> None:
+        """enable ui after process
+        """
+        self.ui.groupBox_1_2_1.setEnabled(True)
+        self.ui.groupBox_1.setEnabled(True)
+        self.ui.groupBox_1.setEnabled(False)
+        self.ui.label_updateFolder.setText("")
+
     def orthocheck_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
         """slot for signal orthocheck_process_finished
         """
@@ -684,6 +700,7 @@ class MainWindow(QMainWindow):
 
         if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
             self.ui.groupBox_1_2_1.setEnabled(True)
+            self.ui.groupBox_1.setEnabled(True)
             self.ui.label_lastUdate_1.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(0)
             self.folder_process_finished = False
