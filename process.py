@@ -358,4 +358,8 @@ def search_string_in_sheet(url_sheet: str, column_letter: str, string_to_search:
     error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
     if error_code != 0:
         return error_code
-    return [(i + 1, sentence) for i, sentence in enumerate(list_sentences_current_sheet) if string_to_search in sentence]
+    return [
+        (i + 1, sentence)
+        for i, sentence in enumerate(list_sentences_current_sheet)
+        if string_to_search in sentence
+    ]

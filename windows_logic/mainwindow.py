@@ -26,6 +26,7 @@ class _WorkerMainWindow(QObject):
     signal_orthocheck_process_start = pyqtSignal(str, str)
     signal_language_tool_process_start = pyqtSignal(str, str)
     signal_find_string_process_start = pyqtSignal(str, str, str)
+    signal_replace_string_process_start = pyqtSignal(str, str, str, str, str, int)
     signal_add_specific_words_start = pyqtSignal()
 
     signal_load_word_excluded_finished = pyqtSignal()
@@ -35,6 +36,7 @@ class _WorkerMainWindow(QObject):
     signal_orthocheck_process_finished = pyqtSignal(object)
     signal_language_tool_process_finished = pyqtSignal(object)
     signal_find_string_process_finished = pyqtSignal(object)
+    signal_replace_string_process_finished = pyqtSignal(int, str, str)
     signal_add_specific_words_finished = pyqtSignal()
     signal_process_loop = pyqtSignal()
 
@@ -90,6 +92,11 @@ class _WorkerMainWindow(QObject):
         self.signal_find_string_process_finished.emit((output_name, name_file))
         self.signal_process_loop.emit()
 
+    def replace_string_process_thread(self, filename: str, column_letter: str, line: str,
+                                      old_text: str, new_text: str, index: int) -> None:
+        process.replace_text_in_cell(filename, column_letter, line, old_text, new_text)
+        self.signal_replace_string_process_finished.emit(index, old_text, new_text)
+
     def add_specific_words_thread(self) -> None:
         process.add_list_specific_word()
         self.signal_add_specific_words_finished.emit()
@@ -123,6 +130,7 @@ class MainWindow(QMainWindow):
         self.ui.label_sheetOpened.setText("")
         self.ui.label_lastUdate_1.setText("")
         self.ui.label_lastUdate_2.setText("")
+        self.ui.label_updateFolder.setText("")
 
         self.urlsheet_timer = QTimer(self)
         self.urlsheet_timer.setSingleShot(True)
@@ -429,6 +437,7 @@ class MainWindow(QMainWindow):
         self.m_worker.signal_orthocheck_process_start.connect(self.m_worker.orthocheck_process_thread)
         self.m_worker.signal_language_tool_process_start.connect(self.m_worker.language_tool_process_thread)
         self.m_worker.signal_find_string_process_start.connect(self.m_worker.find_string_process_thread)
+        self.m_worker.signal_replace_string_process_start.connect(self.m_worker.replace_string_process_thread)
         self.m_worker.signal_add_specific_words_start.connect(self.m_worker.add_specific_words_thread)
         # thread finish
         self.m_worker.signal_load_word_excluded_finished.connect(self.load_dialog_finished)
@@ -438,6 +447,7 @@ class MainWindow(QMainWindow):
         self.m_worker.signal_orthocheck_process_finished.connect(self.orthocheck_process_finished)
         self.m_worker.signal_language_tool_process_finished.connect(self.language_tool_process_finished)
         self.m_worker.signal_find_string_process_finished.connect(self.find_string_process_finished)
+        self.m_worker.signal_replace_string_process_finished.connect(self.replace_string_process_finished)
         self.m_worker.signal_add_specific_words_finished.connect(self.add_specific_words_finished)
         # help
 
@@ -459,7 +469,7 @@ class MainWindow(QMainWindow):
                 return
 
             for index, file_url in enumerate(list_file_url):
-                print(f"{index + 1}/{len(list_file_url)}\n{file_url}")
+                self.ui.label_updateFolder.setText(f"{index + 1} sur {len(list_file_url)}")
                 if index == len(list_file_url) - 1:
                     self.folder_process_finished = True
 
@@ -498,14 +508,22 @@ class MainWindow(QMainWindow):
 
     def pushButton_method_replace_clicked(self) -> None:
         """Slot for pushButton_method_replace."""
+        self.ui.groupBox_1_2_1.setEnabled(False)
         table: QTableWidget = self.ui.tableWidget_3
         for row in range(table.rowCount()):
-            process.replace_text_in_cell(
+            if row == table.rowCount() - 1:
+                self.folder_process_finished = True
+            if self.ui.lineEdit_search_result.text() not in table.item(row, 2).text():
+                if self.folder_process_finished:
+                    self.ui.groupBox_1_2_1.setEnabled(True)
+                continue
+            self.m_worker.signal_replace_string_process_start.emit(
                 table.item(row, 0).text(),
                 self.ui.lineEdit_frenchColumn.text(),
                 table.item(row, 1).text(),
                 self.ui.lineEdit_search_result.text(),
-                self.ui.lineEdit_replace.text()
+                self.ui.lineEdit_replace.text(),
+                row
             )
 
     def pushbutton_uploadspecificwords_clicked(self) -> None:
@@ -669,6 +687,7 @@ class MainWindow(QMainWindow):
             self.ui.label_lastUdate_1.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(0)
             self.folder_process_finished = False
+            self.ui.label_updateFolder.setText("")
 
     def language_tool_process_finished(self, result: tuple[list[tuple[str, int, str, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
@@ -690,6 +709,7 @@ class MainWindow(QMainWindow):
             self.ui.label_lastUdate_2.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(1)
             self.folder_process_finished = False
+            self.ui.label_updateFolder.setText("")
 
     def find_string_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
@@ -697,13 +717,27 @@ class MainWindow(QMainWindow):
         if isinstance(result, int):
             return
         self.update_table(self.ui.tableWidget_3, result[0])
-        print(self.url_type, self.folder_process_finished)
         if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
             self.ui.groupBox_1_2_1.setEnabled(True)
             self.ui.lineEdit_search.setEnabled(True)
+            self.folder_process_finished = False
             self.toggle_ui_replace(True)
             self.ui.lineEdit_search_result.setText(self.ui.lineEdit_search.text())
             self.ui.tabWidget_result.setCurrentIndex(2)
+            self.ui.label_updateFolder.setText("")
+
+    def replace_string_process_finished(self, index: int, old_text: str, new_text: str) -> None:
+        """slot for signal replace_string_process_finished
+        """
+        self.ui.tableWidget_3.item(index, 2).setText(
+            self.ui.tableWidget_3.item(index, 2).text().replace(old_text, new_text)
+        )
+        self.ui.tableWidget_3.item(index, 2).setBackground(QColor(0, 255, 0))
+        if self.folder_process_finished:
+            self.ui.groupBox_1_2_1.setEnabled(True)
+            self.ui.lineEdit_search.setEnabled(True)
+            self.toggle_ui_replace(True)
+            self.folder_process_finished = False
 
     def add_specific_words_finished(self) -> None:
         """slot for signal add_specific_words_finished

@@ -408,6 +408,24 @@
               </property>
              </widget>
             </widget>
+            <widget class="QLabel" name="label_updateFolder">
+             <property name="geometry">
+              <rect>
+               <x>180</x>
+               <y>10</y>
+               <width>121</width>
+               <height>41</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>last_update</string>
+             </property>
+            </widget>
            </widget>
           </item>
           <item>
