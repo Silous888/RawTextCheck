@@ -684,7 +684,6 @@ class MainWindow(QMainWindow):
         """
         self.ui.groupBox_1_2_1.setEnabled(True)
         self.ui.groupBox_1.setEnabled(True)
-        self.ui.groupBox_1.setEnabled(False)
         self.ui.label_updateFolder.setText("")
         self.folder_process_finished = False
 
