@@ -263,7 +263,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget_result.setCurrentIndex(2)
+        self.tabWidget_result.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.pushButton_gameDictionary, self.lineEdit_frenchColumn)
         MainWindow.setTabOrder(self.lineEdit_frenchColumn, self.pushButton_method_1)

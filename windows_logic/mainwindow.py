@@ -686,6 +686,7 @@ class MainWindow(QMainWindow):
         self.ui.groupBox_1.setEnabled(True)
         self.ui.groupBox_1.setEnabled(False)
         self.ui.label_updateFolder.setText("")
+        self.folder_process_finished = False
 
     def orthocheck_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
         """slot for signal orthocheck_process_finished
@@ -699,12 +700,9 @@ class MainWindow(QMainWindow):
                                              [(row[1], row[2]) for row in result[0]])
 
         if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
-            self.ui.groupBox_1_2_1.setEnabled(True)
-            self.ui.groupBox_1.setEnabled(True)
+            self.enable_after_process()
             self.ui.label_lastUdate_1.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(0)
-            self.folder_process_finished = False
-            self.ui.label_updateFolder.setText("")
 
     def language_tool_process_finished(self, result: tuple[list[tuple[str, int, str, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
@@ -722,11 +720,9 @@ class MainWindow(QMainWindow):
                                              [(row[1], row[2], row[3]) for row in result[0]])
 
         if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
-            self.ui.groupBox_1_2_1.setEnabled(True)
+            self.enable_after_process()
             self.ui.label_lastUdate_2.setText(process.get_current_date())
             self.ui.tabWidget_result.setCurrentIndex(1)
-            self.folder_process_finished = False
-            self.ui.label_updateFolder.setText("")
 
     def find_string_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
@@ -735,13 +731,11 @@ class MainWindow(QMainWindow):
             return
         self.update_table(self.ui.tableWidget_3, result[0])
         if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
-            self.ui.groupBox_1_2_1.setEnabled(True)
+            self.enable_after_process()
             self.ui.lineEdit_search.setEnabled(True)
-            self.folder_process_finished = False
             self.toggle_ui_replace(True)
             self.ui.lineEdit_search_result.setText(self.ui.lineEdit_search.text())
             self.ui.tabWidget_result.setCurrentIndex(2)
-            self.ui.label_updateFolder.setText("")
 
     def replace_string_process_finished(self, index: int, old_text: str, new_text: str) -> None:
         """slot for signal replace_string_process_finished
@@ -751,10 +745,9 @@ class MainWindow(QMainWindow):
         )
         self.ui.tableWidget_3.item(index, 2).setBackground(QColor(0, 255, 0))
         if self.folder_process_finished:
-            self.ui.groupBox_1_2_1.setEnabled(True)
+            self.enable_after_process()
             self.ui.lineEdit_search.setEnabled(True)
             self.toggle_ui_replace(True)
-            self.folder_process_finished = False
 
     def add_specific_words_finished(self) -> None:
         """slot for signal add_specific_words_finished
