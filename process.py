@@ -129,7 +129,7 @@ def set_list_specific_word(list_word: list[str]) -> None:
     Args:
         list_word (list[str]): list of specific words
     """
-    list_word.sort()
+    list_word = sorted(list_word, key=lambda v: (v.upper(), v[0].islower()))
     gsheet.open_spreadsheet(ID_SHEET_DICT_GAME)
     range_to_update: list[str] = ["A:A"]
     gsheet.clear_sheet_range(id_current_game - 1, range_to_update)
