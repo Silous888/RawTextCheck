@@ -4,6 +4,7 @@ import sys
 
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QApplication
+from qt_material import apply_stylesheet
 
 # -------------------- Import Lib User -------------------
 from windows_logic.mainwindow import MainWindow
@@ -19,5 +20,8 @@ if __name__ == "__main__":
     # create qt application
     app = QApplication(sys.argv)
     program = MainWindow()
+
+    apply_stylesheet(app, theme='dark_amber.xml')
+
     program.show()
     sys.exit(app.exec())

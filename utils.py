@@ -39,3 +39,13 @@ def safe_str_to_int(value: str) -> int:
 def extract_before_arrow(text: str) -> str:
     match: re.Match[str] | None = re.match(r"^(.*?)\s*=>", text)
     return match.group(1) if match else ""
+
+
+def get_before_arrow(text: str) -> str:
+    """Get the part of the string before ' =>'."""
+    return text.split(' => ')[0]
+
+
+def get_after_arrow(text: str) -> str:
+    """Get the part of the string after ' =>'."""
+    return text.split(' => ')[1]

@@ -215,6 +215,35 @@ class MainWindow(QMainWindow):
                                              self.ui.label_sheetOpened.text(), 1,
                                              self.get_table_data(self.ui.tableWidget_1))
 
+    def add_to_specific_dictionary_languagetool(self, item: QTableWidgetItem) -> None:
+        """add to specific dictionary of the game
+
+        Args:
+            item (QTableWidgetItem): item from the table
+        """
+        word: str = process.utils.extract_before_arrow(item.text())
+        process.list_specific_word_to_upload.append(word)
+        self.remove_rows_table_by_text(self.ui.tableWidget_2, item.text())
+        self.ui.pushButton_uploadSpecificWords.setText(
+            str(len(process.list_specific_word_to_upload)) + " terme(s) à upload"
+        )
+        self.ui.pushButton_uploadSpecificWords.setEnabled(True)
+        self.ui.comboBox_game.setEnabled(False)
+        self.ui.pushButton_gameDictionary.setEnabled(False)
+        textToolTip: str = "Veuillez uploader les termes avant de changer de jeu"
+        self.ui.comboBox_game.setToolTip(textToolTip)
+        self.ui.pushButton_gameDictionary.setToolTip(textToolTip)
+        data: list[tuple[str, int, str]] = self.get_table_data(self.ui.tableWidget_2)
+        data_with_rules: list[tuple[int, str, str]] = [
+            (row[1], row[2], process.list_ignored_languagetool_rules_current_data[x])
+            for x, row in enumerate(data)
+        ]
+        json_man.save_result_process_two_str(process.id_current_game - 1,
+                                             self.ui.label_sheetOpened.text(), 2,
+                                             data_with_rules)
+
+
+
     def add_to_global_dictionary(self, item: QTableWidgetItem) -> None:
         """add to global dictionary of the method
 
@@ -261,7 +290,8 @@ class MainWindow(QMainWindow):
     def remove_rows_table_by_text(self, table: QTableWidget, text: str) -> None:
         rows_to_delete: list[int] = []
         for row in range(table.rowCount()):
-            cell_item: QTableWidgetItem = table.item(row, 1)
+            cell_item: QTableWidgetItem = table.item(row, 2)
+            print(cell_item.text())
             if cell_item and cell_item.text() == text:
                 rows_to_delete.append(row)
         # Delete rows in reverse order to avoid messing up the row indices
@@ -588,6 +618,7 @@ class MainWindow(QMainWindow):
         self.add_character_action = QAction("Ajouter en tant que lettre autorisée", self)
         self.add_punctuation_action = QAction("Ajouter en tant que ponctuation autorisée", self)
 
+
         self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
         self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
         self.delete_action.triggered.connect(lambda: self.delete_orthocheck_item(item))
@@ -610,13 +641,19 @@ class MainWindow(QMainWindow):
             return
         menu = QMenu(self)
 
+        self.add_to_specific_dictionary_action = QAction("Ajouter aux termes du jeu", self)
         rule_text: str = process.list_ignored_languagetool_rules_current_data[item.row()]
         self.add_to_ignored_rules_action = QAction("ignorer " + rule_text + " pour ce jeu", self)
         self.delete_languagetool_item_action = QAction("Faute traitée", self)
 
+        self.add_to_specific_dictionary_action.triggered.connect(
+            lambda: self.add_to_specific_dictionary_languagetool(item)
+        )
         self.add_to_ignored_rules_action.triggered.connect(lambda: self.add_to_ignored_rules(item))
         self.delete_languagetool_item_action.triggered.connect(lambda: self.delete_languagetool_item(item))
 
+        if item.text().endswith("Faute de frappe possible trouvée."):
+            menu.addAction(self.add_to_specific_dictionary_action)
         menu.addAction(self.add_to_ignored_rules_action)
         menu.addSeparator()
         menu.addAction(self.delete_languagetool_item_action)
