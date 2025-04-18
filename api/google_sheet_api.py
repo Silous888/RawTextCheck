@@ -96,18 +96,32 @@ def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) 
         **kwargs (Any): Keyword arguments for the method.
 
     Returns:
-        Any: The result of the method if it succeeds, otherwise None.
+        Any: The result of the method if it succeeds, otherwise an error code.
     """
     method = getattr(obj, method_name)
-    for _ in range(_MAX_RETRIES):
+
+    print(f"[_safe_execute_method] Trying method: {method_name} on {obj}")
+    print(f"[_safe_execute_method] Arguments: {args}, Keyword Arguments: {kwargs}")
+
+    for attempt in range(_MAX_RETRIES):
         try:
-            return method(*args, **kwargs)
+            print(f"[_safe_execute_method] Attempt {attempt + 1}/{_MAX_RETRIES}")
+            result = method(*args, **kwargs)
+            print(f"[_safe_execute_method] Success!")
+            return result
         except Exception as e:
-            if "'code': 429" not in str(e):
-                print(e)
-                return -11  # to define later
-        _time.sleep(_WAIT_TIME)
-    return -10  # max retries reached
+            print(f"[_safe_execute_method] Exception caught: {e}")
+
+            if "429" not in str(e) and "500" not in str(e) and "503" not in str(e):
+                print(f"[_safe_execute_method] Non-retryable error, returning -11")
+                return -11  # Error code to define later
+
+            print(f"[_safe_execute_method] Retrying in {_WAIT_TIME} seconds...")
+            _time.sleep(_WAIT_TIME)
+
+    print(f"[_safe_execute_method] Max retries reached, returning -10")
+    return -10  # Max retries reached
+
 
 
 def open_spreadsheet(sheet_id: str) -> int:
@@ -175,7 +189,7 @@ def _open_sheet(sheet_index: int) -> int:
         # need to check exception
         _last_sheet = last_sheet
         _last_sheet_index = sheet_index
-        return 0
+    return 0
 
 
 def get_sheet(sheet_index: int) -> (list[list[str]] | int):
@@ -241,14 +255,15 @@ def get_value_column(sheet_index: int, column: int) -> (list[str] | int):
 
 
 def get_cell(sheet_index: int, row: int, col: int) -> (str | int):
-    """get the values in the selected range in a sheet
+    """get the values in the selected cell in a sheet
 
     Args:
         sheet_index (int): index of the sheet, first is 0
-        range (str): range of the values wanted (ex: 'A1:C3')
+        row (int): row of the cell
+        col (int): column of the cell
 
     Returns:
-        str | int: values in the sheet, error code otherwise
+        str | int: value in the cell, error code otherwise
 
     error code:
     -3 if no token, end of waiting time
@@ -258,7 +273,41 @@ def get_cell(sheet_index: int, row: int, col: int) -> (str | int):
     ret = _open_sheet(sheet_index)
     if ret != 0:
         return ret
-    return _safe_execute_method(_last_sheet, "cell", row, col)
+    return _safe_execute_method(_last_sheet, "cell", row, col).value
+
+
+def set_cell(sheet_index: int, row: int, col: int, value: str) -> int:
+    """get the values in the selected cell in a sheet
+
+    Args:
+        sheet_index (int): index of the sheet, first is 0
+        row (int): row of the cell
+        col (int): column of the cell
+
+    Returns:
+        str | int: value in the cell, error code otherwise
+
+    error code:
+    -3 if no token, end of waiting time
+    -4 if no spreadsheet opened
+    -5 if index not found
+    """
+    ret = _open_sheet(sheet_index)
+    if ret != 0:
+        print(ret)
+        return ret
+    _safe_execute_method(_last_sheet, "update_cell", row, col, value)
+    return 0
+
+
+def replace_text_in_cell(sheet_index: int, row: int, col: int, original_text: str, new_text: str) -> int:
+    """replace part of the text in the selected cell in a sheet"""
+    cell_text: str | int = get_cell(sheet_index, row, col)
+    if isinstance(cell_text, int):
+        return cell_text
+    new_cell_text: str = cell_text.replace(original_text, new_text)
+    set_cell(sheet_index, row, col, new_cell_text)
+    return 0
 
 
 def set_sheet_values(sheet_index: int, values: list[list[str]]) -> int:

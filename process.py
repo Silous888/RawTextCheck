@@ -25,7 +25,7 @@ list_specific_word_to_upload: list[str] = []
 
 list_ignored_languagetool_rules_current_game: list[str] = []
 
-list_ignored_languagetool_rules_current_file: list[str] = []
+list_ignored_languagetool_rules_current_data: list[str] = []
 
 
 def get_current_date() -> str:
@@ -76,7 +76,7 @@ def get_index_item_with_rule(rule: str) -> list[int]:
     Returns:
         list[int] : list of index of the item with the rule
     """
-    return [i for i, x in enumerate(list_ignored_languagetool_rules_current_file) if x == rule]
+    return [i for i, x in enumerate(list_ignored_languagetool_rules_current_data) if x == rule]
 
 
 def remove_rule_current_file(rule: str) -> None:
@@ -88,9 +88,9 @@ def remove_rule_current_file(rule: str) -> None:
     Returns:
         list[int] : list of index of the item with the rule
     """
-    global list_ignored_languagetool_rules_current_file
-    list_ignored_languagetool_rules_current_file = [
-        x for x in list_ignored_languagetool_rules_current_file if x != rule
+    global list_ignored_languagetool_rules_current_data
+    list_ignored_languagetool_rules_current_data = [
+        x for x in list_ignored_languagetool_rules_current_data if x != rule
     ]
 
 
@@ -163,11 +163,54 @@ def get_name_and_type_of_url(url: str) -> tuple[str, str] | int:
     try:
         output: dict[str, str] | int = gdrive.get_file_metadata(utils.extract_google_drive_id(url))
         if not isinstance(output, int):
-            print(gdrive.list_spreadsheet_in_folder(utils.extract_google_drive_id(url)))
             return output["name"], output["mimeType"]
     except Exception:
         return -1
     return -2
+
+
+def get_sheet_name_in_folder(url_folder: str) -> list[str] | int:
+    """call get_file_metadata of google_drive_api and return name and mimeType of the file
+    Args:
+        url (str): url of the file
+
+    Returns:
+        tuple[str, str] | int : name and mimeType of the file, error code otherwise
+    """
+    try:
+        output: list[list[str]] | int = gdrive.list_spreadsheet_in_folder(utils.extract_google_drive_id(url_folder))
+        if not isinstance(output, int):
+            return [item[0] for item in output]
+    except Exception:
+        return -1
+    return -2
+
+
+def get_sheet_url_in_folder(url_folder: str) -> list[str] | int:
+    """call get_file_metadata of google_drive_api and return name and mimeType of the file
+    Args:
+        url (str): url of the file
+
+    Returns:
+        tuple[str, str] | int : name and mimeType of the file, error code otherwise
+    """
+    try:
+        output: list[list[str]] | int = gdrive.list_spreadsheet_in_folder(utils.extract_google_drive_id(url_folder))
+        if not isinstance(output, int):
+            return [item[1] for item in output]
+    except Exception:
+        return -1
+    return -2
+
+
+def replace_text_in_cell(filename: str, column_letter: str, line: str, old_text: str, new_text: str) -> int:
+    id_sheet: str | int = gdrive.get_id_by_name(filename)
+    if isinstance(id_sheet, int):
+        return id_sheet
+    num_column: int = utils.get_position_letter_alphabet(column_letter)
+    line_int: int = utils.safe_str_to_int(line)
+    gsheet.open_spreadsheet(id_sheet)
+    return gsheet.replace_text_in_cell(0, line_int, num_column, old_text, new_text)
 
 
 def remove_ignored_substrings(text: str, ignored_substrings: dict[str, str], insert_space: bool) -> str:
@@ -238,14 +281,28 @@ def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, st
         int : 0 if no problem, error code otherwise
     """
     error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
-    if error_code == 0:
-        get_list_specific_word(id_current_game - 1)
-        correct_char: str = json_man.data_json[id_current_game - 1]["correct_letters"]  # type: ignore
-        correct_punct: str = json_man.data_json[id_current_game - 1]["correct_punctuation"]  # type: ignore
-        return orthocheck.process_orthocheck(list_sentences_current_sheet, list_specific_word_current_game,
-                                             correct_char, correct_punct)
-    else:
+    if error_code != 0:
         return error_code
+    get_list_specific_word(id_current_game - 1)
+    correct_char: str = json_man.data_json[id_current_game - 1]["correct_letters"]  # type: ignore
+    correct_punct: str = json_man.data_json[id_current_game - 1]["correct_punctuation"]  # type: ignore
+    return orthocheck.process_orthocheck(list_sentences_current_sheet,
+                                         list_specific_word_current_game,
+                                         correct_char, correct_punct)
+
+
+def add_filename_to_output(url_sheet: str, output: list[tuple[int, str]]) -> list[tuple[str, int, str]] | int:
+    name_sheet: str | int = gdrive.get_name_by_id(utils.extract_google_drive_id(url_sheet))
+    if isinstance(name_sheet, int):
+        return name_sheet
+    return [(name_sheet, line[0], line[1]) for line in output]
+
+
+def add_filename_to_output2(url_sheet: str, output: list[tuple[int, str]]) -> list[tuple[str, int, str, str]] | int:
+    name_sheet: str | int = gdrive.get_name_by_id(utils.extract_google_drive_id(url_sheet))
+    if isinstance(name_sheet, int):
+        return name_sheet
+    return [(name_sheet, line[0], line[1], line[2]) for line in output]  # type: ignore
 
 
 def orthocheck_add_word_to_csv(word: str) -> None:
@@ -295,3 +352,14 @@ def word_check_process(url_sheet: str, column_letter: str) -> list[tuple[int, st
         return word_check.word_on_text(list_sentences_current_sheet, list_specific_word_current_game)
     else:
         return error_code
+
+
+def search_string_in_sheet(url_sheet: str, column_letter: str, string_to_search: str) -> list[tuple[int, str]] | int:
+    error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
+    if error_code != 0:
+        return error_code
+    return [
+        (i + 1, sentence)
+        for i, sentence in enumerate(list_sentences_current_sheet)
+        if string_to_search in sentence
+    ]

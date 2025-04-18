@@ -125,7 +125,9 @@
         "ignored_substrings": {
             "<": ">"
         },
-        "ignored_rules_languagetool": []
+        "ignored_rules_languagetool": [
+            "ACCORD_COULEUR"
+        ]
     },
     {
         "id": 8,

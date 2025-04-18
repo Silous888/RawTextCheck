@@ -1,5 +1,4 @@
 import re
-from io import StringIO
 
 
 def extract_google_drive_id(url_or_id: str) -> str:
@@ -30,8 +29,23 @@ def get_position_letter_alphabet(letter: str) -> int:
     return ord(letter.upper()) - ord("A") + 1
 
 
-def read_until_occurrence(f: str, end_char: str) -> None:
-    fs = StringIO(f)
-    char: str = fs.read(1)
-    while char not in [end_char, ""]:
-        char = fs.read(1)
+def safe_str_to_int(value: str) -> int:
+    try:
+        return int(value)
+    except ValueError:
+        return -1
+
+
+def extract_before_arrow(text: str) -> str:
+    match: re.Match[str] | None = re.match(r"^(.*?)\s*=>", text)
+    return match.group(1) if match else ""
+
+
+def get_before_arrow(text: str) -> str:
+    """Get the part of the string before ' =>'."""
+    return text.split(' => ')[0]
+
+
+def get_after_arrow(text: str) -> str:
+    """Get the part of the string after ' =>'."""
+    return text.split(' => ')[1]
