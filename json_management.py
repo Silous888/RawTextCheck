@@ -6,8 +6,7 @@ import utils
 
 
 LIST_METHOD_FOLDER_NAME: list[str] = ["methode 1 - dictionnaire",
-                                      "methode 2 - LanguageTool",
-                                      "methode 3 - MS Word"]
+                                      "methode 2 - LanguageTool"]
 
 JSON_FILE_PATH: str = "./json_data_games.json"
 
