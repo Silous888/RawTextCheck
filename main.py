@@ -4,7 +4,7 @@ import sys
 
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QApplication
-from qt_material import apply_stylesheet
+from qt_material import apply_stylesheet  # type: ignore
 
 # -------------------- Import Lib User -------------------
 from windows_logic.mainwindow import MainWindow

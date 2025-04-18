@@ -9,7 +9,6 @@ from api import google_sheet_api as gsheet
 from api import google_drive_api as gdrive
 import json_management as json_man
 import languagetool
-import orthocheck
 import utils
 
 
@@ -251,12 +250,6 @@ def remove_ignored_codes(text: str, ignored_codes: list[str], insert_space: bool
     return text
 
 
-def orthocheck_load_dictionary() -> None:
-    """call load_words of orthocheck
-    """
-    orthocheck.load_words("dictionary_orthocheck")
-
-
 def language_tool_initialize() -> None:
     """call initialize_tool of languagetool
     """
@@ -267,27 +260,6 @@ def language_tool_close() -> None:
     """call close_tool of languagetool
     """
     languagetool.close_tool()
-
-
-def orthocheck_process(url_sheet: str, column_letter: str) -> list[tuple[int, str]] | int:
-    """get the list of specific words of a game in the sheet
-    and call process_orthocheck of orthocheck and return result
-
-    Args:
-        sheet_index (int): index related to the game wanted,
-
-    Returns:
-        int : 0 if no problem, error code otherwise
-    """
-    error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
-    if error_code != 0:
-        return error_code
-    get_list_specific_word(id_current_game - 1)
-    correct_char: str = json_man.data_json[id_current_game - 1]["correct_letters"]  # type: ignore
-    correct_punct: str = json_man.data_json[id_current_game - 1]["correct_punctuation"]  # type: ignore
-    return orthocheck.process_orthocheck(list_sentences_current_sheet,
-                                         list_specific_word_current_game,
-                                         correct_char, correct_punct)
 
 
 def add_filename_to_output(url_sheet: str, output: list[tuple[int, str]]) -> list[tuple[str, int, str]] | int:
@@ -302,18 +274,6 @@ def add_filename_to_output2(url_sheet: str, output: list[tuple[int, str]]) -> li
     if isinstance(name_sheet, int):
         return name_sheet
     return [(name_sheet, line[0], line[1], line[2]) for line in output]  # type: ignore
-
-
-def orthocheck_add_word_to_csv(word: str) -> None:
-    """Add a word to the end of a CSV file.
-
-    Args:
-        word (str): The word to add.
-        csv_file (str): The path to the CSV file.
-    """
-    path_csv: str = "dictionary_orthocheck\\added_words.csv"
-    with open(path_csv, 'a', encoding='utf-8') as file:
-        file.write(f"{word}\n")
 
 
 def language_tool_process(url_sheet: str, column_letter: str) -> list[tuple[int, str, str]] | int:

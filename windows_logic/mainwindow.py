@@ -21,9 +21,7 @@ class _WorkerMainWindow(QObject):
 
     signal_load_word_excluded_start = pyqtSignal(int)
     signal_get_name_sheet_start = pyqtSignal(str)
-    signal_orthocheck_load_dictionary_start = pyqtSignal()
     signal_languagetool_initialize_start = pyqtSignal()
-    signal_orthocheck_process_start = pyqtSignal(str, str)
     signal_language_tool_process_start = pyqtSignal(str, str)
     signal_find_string_process_start = pyqtSignal(str, str, str)
     signal_replace_string_process_start = pyqtSignal(str, str, str, str, str, int)
@@ -31,9 +29,7 @@ class _WorkerMainWindow(QObject):
 
     signal_load_word_excluded_finished = pyqtSignal()
     signal_get_name_sheet_finished = pyqtSignal(object)
-    signal_orthocheck_load_dictionary_finished = pyqtSignal()
     signal_languagetool_initialize_finished = pyqtSignal()
-    signal_orthocheck_process_finished = pyqtSignal(object)
     signal_language_tool_process_finished = pyqtSignal(object)
     signal_find_string_process_finished = pyqtSignal(object)
     signal_replace_string_process_finished = pyqtSignal(int, str, str)
@@ -51,24 +47,9 @@ class _WorkerMainWindow(QObject):
         result: tuple[str, str] | int = process.get_name_and_type_of_url(url)
         self.signal_get_name_sheet_finished.emit(result)
 
-    def orthocheck_load_dictionary_thread(self) -> None:
-        process.orthocheck_load_dictionary()
-        self.signal_orthocheck_load_dictionary_finished.emit()
-
     def languagetool_initialize_thread(self) -> None:
         process.language_tool_initialize()
         self.signal_languagetool_initialize_finished.emit()
-
-    def orthocheck_process_thread(self, url: str, column_letter: str) -> None:
-        output: list[tuple[int, str]] | int = process.orthocheck_process(url, column_letter)
-        if isinstance(output, int):
-            return
-        output_name: list[tuple[str, int, str]] = process.add_filename_to_output(url, output)  # type: ignore
-        name_file: str | int = process.gdrive.get_name_by_id(process.utils.extract_google_drive_id(url))
-        if isinstance(name_file, int):
-            name_file = ""
-        self.signal_orthocheck_process_finished.emit((output_name, name_file))
-        self.signal_process_loop.emit()
 
     def language_tool_process_thread(self, url: str, column_letter: str) -> None:
         output: list[tuple[int, str, str]] | int = process.language_tool_process(url, column_letter)
@@ -122,14 +103,11 @@ class MainWindow(QMainWindow):
         self.m_worker.moveToThread(self.m_thread)
 
         self.is_url_correct: bool = False
-        self.is_orthocheck_available: bool = False
         self.is_languagetool_available: bool = False
-        self.ui.pushButton_method_1.setEnabled(False)
         self.ui.pushButton_uploadSpecificWords.setEnabled(False)
 
         self.ui.label_sheetOpened.setText("")
-        self.ui.label_lastUdate_1.setText("")
-        self.ui.label_lastUdate_2.setText("")
+        self.ui.label_lastUdate_process.setText("")
         self.ui.label_updateFolder.setText("")
 
         self.urlsheet_timer = QTimer(self)
@@ -171,9 +149,7 @@ class MainWindow(QMainWindow):
             enabled (bool): enabled state
         """
         if not enabled or self.is_url_correct:
-            self.ui.pushButton_method_1.setEnabled(enabled)
-        if not enabled or self.is_url_correct:
-            self.ui.pushButton_method_2.setEnabled(enabled)
+            self.ui.pushButton_process.setEnabled(enabled)
 
     def toggle_ui_enabled_tabWidget_result(self, enabled: bool) -> None:
         """toggle the enabled state of the tabWidget_result
@@ -223,7 +199,7 @@ class MainWindow(QMainWindow):
         """
         word: str = process.utils.extract_before_arrow(item.text())
         process.list_specific_word_to_upload.append(word)
-        self.remove_rows_table_by_text(self.ui.tableWidget_2, item.text())
+        self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
         self.ui.pushButton_uploadSpecificWords.setText(
             str(len(process.list_specific_word_to_upload)) + " terme(s) à upload"
         )
@@ -233,7 +209,7 @@ class MainWindow(QMainWindow):
         textToolTip: str = "Veuillez uploader les termes avant de changer de jeu"
         self.ui.comboBox_game.setToolTip(textToolTip)
         self.ui.pushButton_gameDictionary.setToolTip(textToolTip)
-        data: list[tuple[str, int, str]] = self.get_table_data(self.ui.tableWidget_2)
+        data: list[tuple[str, int, str]] = self.get_table_data(self.ui.tableWidget_1)
         data_with_rules: list[tuple[int, str, str]] = [
             (row[1], row[2], process.list_ignored_languagetool_rules_current_data[x])
             for x, row in enumerate(data)
@@ -248,11 +224,7 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        process.orthocheck_add_word_to_csv(item.text())
-        self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
-        json_man.save_result_process_one_str(process.id_current_game - 1,
-                                             self.ui.label_sheetOpened.text(), 1,
-                                             self.get_table_data(self.ui.tableWidget_1))
+        pass
 
     def add_to_ignored_rules(self, item: QTableWidgetItem) -> None:
         """add to ignored rules of the game
@@ -263,9 +235,9 @@ class MainWindow(QMainWindow):
         rule: str = process.list_ignored_languagetool_rules_current_data[item.row()]
         json_man.add_ignored_rules(process.id_current_game - 1, rule)
         process.get_list_ignored_languagetool_rules()
-        self.remove_rows_by_index(self.ui.tableWidget_2, process.get_index_item_with_rule(rule))
+        self.remove_rows_by_index(self.ui.tableWidget_1, process.get_index_item_with_rule(rule))
         process.remove_rule_current_file(rule)
-        data: list[tuple[int, str]] = self.get_table_data(self.ui.tableWidget_2)
+        data: list[tuple[int, str]] = self.get_table_data(self.ui.tableWidget_1)
         data_with_rules: list[tuple[int, str, str]] = [
             (row[0], row[1], process.list_ignored_languagetool_rules_current_data[x])
             for x, row in enumerate(data)
@@ -296,19 +268,6 @@ class MainWindow(QMainWindow):
         for row in reversed(rows_to_delete):
             table.removeRow(row)
 
-    def delete_orthocheck_item(self, item: QTableWidgetItem) -> None:
-        """Delete the selected item from the table.
-
-        Args:
-            item (QTableWidgetItem): item from the table
-        """
-        json_man.remove_entry(process.id_current_game - 1,
-                              self.ui.tableWidget_1.item(item.row(), 0).text(),
-                              1,
-                              self.ui.tableWidget_1.item(item.row(), 1).text(),
-                              self.ui.tableWidget_1.item(item.row(), 2).text())
-        self.ui.tableWidget_1.removeRow(item.row())
-
     def delete_languagetool_item(self, item: QTableWidgetItem) -> None:
         """Delete the selected item from the table.
 
@@ -317,13 +276,13 @@ class MainWindow(QMainWindow):
         """
 
         json_man.remove_entry(process.id_current_game - 1,
-                              self.ui.tableWidget_2.item(item.row(), 0).text(),
+                              self.ui.tableWidget_1.item(item.row(), 0).text(),
                               2,
-                              self.ui.tableWidget_2.item(item.row(), 1).text(),
-                              self.ui.tableWidget_2.item(item.row(), 2).text())
+                              self.ui.tableWidget_1.item(item.row(), 1).text(),
+                              self.ui.tableWidget_1.item(item.row(), 2).text())
 
         process.list_ignored_languagetool_rules_current_data.pop(item.row())
-        self.ui.tableWidget_2.removeRow(item.row())
+        self.ui.tableWidget_1.removeRow(item.row())
 
     def delete_search_result_item(self, item: QTableWidgetItem) -> None:
         """Delete the selected item from the table.
@@ -331,7 +290,7 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        self.ui.tableWidget_3.removeRow(item.row())
+        self.ui.tableWidget_2.removeRow(item.row())
 
     def add_character(self, item: QTableWidgetItem) -> None:
         """Add the character to the authorized character for this game.
@@ -384,7 +343,6 @@ class MainWindow(QMainWindow):
             list_file_name (list[str]): list of file name
         """
         self.clear_table(self.ui.tableWidget_1)
-        self.clear_table(self.ui.tableWidget_2)
         process.list_ignored_languagetool_rules_current_data = []
         list_file_name: list[str] | int = process.get_sheet_name_in_folder(url_folder)
         if isinstance(list_file_name, int):
@@ -408,16 +366,13 @@ class MainWindow(QMainWindow):
         results, date = json_man.load_result_process(process.id_current_game - 1, file_name)
         if not isFromFolder:
             self.clear_table(self.ui.tableWidget_1)
-            self.clear_table(self.ui.tableWidget_2)
-            process.list_ignored_languagetool_rules_current_data = [row[2] for row in results[1]]
+            process.list_ignored_languagetool_rules_current_data = [row[2] for row in results]
         else:
-            process.list_ignored_languagetool_rules_current_data.extend([row[2] for row in results[1]])
-        self.update_table(self.ui.tableWidget_1, [(file_name, row[0], row[1]) for row in results[0]], color)
-        self.update_table(self.ui.tableWidget_2, [(file_name, row[0], row[1]) for row in results[1]], color)
+            process.list_ignored_languagetool_rules_current_data.extend([row[2] for row in results])
+        self.update_table(self.ui.tableWidget_1, [(file_name, row[0], row[1]) for row in results], color)
 
         if not isFromFolder:
-            self.ui.label_lastUdate_1.setText(date[0])
-            self.ui.label_lastUdate_2.setText(date[1])
+            self.ui.label_lastUdate_process.setText(date[0])
 
     def get_table_data(self, table: QTableWidget) -> list[tuple[int, str]]:
         """Get all data from the table in the same format as result.
@@ -442,8 +397,7 @@ class MainWindow(QMainWindow):
         """
         # pushButton
         self.ui.pushButton_gameDictionary.clicked.connect(self.pushbutton_gamedictionary_clicked)
-        self.ui.pushButton_method_1.clicked.connect(self.pushbutton_method_1_clicked)
-        self.ui.pushButton_method_2.clicked.connect(self.pushbutton_method_2_clicked)
+        self.ui.pushButton_process.clicked.connect(self.pushbutton_method_2_clicked)
         self.ui.pushButton_method_search.clicked.connect(self.pushButton_method_search_clicked)
         self.ui.pushButton_method_replace.clicked.connect(self.pushButton_method_replace_clicked)
         self.ui.pushButton_uploadSpecificWords.clicked.connect(self.pushbutton_uploadspecificwords_clicked)
@@ -454,15 +408,12 @@ class MainWindow(QMainWindow):
         # comboBox
         self.ui.comboBox_game.currentIndexChanged.connect(self.combobox_game_currentindexchanged)
         # tab
-        self.ui.tableWidget_1.customContextMenuRequested.connect(self.tablewidget_1_contextmenu)
-        self.ui.tableWidget_2.customContextMenuRequested.connect(self.tablewidget_2_contextmenu)
-        self.ui.tableWidget_3.customContextMenuRequested.connect(self.tablewidget_3_contextmenu)
+        self.ui.tableWidget_1.customContextMenuRequested.connect(self.tablewidget_2_contextmenu)
+        self.ui.tableWidget_2.customContextMenuRequested.connect(self.tablewidget_3_contextmenu)
         # thread start
         self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
         self.m_worker.signal_get_name_sheet_start.connect(self.m_worker.get_name_sheet_thread)
-        self.m_worker.signal_orthocheck_load_dictionary_start.connect(self.m_worker.orthocheck_load_dictionary_thread)
         self.m_worker.signal_languagetool_initialize_start.connect(self.m_worker.languagetool_initialize_thread)
-        self.m_worker.signal_orthocheck_process_start.connect(self.m_worker.orthocheck_process_thread)
         self.m_worker.signal_language_tool_process_start.connect(self.m_worker.language_tool_process_thread)
         self.m_worker.signal_find_string_process_start.connect(self.m_worker.find_string_process_thread)
         self.m_worker.signal_replace_string_process_start.connect(self.m_worker.replace_string_process_thread)
@@ -470,9 +421,7 @@ class MainWindow(QMainWindow):
         # thread finish
         self.m_worker.signal_load_word_excluded_finished.connect(self.load_dialog_finished)
         self.m_worker.signal_get_name_sheet_finished.connect(self.get_name_sheet_finished)
-        self.m_worker.signal_orthocheck_load_dictionary_finished.connect(self.orthocheck_load_dictionary_finished)
         self.m_worker.signal_languagetool_initialize_finished.connect(self.languagetool_initialize_finished)
-        self.m_worker.signal_orthocheck_process_finished.connect(self.orthocheck_process_finished)
         self.m_worker.signal_language_tool_process_finished.connect(self.language_tool_process_finished)
         self.m_worker.signal_find_string_process_finished.connect(self.find_string_process_finished)
         self.m_worker.signal_replace_string_process_finished.connect(self.replace_string_process_finished)
@@ -510,22 +459,13 @@ class MainWindow(QMainWindow):
                 loop.exec_()
                 self.m_worker.signal_process_loop.disconnect(loop.quit)
 
-    def pushbutton_method_1_clicked(self) -> None:
-        """Slot for pushButton_method_1."""
-        self.ui.groupBox_1_2_1.setEnabled(False)
-        self.ui.groupBox_1.setEnabled(False)
-        if not self.is_orthocheck_available:
-            self.m_worker.signal_orthocheck_load_dictionary_start.emit()
-        self.clear_table(self.ui.tableWidget_1)
-        self.process_files(self.m_worker.signal_orthocheck_process_start, self.ui.lineEdit_frenchColumn.text())
-
     def pushbutton_method_2_clicked(self) -> None:
         """Slot for pushButton_method_2."""
         self.ui.groupBox_1_2_1.setEnabled(False)
         self.ui.groupBox_1.setEnabled(False)
         if not self.is_languagetool_available:
             self.m_worker.signal_languagetool_initialize_start.emit()
-        self.clear_table(self.ui.tableWidget_2)
+        self.clear_table(self.ui.tableWidget_1)
         self.process_files(self.m_worker.signal_language_tool_process_start, self.ui.lineEdit_frenchColumn.text())
 
     def pushButton_method_search_clicked(self) -> None:
@@ -533,7 +473,7 @@ class MainWindow(QMainWindow):
         self.ui.groupBox_1_2_1.setEnabled(False)
         self.ui.groupBox_1.setEnabled(False)
         self.toggle_ui_replace(False)
-        self.clear_table(self.ui.tableWidget_3)
+        self.clear_table(self.ui.tableWidget_2)
         self.process_files(
             self.m_worker.signal_find_string_process_start,
             self.ui.lineEdit_frenchColumn.text(),
@@ -544,7 +484,7 @@ class MainWindow(QMainWindow):
         """Slot for pushButton_method_replace."""
         self.ui.groupBox_1_2_1.setEnabled(False)
         self.ui.groupBox_1.setEnabled(False)
-        table: QTableWidget = self.ui.tableWidget_3
+        table: QTableWidget = self.ui.tableWidget_2
         for row in range(table.rowCount()):
             if row == table.rowCount() - 1:
                 self.folder_process_finished = True
@@ -573,8 +513,7 @@ class MainWindow(QMainWindow):
         """
         self.ui.lineEdit_urlSheet.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ui.label_sheetOpened.setText("")
-        self.ui.label_lastUdate_1.setText("")
-        self.ui.label_lastUdate_2.setText("")
+        self.ui.label_lastUdate_process.setText("")
         text: str = self.ui.lineEdit_urlSheet.text()
         self.is_url_correct = False
         if len(text) > 0:
@@ -618,7 +557,6 @@ class MainWindow(QMainWindow):
 
         self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
         self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
-        self.delete_action.triggered.connect(lambda: self.delete_orthocheck_item(item))
         self.add_character_action.triggered.connect(lambda: self.add_character(item))
         self.add_punctuation_action.triggered.connect(lambda: self.add_punctuation(item))
 
@@ -633,7 +571,7 @@ class MainWindow(QMainWindow):
         menu.exec_(self.ui.tableWidget_1.viewport().mapToGlobal(pos))
 
     def tablewidget_2_contextmenu(self, pos: QPoint) -> None:
-        item: QTableWidgetItem = self.ui.tableWidget_2.itemAt(pos)
+        item: QTableWidgetItem = self.ui.tableWidget_1.itemAt(pos)
         if item is None:  # type: ignore
             return
         menu = QMenu(self)
@@ -655,10 +593,10 @@ class MainWindow(QMainWindow):
         menu.addSeparator()
         menu.addAction(self.delete_languagetool_item_action)
 
-        menu.exec_(self.ui.tableWidget_2.viewport().mapToGlobal(pos))
+        menu.exec_(self.ui.tableWidget_1.viewport().mapToGlobal(pos))
 
     def tablewidget_3_contextmenu(self, pos: QPoint) -> None:
-        item: QTableWidgetItem = self.ui.tableWidget_3.itemAt(pos)
+        item: QTableWidgetItem = self.ui.tableWidget_2.itemAt(pos)
         if item is None:  # type: ignore
             return
         menu = QMenu(self)
@@ -669,7 +607,7 @@ class MainWindow(QMainWindow):
 
         menu.addAction(self.delete_search_result_item_action)
 
-        menu.exec_(self.ui.tableWidget_3.viewport().mapToGlobal(pos))
+        menu.exec_(self.ui.tableWidget_2.viewport().mapToGlobal(pos))
 
     def load_dialog_finished(self) -> None:
         """slot for signal load_dialog_finished
@@ -721,28 +659,12 @@ class MainWindow(QMainWindow):
         self.ui.label_updateFolder.setText("")
         self.folder_process_finished = False
 
-    def orthocheck_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
-        """slot for signal orthocheck_process_finished
-        """
-        if isinstance(result, int):
-            return
-        self.update_table(self.ui.tableWidget_1, result[0])
-
-        json_man.save_result_process_one_str(process.id_current_game - 1,
-                                             result[1], 1,
-                                             [(row[1], row[2]) for row in result[0]])
-
-        if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
-            self.enable_after_process()
-            self.ui.label_lastUdate_1.setText(process.get_current_date())
-            self.ui.tabWidget_result.setCurrentIndex(0)
-
     def language_tool_process_finished(self, result: tuple[list[tuple[str, int, str, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
         """
         if isinstance(result, int):
             return
-        self.update_table(self.ui.tableWidget_2, [(row[0], row[1], row[2]) for row in result[0]])
+        self.update_table(self.ui.tableWidget_1, [(row[0], row[1], row[2]) for row in result[0]])
         if self.url_type == "spreadsheet":
             process.list_ignored_languagetool_rules_current_data = [row[3] for row in result[0]]
         elif self.url_type == "folder":
@@ -754,29 +676,29 @@ class MainWindow(QMainWindow):
 
         if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
             self.enable_after_process()
-            self.ui.label_lastUdate_2.setText(process.get_current_date())
-            self.ui.tabWidget_result.setCurrentIndex(1)
+            self.ui.label_lastUdate_process.setText(process.get_current_date())
+            self.ui.tabWidget_result.setCurrentIndex(0)
 
     def find_string_process_finished(self, result: tuple[list[tuple[str, int, str]], str] | int) -> None:
         """slot for signal language_tool_process_finished
         """
         if isinstance(result, int):
             return
-        self.update_table(self.ui.tableWidget_3, result[0])
+        self.update_table(self.ui.tableWidget_2, result[0])
         if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
             self.enable_after_process()
             self.ui.lineEdit_search.setEnabled(True)
             self.toggle_ui_replace(True)
             self.ui.lineEdit_search_result.setText(self.ui.lineEdit_search.text())
-            self.ui.tabWidget_result.setCurrentIndex(2)
+            self.ui.tabWidget_result.setCurrentIndex(1)
 
     def replace_string_process_finished(self, index: int, old_text: str, new_text: str) -> None:
         """slot for signal replace_string_process_finished
         """
-        self.ui.tableWidget_3.item(index, 2).setText(
-            self.ui.tableWidget_3.item(index, 2).text().replace(old_text, new_text)
+        self.ui.tableWidget_2.item(index, 2).setText(
+            self.ui.tableWidget_2.item(index, 2).text().replace(old_text, new_text)
         )
-        self.ui.tableWidget_3.item(index, 2).setBackground(QColor(0, 255, 0))
+        self.ui.tableWidget_2.item(index, 2).setBackground(QColor(0, 255, 0))
         if self.folder_process_finished:
             self.enable_after_process()
             self.ui.lineEdit_search.setEnabled(True)

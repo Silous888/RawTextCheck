@@ -5,9 +5,6 @@ from typing import Any
 import utils
 
 
-LIST_METHOD_FOLDER_NAME: list[str] = ["methode 1 - dictionnaire",
-                                      "methode 2 - LanguageTool"]
-
 JSON_FILE_PATH: str = "./json_data_games.json"
 
 data_json: dict[str, Any] = {}
@@ -65,7 +62,7 @@ def add_ignored_rules(id_game: int, rule: str) -> None:
 
 def save_result_process_one_str(id_game: int, name_file: str, method: int, data: list[tuple[int, str]]) -> None:
     folder_name: str = data_json[id_game]["folder_name"]  # type: ignore
-    path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[method - 1])
+    path: str = os.path.join("result", folder_name)
     os.makedirs(path, exist_ok=True)
 
     with open(os.path.join(path, name_file + ".json"), "w", encoding="utf-8") as file:
@@ -74,27 +71,26 @@ def save_result_process_one_str(id_game: int, name_file: str, method: int, data:
 
 def save_result_process_two_str(id_game: int, name_file: str, method: int, data: list[tuple[int, str, str]]) -> None:
     folder_name: str = data_json[id_game]["folder_name"]  # type: ignore
-    path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[method - 1])
+    path: str = os.path.join("result", folder_name)
     os.makedirs(path, exist_ok=True)
 
     with open(os.path.join(path, name_file + ".json"), "w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False)
 
 
-def load_result_process(id_game: int, name_file: str) -> tuple[list[list[Any]], list[str]]:
+def load_result_process(id_game: int, name_file: str) -> tuple[list[Any], list[str]]:
     result: list[list[Any]] = [[], [], []]
     modification_dates: list[str] = []
     folder_name: str = data_json[id_game]["folder_name"]  # type: ignore
-    for i in range(len(LIST_METHOD_FOLDER_NAME)):
-        path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[i], name_file + ".json")
-        if os.path.isfile(path):
-            with open(path, "r", encoding="utf-8") as file:
-                result[i] = json.load(file)
-            modification_time: float = os.path.getmtime(path)
-            modification_date: str = datetime.fromtimestamp(modification_time).strftime('%Y-%m-%d %H:%M')
-            modification_dates.append(modification_date)
-        else:
-            modification_dates.append("jamais lancée")
+    path: str = os.path.join("result", folder_name, name_file + ".json")
+    if os.path.isfile(path):
+        with open(path, "r", encoding="utf-8") as file:
+            result = json.load(file)
+        modification_time: float = os.path.getmtime(path)
+        modification_date: str = datetime.fromtimestamp(modification_time).strftime('%Y-%m-%d %H:%M')
+        modification_dates.append(modification_date)
+    else:
+        modification_dates.append("jamais lancée")
     return result, modification_dates
 
 
@@ -102,7 +98,7 @@ def remove_entry(id_game: int, name_file: str, method: int, value: str, text: st
 
     print(id, name_file, method, value, text)
     folder_name: str = data_json[id_game]["folder_name"]  # type: ignore
-    path: str = os.path.join("result", folder_name, LIST_METHOD_FOLDER_NAME[method - 1])
+    path: str = os.path.join("result", folder_name)
     with open(os.path.join(path, name_file + ".json"), "r", encoding="utf-8") as file:
         data = json.load(file)
 
