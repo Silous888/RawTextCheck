@@ -11,7 +11,6 @@ import json_management as json_man
 import languagetool
 import orthocheck
 import utils
-import word_check
 
 
 ID_SHEET_DICT_GAME: str = "1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc"
@@ -332,24 +331,6 @@ def language_tool_process(url_sheet: str, column_letter: str) -> list[tuple[int,
         get_list_specific_word(id_current_game - 1)
         return languagetool.language_tool_on_text(list_sentences_current_sheet, list_specific_word_current_game,
                                                   list_ignored_languagetool_rules_current_game)
-    else:
-        return error_code
-
-
-def word_check_process(url_sheet: str, column_letter: str) -> list[tuple[int, str]] | int:
-    """get the list of specific words of a game in the sheet
-    and call word_on_text of word_check and return result
-
-    Args:
-        sheet_index (int): index related to the game wanted,
-
-    Returns:
-        int : 0 if no problem, error code otherwise
-    """
-    error_code: int = get_list_sentence_sheet(url_sheet, column_letter, True, True)
-    if error_code == 0:
-        get_list_specific_word(id_current_game - 1)
-        return word_check.word_on_text(list_sentences_current_sheet, list_specific_word_current_game)
     else:
         return error_code
 

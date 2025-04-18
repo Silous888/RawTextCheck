@@ -242,8 +242,6 @@ class MainWindow(QMainWindow):
                                              self.ui.label_sheetOpened.text(), 2,
                                              data_with_rules)
 
-
-
     def add_to_global_dictionary(self, item: QTableWidgetItem) -> None:
         """add to global dictionary of the method
 
@@ -617,7 +615,6 @@ class MainWindow(QMainWindow):
         self.delete_action = QAction("Faute traitée", self)
         self.add_character_action = QAction("Ajouter en tant que lettre autorisée", self)
         self.add_punctuation_action = QAction("Ajouter en tant que ponctuation autorisée", self)
-
 
         self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
         self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
