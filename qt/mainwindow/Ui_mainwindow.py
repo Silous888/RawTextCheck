@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\qt_files\mainwindow.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\qt\mainwindow\mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -301,4 +301,4 @@ class Ui_MainWindow(object):
         self.menuConfiguration.setTitle(_translate("MainWindow", "menu"))
         self.action_diter_le_json_des_jeux.setText(_translate("MainWindow", "éditer le json des jeux"))
         self.actionconfiguration.setText(_translate("MainWindow", "configuration"))
-import qt_files.ressource_rc
+import qt.ressource_rc

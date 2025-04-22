@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\qt_files\dialog_excluded_words.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\qt\dialog_excluded_words\dialog_excluded_words.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -74,4 +74,4 @@ class Ui_Dialog(object):
         item.setText(_translate("Dialog", "mots"))
         self.pushButton_resetChange.setText(_translate("Dialog", "Réinitialiser changements"))
         self.pushButton_saveAndQuit.setText(_translate("Dialog", "Sauvegarder et quitter"))
-import qt_files.ressource_rc
+import qt.ressource_rc

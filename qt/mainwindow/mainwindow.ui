@@ -14,7 +14,7 @@
    <string>DreamTeamTrad - FautesCheck</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="ressource.qrc">
+   <iconset resource="../ressource.qrc">
     <normaloff>:/ressource/DreamteamLogo.ico</normaloff>:/ressource/DreamteamLogo.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -638,7 +638,7 @@
   <tabstop>tableWidget_2</tabstop>
  </tabstops>
  <resources>
-  <include location="ressource.qrc"/>
+  <include location="../ressource.qrc"/>
  </resources>
  <connections/>
 </ui>

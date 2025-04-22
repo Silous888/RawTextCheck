@@ -14,7 +14,7 @@
    <string>DreamTeamTrad - FautesCheck - Liste mots exclus</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="ressource.qrc">
+   <iconset resource="../ressource.qrc">
     <normaloff>:/ressource/DreamteamLogo.ico</normaloff>:/ressource/DreamteamLogo.ico</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -131,7 +131,7 @@
   <tabstop>pushButton_resetChange</tabstop>
  </tabstops>
  <resources>
-  <include location="ressource.qrc"/>
+  <include location="../ressource.qrc"/>
  </resources>
  <connections/>
 </ui>

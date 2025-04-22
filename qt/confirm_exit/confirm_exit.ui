@@ -26,7 +26,7 @@
    <string>DreamTeamTrad - FautesCheck - Sauvegarder termes ?</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="ressource.qrc">
+   <iconset resource="../ressource.qrc">
     <normaloff>:/ressource/DreamteamLogo.ico</normaloff>:/ressource/DreamteamLogo.ico</iconset>
   </property>
   <widget class="QLabel" name="label_messageSecondPart">
@@ -112,7 +112,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="ressource.qrc"/>
+  <include location="../ressource.qrc"/>
  </resources>
  <connections/>
 </ui>

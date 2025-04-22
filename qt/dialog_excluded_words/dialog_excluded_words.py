@@ -1,26 +1,13 @@
 
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QMenu, QAction, QApplication
-from PyQt5.QtCore import Qt, QObject, QPoint, QThread, pyqtSignal
+from PyQt5.QtCore import Qt, QPoint, QThread
 from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
-from qt_files.Ui_dialog_excluded_words import Ui_Dialog
+from qt.dialog_excluded_words.Ui_dialog_excluded_words import Ui_Dialog
+from qt.dialog_excluded_words.dialog_excluded_words_worker import WorkerDialogExcludedWords
 from script import process as process
-
-
-class _WorkerDialogExcludedWords(QObject):
-
-    signal_set_list_specific_word_start = pyqtSignal(list)
-
-    signal_set_list_specific_word_finished = pyqtSignal()
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    def set_list_specific_word_thread(self, excluded_words: list[str]) -> None:
-        process.set_list_specific_word(excluded_words)
-        self.signal_set_list_specific_word_finished.emit()
 
 
 class DialogExcludedWords(QDialog):
@@ -32,7 +19,7 @@ class DialogExcludedWords(QDialog):
 
         self.m_thread = QThread()
         self.m_thread.start()
-        self.m_worker = _WorkerDialogExcludedWords()
+        self.m_worker = WorkerDialogExcludedWords()
         self.m_worker.moveToThread(self.m_thread)
 
         self.set_up_connect()

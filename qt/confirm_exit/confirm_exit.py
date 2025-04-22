@@ -1,27 +1,14 @@
 
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
 
-from qt_files.Ui_confirm_exit import Ui_Dialog
-from script import process as process
+from qt.confirm_exit.Ui_confirm_exit import Ui_Dialog
 
-
-class _WorkerWidgetConfirmExit(QObject):
-
-    signal_save_specific_words_start = pyqtSignal()
-
-    signal_save_specific_words_finished = pyqtSignal()
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    def save_specific_words_thread(self) -> None:
-        process.add_list_specific_word()
-        self.signal_save_specific_words_finished.emit()
+from qt.confirm_exit.confirm_exit_worker import WorkerWidgetConfirmExit
 
 
 class ConfirmExit(QDialog):
@@ -33,7 +20,7 @@ class ConfirmExit(QDialog):
 
         self.m_thread = QThread()
         self.m_thread.start()
-        self.m_worker = _WorkerWidgetConfirmExit()
+        self.m_worker = WorkerWidgetConfirmExit()
         self.m_worker.moveToThread(self.m_thread)
 
         self.set_up_connect()

@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication
 from qt_material import apply_stylesheet  # type: ignore
 
 # -------------------- Import Lib User -------------------
-from qt_model.mainwindow import MainWindow
+from qt.mainwindow.mainwindow import MainWindow
 from script import json_management as json_management
 
 # pyinstaller --onefile --noconsole --name FautesCheck --icon=./ressource/DreamteamLogo.ico main.py

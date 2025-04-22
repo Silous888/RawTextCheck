@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\qt_files\confirm_exit.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\qt\confirm_exit\confirm_exit.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -58,4 +58,4 @@ class Ui_Dialog(object):
         self.label_messageFirstPart.setText(_translate("Dialog", "Des termes n\'ont pas été sauvegardés sur le google sheet."))
         self.pushButton_QuitWithoutSaving.setText(_translate("Dialog", "Quitter sans sauvegarder"))
         self.pushButton_saveAndQuit.setText(_translate("Dialog", "Sauvegarder et quitter"))
-import qt_files.ressource_rc
+import qt.ressource_rc
