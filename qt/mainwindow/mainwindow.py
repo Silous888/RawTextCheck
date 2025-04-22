@@ -13,8 +13,7 @@ from qt.confirm_exit.confirm_exit import ConfirmExit
 from qt.mainwindow.mainwindow_worker import WorkerMainWindow
 
 from script import json_management as json_man
-from script import process
-from script import utils
+from script import process, utils
 
 
 # -------------------------------------------------------------------#
@@ -54,8 +53,6 @@ class MainWindow(QMainWindow):
         self.populate_combobox_game()
         self.toggle_ui_enabled_except_combobox_game(False)
         self.set_up_connect()
-
-        self.ui.tabWidget_result
 
     def populate_combobox_game(self) -> None:
         """populate comboBox_game
@@ -104,27 +101,6 @@ class MainWindow(QMainWindow):
         self.ui.lineEdit_search_result.setEnabled(enabled)
         self.ui.lineEdit_replace.setEnabled(enabled)
 
-    def add_to_specific_dictionary(self, item: QTableWidgetItem) -> None:
-        """add to specific dictionary of the game
-
-        Args:
-            item (QTableWidgetItem): item from the table
-        """
-        process.list_specific_word_to_upload.append(item.text())
-        self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
-        self.ui.pushButton_uploadSpecificWords.setText(
-            str(len(process.list_specific_word_to_upload)) + " terme(s) à upload"
-        )
-        self.ui.pushButton_uploadSpecificWords.setEnabled(True)
-        self.ui.comboBox_game.setEnabled(False)
-        self.ui.pushButton_gameDictionary.setEnabled(False)
-        textToolTip: str = "Veuillez uploader les termes avant de changer de jeu"
-        self.ui.comboBox_game.setToolTip(textToolTip)
-        self.ui.pushButton_gameDictionary.setToolTip(textToolTip)
-        json_man.save_result_process_one_str(process.id_current_game - 1,
-                                             self.ui.label_sheetOpened.text(), 1,
-                                             self.get_table_data(self.ui.tableWidget_1))
-
     def add_to_specific_dictionary_languagetool(self, item: QTableWidgetItem) -> None:
         """add to specific dictionary of the game
 
@@ -151,14 +127,6 @@ class MainWindow(QMainWindow):
         json_man.save_result_process_two_str(process.id_current_game - 1,
                                              self.ui.label_sheetOpened.text(), 2,
                                              data_with_rules)
-
-    def add_to_global_dictionary(self, item: QTableWidgetItem) -> None:
-        """add to global dictionary of the method
-
-        Args:
-            item (QTableWidgetItem): item from the table
-        """
-        pass
 
     def add_to_ignored_rules(self, item: QTableWidgetItem) -> None:
         """add to ignored rules of the game
@@ -331,7 +299,7 @@ class MainWindow(QMainWindow):
         """
         # pushButton
         self.ui.pushButton_gameDictionary.clicked.connect(self.pushbutton_gamedictionary_clicked)
-        self.ui.pushButton_process.clicked.connect(self.pushbutton_method_2_clicked)
+        self.ui.pushButton_process.clicked.connect(self.pushbutton_process_clicked)
         self.ui.pushButton_method_search.clicked.connect(self.pushButton_method_search_clicked)
         self.ui.pushButton_method_replace.clicked.connect(self.pushButton_method_replace_clicked)
         self.ui.pushButton_uploadSpecificWords.clicked.connect(self.pushbutton_uploadspecificwords_clicked)
@@ -342,8 +310,8 @@ class MainWindow(QMainWindow):
         # comboBox
         self.ui.comboBox_game.currentIndexChanged.connect(self.combobox_game_currentindexchanged)
         # tab
-        self.ui.tableWidget_1.customContextMenuRequested.connect(self.tablewidget_2_contextmenu)
-        self.ui.tableWidget_2.customContextMenuRequested.connect(self.tablewidget_3_contextmenu)
+        self.ui.tableWidget_1.customContextMenuRequested.connect(self.tablewidget_1_contextmenu)
+        self.ui.tableWidget_2.customContextMenuRequested.connect(self.tablewidget_2_contextmenu)
         # thread start
         self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
         self.m_worker.signal_get_name_sheet_start.connect(self.m_worker.get_name_sheet_thread)
@@ -360,7 +328,6 @@ class MainWindow(QMainWindow):
         self.m_worker.signal_find_string_process_finished.connect(self.find_string_process_finished)
         self.m_worker.signal_replace_string_process_finished.connect(self.replace_string_process_finished)
         self.m_worker.signal_add_specific_words_finished.connect(self.add_specific_words_finished)
-        # help
 
     def pushbutton_gamedictionary_clicked(self) -> None:
         """slot for pushButton_gameDictionary
@@ -393,7 +360,7 @@ class MainWindow(QMainWindow):
                 loop.exec_()
                 self.m_worker.signal_process_loop.disconnect(loop.quit)
 
-    def pushbutton_method_2_clicked(self) -> None:
+    def pushbutton_process_clicked(self) -> None:
         """Slot for pushButton_method_2."""
         self.ui.groupBox_1_2_1.setEnabled(False)
         self.ui.groupBox_1.setEnabled(False)
@@ -475,7 +442,7 @@ class MainWindow(QMainWindow):
         if len(self.ui.lineEdit_urlSheet.text()) > 0:
             self.urlsheet_timer.start()
 
-    def tablewidget_1_contextmenu(self, pos: QPoint) -> None:
+    def tablewidget_old_contextmenu(self, pos: QPoint) -> None:
         """slot for tableWidget_excludedWords
         """
         item: QTableWidgetItem = self.ui.tableWidget_1.itemAt(pos)
@@ -489,8 +456,8 @@ class MainWindow(QMainWindow):
         self.add_character_action = QAction("Ajouter en tant que lettre autorisée", self)
         self.add_punctuation_action = QAction("Ajouter en tant que ponctuation autorisée", self)
 
-        self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
-        self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
+        # self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
+        # self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
         self.add_character_action.triggered.connect(lambda: self.add_character(item))
         self.add_punctuation_action.triggered.connect(lambda: self.add_punctuation(item))
 
@@ -504,7 +471,7 @@ class MainWindow(QMainWindow):
             menu.addAction(self.delete_action)
         menu.exec_(self.ui.tableWidget_1.viewport().mapToGlobal(pos))
 
-    def tablewidget_2_contextmenu(self, pos: QPoint) -> None:
+    def tablewidget_1_contextmenu(self, pos: QPoint) -> None:
         item: QTableWidgetItem = self.ui.tableWidget_1.itemAt(pos)
         if item is None:  # type: ignore
             return
@@ -529,7 +496,7 @@ class MainWindow(QMainWindow):
 
         menu.exec_(self.ui.tableWidget_1.viewport().mapToGlobal(pos))
 
-    def tablewidget_3_contextmenu(self, pos: QPoint) -> None:
+    def tablewidget_2_contextmenu(self, pos: QPoint) -> None:
         item: QTableWidgetItem = self.ui.tableWidget_2.itemAt(pos)
         if item is None:  # type: ignore
             return
@@ -572,12 +539,6 @@ class MainWindow(QMainWindow):
             self.toggle_ui_enabled_buttons_methods(False)
             self.toggle_ui_enabled_tabWidget_result(False)
             self.ui.label_sheetOpened.setText("url incorrect")
-
-    def orthocheck_load_dictionary_finished(self) -> None:
-        """slot for signal orthocheck_load_dictionary_finished
-        """
-        self.is_orthocheck_available = True
-        # self.ui.pushButton_method_1.setEnabled(bool(self.ui.comboBox_game.currentIndex() and self.is_url_correct))
 
     def languagetool_initialize_finished(self) -> None:
         """slot for signal languagetool_initialize_finished
