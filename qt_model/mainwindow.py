@@ -10,8 +10,10 @@ from PyQt5.QtGui import QCloseEvent, QColor
 from qt_files.Ui_mainwindow import Ui_MainWindow
 from qt_model.dialog_excluded_words import DialogExcludedWords
 from qt_model.confirm_exit import ConfirmExit
-import script.process as process
-import script.json_management as json_man
+
+from script import json_management as json_man
+from script import process
+from script import utils
 
 
 # -------------------------------------------------------------------#
@@ -56,7 +58,7 @@ class _WorkerMainWindow(QObject):
         if isinstance(output, int):
             return
         output_name: list[tuple[str, int, str]] = process.add_filename_to_output2(url, output)  # type: ignore
-        name_file: str | int = process.gdrive.get_name_by_id(script.utils.extract_google_drive_id(url))
+        name_file: str | int = process.gdrive.get_name_by_id(utils.extract_google_drive_id(url))
         if isinstance(name_file, int):
             name_file = ""
         self.signal_language_tool_process_finished.emit((output_name, name_file))
@@ -67,7 +69,7 @@ class _WorkerMainWindow(QObject):
         if isinstance(output, int):
             return
         output_name: list[tuple[str, int, str]] = process.add_filename_to_output(url, output)  # type: ignore
-        name_file: str | int = process.gdrive.get_name_by_id(script.utils.extract_google_drive_id(url))
+        name_file: str | int = process.gdrive.get_name_by_id(utils.extract_google_drive_id(url))
         if isinstance(name_file, int):
             name_file = ""
         self.signal_find_string_process_finished.emit((output_name, name_file))
@@ -197,7 +199,7 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        word: str = script.utils.extract_before_arrow(item.text())
+        word: str = utils.extract_before_arrow(item.text())
         process.list_specific_word_to_upload.append(word)
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
         self.ui.pushButton_uploadSpecificWords.setText(

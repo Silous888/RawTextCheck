@@ -6,7 +6,7 @@ from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
 from qt_files.Ui_dialog_excluded_words import Ui_Dialog
-import script.process as process
+from script import process as process
 
 
 class _WorkerDialogExcludedWords(QObject):

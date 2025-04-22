@@ -7,7 +7,7 @@ from PyQt5.QtGui import QCloseEvent
 # -------------------- Import Lib User -------------------
 
 from qt_files.Ui_confirm_exit import Ui_Dialog
-import script.process as process
+from script import process as process
 
 
 class _WorkerWidgetConfirmExit(QObject):
