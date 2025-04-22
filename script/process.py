@@ -7,9 +7,9 @@ import re
 # -------------------- Import Lib User -------------------
 from api import google_sheet_api as gsheet
 from api import google_drive_api as gdrive
-import json_management as json_man
-import languagetool
-import utils
+import script.json_management as json_man
+import script.languagetool as languagetool
+import script.utils as utils
 
 
 ID_SHEET_DICT_GAME: str = "1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc"

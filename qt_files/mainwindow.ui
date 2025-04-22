@@ -592,13 +592,50 @@
     </item>
    </layout>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1193</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuConfiguration">
+    <property name="title">
+     <string>menu</string>
+    </property>
+    <addaction name="action_diter_le_json_des_jeux"/>
+    <addaction name="actionconfiguration"/>
+   </widget>
+   <addaction name="menuConfiguration"/>
+  </widget>
+  <action name="action_diter_le_json_des_jeux">
+   <property name="text">
+    <string>éditer le json des jeux</string>
+   </property>
+  </action>
+  <action name="actionconfiguration">
+   <property name="text">
+    <string>configuration</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
-  <tabstop>pushButton_gameDictionary</tabstop>
+  <tabstop>comboBox_game</tabstop>
+  <tabstop>lineEdit_urlSheet</tabstop>
   <tabstop>lineEdit_frenchColumn</tabstop>
+  <tabstop>pushButton_gameDictionary</tabstop>
   <tabstop>pushButton_process</tabstop>
+  <tabstop>lineEdit_search</tabstop>
+  <tabstop>pushButton_method_search</tabstop>
+  <tabstop>lineEdit_search_result</tabstop>
+  <tabstop>lineEdit_replace</tabstop>
+  <tabstop>pushButton_method_replace</tabstop>
   <tabstop>tabWidget_result</tabstop>
   <tabstop>tableWidget_1</tabstop>
+  <tabstop>pushButton_uploadSpecificWords</tabstop>
+  <tabstop>tableWidget_2</tabstop>
  </tabstops>
  <resources>
   <include location="ressource.qrc"/>

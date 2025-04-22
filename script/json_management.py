@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import os
 from typing import Any
-import utils
+import script.utils as utils
 
 
 JSON_FILE_PATH: str = "./json_data_games.json"
