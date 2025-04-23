@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
     def populate_combobox_game(self) -> None:
         """populate comboBox_game
         """
-        self.ui.comboBox_game.addItem("-- Choisissez un jeu --")
+        self.ui.comboBox_game.addItem(self.tr("-- Choisissez un jeu --"))
         for game in json_man.data_json:
             self.ui.comboBox_game.addItem(game["title"])  # type: ignore
 
