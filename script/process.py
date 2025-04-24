@@ -7,7 +7,7 @@ import re
 # -------------------- Import Lib User -------------------
 from api import google_sheet_api as gsheet
 from api import google_drive_api as gdrive
-from script import json_management as json_man
+from script import json_projects as json_man
 from script import languagetool as languagetool
 from script import utils as utils
 
@@ -61,7 +61,7 @@ def get_list_ignored_languagetool_rules() -> None:
         int : 0 if no problem, error code otherwise
     """
     global list_ignored_languagetool_rules_current_game
-    list_ignored_languagetool_rules_current_game = json_man.data_json[
+    list_ignored_languagetool_rules_current_game = json_man.data_json_projects[
         id_current_game - 1]["ignored_rules_languagetool"]  # type: ignore
 
 
@@ -110,8 +110,8 @@ def get_list_sentence_sheet(url_sheet: str, column_letter: str,
     sheet_extraction: list[str] | int = gsheet.get_value_column(0, num_column)
     if isinstance(sheet_extraction, int):
         return sheet_extraction
-    ignored_substrings: dict[str, str] = json_man.data_json[id_current_game - 1]["ignored_substrings"]  # type: ignore
-    ignored_codes: list[str] = json_man.data_json[id_current_game - 1]["ignored_codes"]  # type: ignore
+    ignored_substrings: dict[str, str] = json_man.data_json_projects[id_current_game - 1]["ignored_substrings"]  # type: ignore
+    ignored_codes: list[str] = json_man.data_json_projects[id_current_game - 1]["ignored_codes"]  # type: ignore
     list_sentences_current_sheet = [
         remove_ignored_codes(
             remove_ignored_substrings(sentence, ignored_substrings, insert_space_substrings),

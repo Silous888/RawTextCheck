@@ -8,14 +8,14 @@ from qt_material import apply_stylesheet  # type: ignore
 
 # -------------------- Import Lib User -------------------
 from qt.mainwindow.mainwindow import MainWindow
-from script import json_management as json_management
+from script import json_projects as json_projects
 
 # pyinstaller --onefile --noconsole --name FautesCheck --icon=./ressource/DreamteamLogo.ico main.py
 
 # -------------------- Main code -------------------
 if __name__ == "__main__":
     # load data
-    json_management.load_json()
+    json_projects.load_json_projects()
 
     # create qt application
     app = QApplication(sys.argv)

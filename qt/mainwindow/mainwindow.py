@@ -12,8 +12,7 @@ from qt.dialog_excluded_words.dialog_excluded_words import DialogExcludedWords
 from qt.confirm_exit.confirm_exit import ConfirmExit
 from qt.mainwindow.mainwindow_worker import WorkerMainWindow
 
-from script import json_management as json_man
-from script import process, utils
+from script import process, utils, json_projects, json_results
 
 
 # -------------------------------------------------------------------#
@@ -58,7 +57,7 @@ class MainWindow(QMainWindow):
         """populate comboBox_game
         """
         self.ui.comboBox_game.addItem(self.tr("-- Choisissez un jeu --"))
-        for game in json_man.data_json:
+        for game in json_projects.data_json_projects:
             self.ui.comboBox_game.addItem(game["title"])  # type: ignore
 
     def toggle_ui_enabled_except_combobox_game(self, enabled: bool) -> None:
@@ -124,9 +123,9 @@ class MainWindow(QMainWindow):
             (row[1], row[2], process.list_ignored_languagetool_rules_current_data[x])
             for x, row in enumerate(data)
         ]
-        json_man.save_result_process_two_str(process.id_current_game - 1,
-                                             self.ui.label_sheetOpened.text(), 2,
-                                             data_with_rules)
+        json_results.save_result_process_two_str(process.id_current_game - 1,
+                                                 self.ui.label_sheetOpened.text(), 2,
+                                                 data_with_rules)
 
     def add_to_ignored_rules(self, item: QTableWidgetItem) -> None:
         """add to ignored rules of the game
@@ -135,7 +134,7 @@ class MainWindow(QMainWindow):
             item (QTableWidgetItem): item from the table
         """
         rule: str = process.list_ignored_languagetool_rules_current_data[item.row()]
-        json_man.add_ignored_rules(process.id_current_game - 1, rule)
+        json_projects.add_ignored_rules(process.id_current_game - 1, rule)
         process.get_list_ignored_languagetool_rules()
         self.remove_rows_by_index(self.ui.tableWidget_1, process.get_index_item_with_rule(rule))
         process.remove_rule_current_file(rule)
@@ -144,9 +143,9 @@ class MainWindow(QMainWindow):
             (row[0], row[1], process.list_ignored_languagetool_rules_current_data[x])
             for x, row in enumerate(data)
         ]
-        json_man.save_result_process_two_str(process.id_current_game - 1,
-                                             self.ui.label_sheetOpened.text(), 2,
-                                             data_with_rules)
+        json_results.save_result_process_two_str(process.id_current_game - 1,
+                                                 self.ui.label_sheetOpened.text(), 2,
+                                                 data_with_rules)
 
     def remove_rows_by_index(self, table: QTableWidget, rows: list[int]) -> None:
         """Remove rows from the table by their index.
@@ -177,11 +176,11 @@ class MainWindow(QMainWindow):
             item (QTableWidgetItem): item from the table
         """
 
-        json_man.remove_entry(process.id_current_game - 1,
-                              self.ui.tableWidget_1.item(item.row(), 0).text(),
-                              2,
-                              self.ui.tableWidget_1.item(item.row(), 1).text(),
-                              self.ui.tableWidget_1.item(item.row(), 2).text())
+        json_results.remove_entry(process.id_current_game - 1,
+                                  self.ui.tableWidget_1.item(item.row(), 0).text(),
+                                  2,
+                                  self.ui.tableWidget_1.item(item.row(), 1).text(),
+                                  self.ui.tableWidget_1.item(item.row(), 2).text())
 
         process.list_ignored_languagetool_rules_current_data.pop(item.row())
         self.ui.tableWidget_1.removeRow(item.row())
@@ -200,8 +199,8 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        json_man.add_correct_letter(process.id_current_game - 1, item.text()[0])
-        json_man.load_json()
+        json_projects.add_correct_letter(process.id_current_game - 1, item.text()[0])
+        json_projects.load_json_projects()
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
 
     def add_punctuation(self, item: QTableWidgetItem) -> None:
@@ -210,8 +209,8 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        json_man.add_correct_punctuation(process.id_current_game - 1, item.text()[0])
-        json_man.load_json()
+        json_projects.add_correct_punctuation(process.id_current_game - 1, item.text()[0])
+        json_projects.load_json_projects()
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
 
     def clear_table(self, table: QTableWidget) -> None:
@@ -268,7 +267,7 @@ class MainWindow(QMainWindow):
         """
         results: list[list[Any]]
         date: list[str]
-        results, date = json_man.load_result_process(process.id_current_game - 1, file_name)
+        results, date = json_results.load_result_process(process.id_current_game - 1, file_name)
         if not isFromFolder:
             self.clear_table(self.ui.tableWidget_1)
             process.list_ignored_languagetool_rules_current_data = [row[2] for row in results]
@@ -439,7 +438,7 @@ class MainWindow(QMainWindow):
         """slot for comboBox_game
         """
         self.toggle_ui_enabled_except_combobox_game(bool(index))
-        self.ui.lineEdit_frenchColumn.setText(json_man.data_json[index - 1]["column_sheet"])  # type: ignore
+        self.ui.lineEdit_frenchColumn.setText(json_projects.data_json_projects[index - 1]["column_sheet"])  # type: ignore
         process.set_id_and_word_list(index, [])
         process.get_list_ignored_languagetool_rules()
         if len(self.ui.lineEdit_urlSheet.text()) > 0:
@@ -570,9 +569,9 @@ class MainWindow(QMainWindow):
         elif self.url_type == "folder":
             process.list_ignored_languagetool_rules_current_data.extend([row[3] for row in result[0]])
 
-        json_man.save_result_process_two_str(process.id_current_game - 1,
-                                             result[1], 2,
-                                             [(row[1], row[2], row[3]) for row in result[0]])
+        json_results.save_result_process_two_str(process.id_current_game - 1,
+                                                 result[1], 2,
+                                                 [(row[1], row[2], row[3]) for row in result[0]])
 
         if self.url_type == "spreadsheet" or (self.url_type == "folder" and self.folder_process_finished):
             self.enable_after_process()
