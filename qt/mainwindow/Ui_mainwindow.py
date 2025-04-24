@@ -265,7 +265,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "DreamTeamTrad - FautesCheck"))
         self.groupBox_1.setTitle(_translate("MainWindow", "Choix du jeu et du google sheet"))
         self.pushButton_gameDictionary.setText(_translate("MainWindow", "Dictionnaire termes du jeu"))
-        self.lineEdit_urlSheet.setPlaceholderText(_translate("MainWindow", "mettre ici URL google sheet à traiter "))
+        self.lineEdit_urlSheet.setPlaceholderText(_translate("MainWindow", "mettre ici URL google sheet à traiter"))
         self.label_frenchColumn.setText(_translate("MainWindow", "Colonne du français :"))
         self.label_sheetOpened.setText(_translate("MainWindow", "name_sheet_opened"))
         self.groupBox_1_2_1.setTitle(_translate("MainWindow", "Mise à jour des fautes trouvées"))
@@ -301,4 +301,4 @@ class Ui_MainWindow(object):
         self.menuConfiguration.setTitle(_translate("MainWindow", "menu"))
         self.action_diter_le_json_des_jeux.setText(_translate("MainWindow", "éditer le json des jeux"))
         self.actionconfiguration.setText(_translate("MainWindow", "configuration"))
-import qt.ressource_rc
+import ressource_rc

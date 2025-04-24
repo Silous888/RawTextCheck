@@ -108,7 +108,7 @@
                 <set>Qt::AlignCenter</set>
                </property>
                <property name="placeholderText">
-                <string>mettre ici URL google sheet à traiter </string>
+                <string>mettre ici URL google sheet à traiter</string>
                </property>
               </widget>
              </item>

@@ -95,7 +95,7 @@ class DialogExcludedWords(QDialog):
             return
         menu = QMenu(self)
 
-        self.delete_action = QAction("Supprimer", self)
+        self.delete_action = QAction(self.tr("Supprimer"), self)
         self.delete_action.triggered.connect(lambda: self.delete_item(item))
 
         menu.addAction(self.delete_action)

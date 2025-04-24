@@ -9,3 +9,5 @@ FORMS = \
     ../qt/mainwindow/mainwindow.ui
 
 TRANSLATIONS = fr.ts en.ts
+
+CODECFORTR = UTF-8

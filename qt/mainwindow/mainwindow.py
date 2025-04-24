@@ -111,12 +111,12 @@ class MainWindow(QMainWindow):
         process.list_specific_word_to_upload.append(word)
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
         self.ui.pushButton_uploadSpecificWords.setText(
-            str(len(process.list_specific_word_to_upload)) + " terme(s) à upload"
+            str(len(process.list_specific_word_to_upload)) + self.tr(" terme(s) à upload")
         )
         self.ui.pushButton_uploadSpecificWords.setEnabled(True)
         self.ui.comboBox_game.setEnabled(False)
         self.ui.pushButton_gameDictionary.setEnabled(False)
-        textToolTip: str = "Veuillez uploader les termes avant de changer de jeu"
+        textToolTip: str = self.tr("Veuillez uploader les termes avant de changer de jeu")
         self.ui.comboBox_game.setToolTip(textToolTip)
         self.ui.pushButton_gameDictionary.setToolTip(textToolTip)
         data: list[tuple[str, int, str]] = self.get_table_data(self.ui.tableWidget_1)
@@ -220,7 +220,10 @@ class MainWindow(QMainWindow):
         table.insertColumn(0)
         table.insertColumn(1)
         table.insertColumn(2)
-        table.setHorizontalHeaderLabels(["fichier", "ligne", "faute"])
+        table.setHorizontalHeaderLabels([self.tr("fichier"),
+                                         self.tr("ligne"),
+                                         self.tr("faute")
+                                         ])
 
     def update_table(
         self, table: QTableWidget, data: Sequence[Union[tuple[str, int, str], tuple[int, str, str]]],
@@ -450,17 +453,18 @@ class MainWindow(QMainWindow):
             return
         menu = QMenu(self)
 
-        self.add_to_specific_dictionary_action = QAction("Ajouter aux termes du jeu", self)
-        self.add_to_global_dictionary_action = QAction("Ajouter au dictionnaire de la méthode", self)
-        self.delete_action = QAction("Faute traitée", self)
-        self.add_character_action = QAction("Ajouter en tant que lettre autorisée", self)
-        self.add_punctuation_action = QAction("Ajouter en tant que ponctuation autorisée", self)
+        self.add_to_specific_dictionary_action = QAction(self.tr("Ajouter aux termes du jeu"), self)
+        self.add_to_global_dictionary_action = QAction(self.tr("Ajouter au dictionnaire de la méthode"), self)
+        self.delete_action = QAction(self.tr("Faute traitée"), self)
+        self.add_character_action = QAction(self.tr("Ajouter en tant que lettre autorisée"), self)
+        self.add_punctuation_action = QAction(self.tr("Ajouter en tant que ponctuation autorisée"), self)
 
         # self.add_to_specific_dictionary_action.triggered.connect(lambda: self.add_to_specific_dictionary(item))
         # self.add_to_global_dictionary_action.triggered.connect(lambda: self.add_to_global_dictionary(item))
         self.add_character_action.triggered.connect(lambda: self.add_character(item))
         self.add_punctuation_action.triggered.connect(lambda: self.add_punctuation(item))
 
+        # NEED TO BE FIXED #TODO
         if item.text().endswith("non autorisé") or item.text().endswith("non autorisée"):
             menu.addAction(self.add_character_action)
             menu.addAction(self.add_punctuation_action)
@@ -477,10 +481,10 @@ class MainWindow(QMainWindow):
             return
         menu = QMenu(self)
 
-        self.add_to_specific_dictionary_action = QAction("Ajouter aux termes du jeu", self)
+        self.add_to_specific_dictionary_action = QAction(self.tr("Ajouter aux termes du jeu"), self)
         rule_text: str = process.list_ignored_languagetool_rules_current_data[item.row()]
-        self.add_to_ignored_rules_action = QAction("ignorer " + rule_text + " pour ce jeu", self)
-        self.delete_languagetool_item_action = QAction("Faute traitée", self)
+        self.add_to_ignored_rules_action = QAction(self.tr("ignorer ") + rule_text + self.tr(" pour ce jeu"), self)
+        self.delete_languagetool_item_action = QAction(self.tr("Faute traitée"), self)
 
         self.add_to_specific_dictionary_action.triggered.connect(
             lambda: self.add_to_specific_dictionary_languagetool(item)
@@ -488,6 +492,7 @@ class MainWindow(QMainWindow):
         self.add_to_ignored_rules_action.triggered.connect(lambda: self.add_to_ignored_rules(item))
         self.delete_languagetool_item_action.triggered.connect(lambda: self.delete_languagetool_item(item))
 
+        # NEED TO BE FIXED #TODO
         if item.text().endswith("Faute de frappe possible trouvée."):
             menu.addAction(self.add_to_specific_dictionary_action)
         menu.addAction(self.add_to_ignored_rules_action)
@@ -502,7 +507,7 @@ class MainWindow(QMainWindow):
             return
         menu = QMenu(self)
 
-        self.delete_search_result_item_action = QAction("Exclure des résultats de la recherche", self)
+        self.delete_search_result_item_action = QAction(self.tr("Exclure des résultats de la recherche"), self)
 
         self.delete_search_result_item_action.triggered.connect(lambda: self.delete_search_result_item(item))
 
@@ -603,7 +608,7 @@ class MainWindow(QMainWindow):
         """slot for signal add_specific_words_finished
         """
         self.ui.pushButton_uploadSpecificWords.setEnabled(True)
-        self.ui.pushButton_uploadSpecificWords.setText("Pas de termes à uploader")
+        self.ui.pushButton_uploadSpecificWords.setText(self.tr("Pas de termes à uploader"))
         self.ui.comboBox_game.setEnabled(True)
         self.ui.pushButton_gameDictionary.setEnabled(True)
         self.ui.comboBox_game.setToolTip("")
