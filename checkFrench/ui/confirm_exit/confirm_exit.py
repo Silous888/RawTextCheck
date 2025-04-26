@@ -6,9 +6,9 @@ from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
 
-from qt.confirm_exit.Ui_confirm_exit import Ui_Dialog
+from checkfrench.ui.confirm_exit.Ui_confirm_exit import Ui_Dialog
 
-from qt.confirm_exit.confirm_exit_worker import WorkerWidgetConfirmExit
+from checkfrench.ui.confirm_exit.confirm_exit_worker import WorkerWidgetConfirmExit
 
 
 class ConfirmExit(QDialog):

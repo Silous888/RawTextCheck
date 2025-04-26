@@ -74,4 +74,4 @@ class Ui_Dialog(object):
         item.setText(_translate("Dialog", "mots"))
         self.pushButton_resetChange.setText(_translate("Dialog", "Réinitialiser changements"))
         self.pushButton_saveAndQuit.setText(_translate("Dialog", "Sauvegarder et quitter"))
-import qt.ressource_rc
+import checkfrench.ui.ressource_rc

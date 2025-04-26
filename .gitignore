@@ -1,6 +1,7 @@
 # project files
 credentials.py
-checkFrench/results/*
+checkfrench/results/*
+checkfrench/test.py
 
 
 # Byte-compiled / optimized / DLL files

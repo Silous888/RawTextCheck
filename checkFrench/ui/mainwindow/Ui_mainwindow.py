@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\qt\mainwindow\mainwindow.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\checkfrench\ui\mainwindow\mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -16,7 +16,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1193, 858)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/ressource/DreamteamLogo.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/resources/DreamteamLogo.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("")
@@ -275,7 +275,7 @@ class Ui_MainWindow(object):
         self.groupBox_1_2_1_1.setTitle(_translate("MainWindow", "Recherche"))
         self.pushButton_method_search.setText(_translate("MainWindow", "Rechercher"))
         self.pushButton_method_replace.setText(_translate("MainWindow", "Remplacer"))
-        self.label_replace_1.setText(_translate("MainWindow", "Dans les résultats de la recherche, remplacer "))
+        self.label_replace_1.setText(_translate("MainWindow", "Dans les résultats de la recherche, remplacer"))
         self.label_replace_2.setText(_translate("MainWindow", "par"))
         self.label_updateFolder.setText(_translate("MainWindow", "last_update"))
         self.pushButton_uploadSpecificWords.setToolTip(_translate("MainWindow", "Pour limiter les appels à l\'API de Google Sheet, uploader plusieurs termes d\'un coup."))
@@ -301,4 +301,4 @@ class Ui_MainWindow(object):
         self.menuConfiguration.setTitle(_translate("MainWindow", "menu"))
         self.action_diter_le_json_des_jeux.setText(_translate("MainWindow", "éditer le json des jeux"))
         self.actionconfiguration.setText(_translate("MainWindow", "configuration"))
-import ressource_rc
+import checkfrench.ui.ressource_rc

@@ -7,12 +7,12 @@ from PyQt5.QtCore import QThread, Qt, QTimer, QPoint, QEventLoop, pyqtBoundSigna
 from PyQt5.QtGui import QCloseEvent, QColor
 
 # -------------------- Import Lib User -------------------
-from qt.mainwindow.Ui_mainwindow import Ui_MainWindow
-from qt.dialog_excluded_words.dialog_excluded_words import DialogExcludedWords
-from qt.confirm_exit.confirm_exit import ConfirmExit
-from qt.mainwindow.mainwindow_worker import WorkerMainWindow
+from checkfrench.ui.mainwindow.Ui_mainwindow import Ui_MainWindow
+from checkfrench.ui.dialog_excluded_words.dialog_excluded_words import DialogExcludedWords
+from checkfrench.ui.confirm_exit.confirm_exit import ConfirmExit
+from checkfrench.ui.mainwindow.mainwindow_worker import WorkerMainWindow
 
-from script import process, utils, json_projects, json_results
+from checkfrench.script import process, utils, json_projects, json_results
 
 
 # -------------------------------------------------------------------#

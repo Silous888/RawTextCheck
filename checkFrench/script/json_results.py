@@ -2,7 +2,8 @@ from datetime import datetime
 import json
 import os
 from typing import Any
-from script import json_projects, utils
+
+from checkfrench.script import json_projects, utils
 
 
 data_json: dict[str, Any] = {}

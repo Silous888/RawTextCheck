@@ -5,11 +5,11 @@ from datetime import datetime
 import re
 
 # -------------------- Import Lib User -------------------
-from api import google_sheet_api as gsheet
-from api import google_drive_api as gdrive
-from script import json_projects as json_man
-from script import languagetool as languagetool
-from script import utils as utils
+from checkfrench.api import google_sheet_api as gsheet
+from checkfrench.api import google_drive_api as gdrive
+from checkfrench.script import json_projects as json_man
+from checkfrench.script import languagetool as languagetool
+from checkfrench.script import utils
 
 
 ID_SHEET_DICT_GAME: str = "1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc"

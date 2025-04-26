@@ -1,7 +1,7 @@
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from script import process as process
+from checkfrench.script import process as process
 
 
 class WorkerWidgetConfirmExit(QObject):

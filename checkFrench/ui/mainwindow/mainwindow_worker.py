@@ -2,8 +2,8 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 
 # -------------------- Import Lib User -------------------
-from script import process
-from script import utils
+from checkfrench.script import process
+from checkfrench.script import utils
 
 
 class WorkerMainWindow(QObject):

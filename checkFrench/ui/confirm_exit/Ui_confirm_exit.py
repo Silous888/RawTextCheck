@@ -58,4 +58,4 @@ class Ui_Dialog(object):
         self.label_messageFirstPart.setText(_translate("Dialog", "Des termes n\'ont pas été sauvegardés sur le google sheet."))
         self.pushButton_QuitWithoutSaving.setText(_translate("Dialog", "Quitter sans sauvegarder"))
         self.pushButton_saveAndQuit.setText(_translate("Dialog", "Sauvegarder et quitter"))
-import qt.ressource_rc
+import checkfrench.ui.ressource_rc

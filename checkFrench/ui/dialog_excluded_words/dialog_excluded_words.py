@@ -5,9 +5,9 @@ from PyQt5.QtCore import Qt, QPoint, QThread
 from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
-from qt.dialog_excluded_words.Ui_dialog_excluded_words import Ui_Dialog
-from qt.dialog_excluded_words.dialog_excluded_words_worker import WorkerDialogExcludedWords
-from script import process as process
+from checkfrench.ui.dialog_excluded_words.Ui_dialog_excluded_words import Ui_Dialog
+from checkfrench.ui.dialog_excluded_words.dialog_excluded_words_worker import WorkerDialogExcludedWords
+from checkfrench.script import process
 
 
 class DialogExcludedWords(QDialog):
