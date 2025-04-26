@@ -347,7 +347,7 @@
                </font>
               </property>
               <property name="text">
-               <string>Dans les résultats de la recherche, remplacer </string>
+               <string>Dans les résultats de la recherche, remplacer</string>
               </property>
              </widget>
              <widget class="QLineEdit" name="lineEdit_replace">

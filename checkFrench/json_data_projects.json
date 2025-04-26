@@ -5,7 +5,7 @@
         "folder_name": "428 Shibuya Scramble",
         "specific_argument": "C",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=0#gid=0",
-        "valid_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ",
+        "valid_alphanumeric": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ",
         "valid_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'“”",
         "ignored_codes_into_space": [
             "\\n"
@@ -23,7 +23,7 @@
         "folder_name": "PARANOMASIGHT",
         "specific_argument": "E",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=1091637872#gid=1091637872",
-        "valid_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒō",
+        "valid_alphanumeric": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒō",
         "valid_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'★",
         "ignored_codes_into_space": [],
         "ignored_codes_into_nospace": [],
@@ -40,8 +40,26 @@
         "folder_name": "Zero Escape - Virtue's Last Reward",
         "specific_argument": "E",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=2108599019#gid=2108599019",
-        "valid_letters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ",
+        "valid_alphanumeric": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ",
         "valid_punctuation": "0123456789 .,;:?!()[]*=+-/\\\"'",
+        "ignored_codes_into_space": [],
+        "ignored_codes_into_nospace": [],
+        "ignored_substrings_space": {
+            "<": ">"
+        },
+        "ignored_substrings_nospace": {},
+        "ignored_rules_languagetool": [
+            "ACCORD_COULEUR"
+        ]
+    },
+    {
+        "id": 0,
+        "title": "Test project",
+        "folder_name": "test",
+        "specific_argument": "",
+        "path_dictionary": "",
+        "valid_alphanumeric": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ",
+        "valid_punctuation": " .,;:?!()[]*=+-/\\\"'",
         "ignored_codes_into_space": [],
         "ignored_codes_into_nospace": [],
         "ignored_substrings_space": {
