@@ -1,8 +1,11 @@
 import json
-
+from logging import Logger
 from typing import TypedDict
 
 from checkfrench.default_parameters import JSON_FILE_PATH
+from checkfrench.logger import get_logger
+
+logger: Logger = get_logger(__name__)
 
 
 class Item(TypedDict):
@@ -37,6 +40,18 @@ def save_json_projects() -> None:
         json.dump(list(data_json_projects.values()), file, ensure_ascii=False, indent=4)
 
 
+def is_id_project_valid(id_project: int) -> bool:
+    """check if the id of the project is valid
+
+    Args:
+        id_project (int): id of the project
+
+    Returns:
+        bool: True if the id is valid, False otherwise
+    """
+    return id_project in data_json_projects
+
+
 def add_valid_alphanumeric(id_project: int, alphanumeric_chars: str) -> None:
     """add one or several characters in the json to valid_alphanumeric
     of the current project
@@ -45,6 +60,9 @@ def add_valid_alphanumeric(id_project: int, alphanumeric_chars: str) -> None:
         id_project (int): id of the project
         alphanumeric_chars (str): characters to add
     """
+    if not is_id_project_valid(id_project):
+        logger.error(f"Project ID {id_project} is not valid.")
+        return
     for alphanumeric_char in alphanumeric_chars:
         if alphanumeric_char not in data_json_projects[id_project]["valid_alphanumeric"]:
             data_json_projects[id_project]["valid_alphanumeric"] += alphanumeric_char

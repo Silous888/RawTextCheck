@@ -1,0 +1,38 @@
+import logging
+import os
+from logging.handlers import RotatingFileHandler
+
+LOG_FOLDER = "logs"
+LOG_LEVEL = logging.DEBUG  # Global log level
+MAX_LOG_SIZE = 5 * 1024 * 1024  # 5 MB per file
+BACKUP_COUNT = 3  # Keep 3 old log files (log.1, log.2, etc.)
+
+os.makedirs(LOG_FOLDER, exist_ok=True)
+
+
+def get_logger(name: str) -> logging.Logger:
+    logger: logging.Logger = logging.getLogger(name)
+    logger.setLevel(LOG_LEVEL)
+
+    if not logger.handlers:  # Avoid adding multiple handlers if already created
+        # File handler per module
+        file_handler = RotatingFileHandler(
+            filename=os.path.join(LOG_FOLDER, f"{name}.log"),
+            maxBytes=MAX_LOG_SIZE,
+            backupCount=BACKUP_COUNT,
+            encoding="utf-8"
+        )
+        file_handler.setFormatter(logging.Formatter(
+            "%(asctime)s [%(levelname)s] %(funcName)s: %(message)s"
+        ))
+
+        # Console handler
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(logging.Formatter(
+            "[%(levelname)s] %(name)s.%(funcName)s: %(message)s"
+        ))
+
+        logger.addHandler(file_handler)
+        logger.addHandler(console_handler)
+
+    return logger
