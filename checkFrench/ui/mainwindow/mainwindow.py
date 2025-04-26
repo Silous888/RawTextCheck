@@ -199,7 +199,7 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        json_projects.add_correct_letter(process.id_current_game - 1, item.text()[0])
+        json_projects.add_valid_alphanumeric(process.id_current_game - 1, item.text()[0])
         json_projects.load_json_projects()
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
 
@@ -209,7 +209,7 @@ class MainWindow(QMainWindow):
         Args:
             item (QTableWidgetItem): item from the table
         """
-        json_projects.add_correct_punctuation(process.id_current_game - 1, item.text()[0])
+        json_projects.add_valid_alphanumeric(process.id_current_game - 1, item.text()[0])
         json_projects.load_json_projects()
         self.remove_rows_table_by_text(self.ui.tableWidget_1, item.text())
 
@@ -438,7 +438,7 @@ class MainWindow(QMainWindow):
         """slot for comboBox_game
         """
         self.toggle_ui_enabled_except_combobox_game(bool(index))
-        self.ui.lineEdit_frenchColumn.setText(json_projects.data_json_projects[index - 1]["column_sheet"])  # type: ignore
+        self.ui.lineEdit_frenchColumn.setText(json_projects.data_json_projects[index - 1]["specific_argument"])
         process.set_id_and_word_list(index, [])
         process.get_list_ignored_languagetool_rules()
         if len(self.ui.lineEdit_urlSheet.text()) > 0:

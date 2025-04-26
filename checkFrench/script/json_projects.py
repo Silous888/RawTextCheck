@@ -14,8 +14,7 @@ class Item(TypedDict):
     folder_name: str
     specific_argument: str
     path_dictionary: str
-    valid_alphanumeric: str
-    valid_punctuation: str
+    valid_characters: str
     ignored_codes_into_space: list[str]
     ignored_codes_into_nospace: list[str]
     ignored_substrings_space: dict[str, str]
@@ -24,6 +23,15 @@ class Item(TypedDict):
 
 
 data_json_projects: dict[int, Item] = {}
+
+
+def log_error_id_invalid(id_project: int) -> None:
+    """log error if the id of the project is invalid
+
+    Args:
+        id_project (int): id of the project
+    """
+    logger.error(f"Project ID {id_project} is not valid.", stacklevel=2)
 
 
 def load_json_projects() -> None:
@@ -52,52 +60,33 @@ def is_id_project_valid(id_project: int) -> bool:
     return id_project in data_json_projects
 
 
-def add_valid_alphanumeric(id_project: int, alphanumeric_chars: str) -> None:
-    """add one or several characters in the json to valid_alphanumeric
+def add_valid_characters(id_project: int, characters: str) -> None:
+    """add one or several characters in the json to valid_characters
     of the current project
 
     Args:
         id_project (int): id of the project
-        alphanumeric_chars (str): characters to add
+        characters (str): characters to add
     """
     if not is_id_project_valid(id_project):
-        logger.error(f"Project ID {id_project} is not valid.")
+        log_error_id_invalid(id_project)
         return
-    for alphanumeric_char in alphanumeric_chars:
-        if alphanumeric_char not in data_json_projects[id_project]["valid_alphanumeric"]:
-            data_json_projects[id_project]["valid_alphanumeric"] += alphanumeric_char
+    for character in characters:
+        if character not in data_json_projects[id_project]["valid_characters"]:
+            data_json_projects[id_project]["valid_characters"] += character
 
 
-def set_valid_alphanumeric(id_project: int, alphanumeric_chars: str) -> None:
+def set_valid_characters(id_project: int, characters: str) -> None:
     """set the valid alphanumeric chars to a project
 
     Args:
         id_project (int): id of the project
-        alphanumeric_chars (str): characters to set
+        characters (str): characters to set
     """
-    data_json_projects[id_project]["valid_alphanumeric"] = alphanumeric_chars
-
-
-def add_valid_punctuation(id_project: int, punctuation_chars: str) -> None:
-    """add a punctuation in the json to valid_punctuation of the current project
-
-    Args:
-        id_project (int): id of the project
-        punctuation_chars (str): characters to add
-    """
-    for punctuation_char in punctuation_chars:
-        if punctuation_char not in data_json_projects[id_project]["valid_punctuation"]:
-            data_json_projects[id_project]["valid_punctuation"] += punctuation_char
-
-
-def set_valid_punctuation(id_project: int, punctuation_chars: str) -> None:
-    """set the valid punctuation chars to a project
-
-    Args:
-        id_project (int): id of the project
-        punctuation_chars (str): characters to set
-    """
-    data_json_projects[id_project]["valid_punctuation"] = punctuation_chars
+    if not is_id_project_valid(id_project):
+        log_error_id_invalid(id_project)
+        return
+    data_json_projects[id_project]["valid_characters"] = characters
 
 
 def add_ignored_rules(id_project: int, rule: str) -> None:
@@ -107,5 +96,8 @@ def add_ignored_rules(id_project: int, rule: str) -> None:
         id_project (int): id of the project
         rule (str): rule to add
     """
+    if not is_id_project_valid(id_project):
+        log_error_id_invalid(id_project)
+        return
     if rule not in data_json_projects[id_project]["ignored_rules_languagetool"]:
         data_json_projects[id_project]["ignored_rules_languagetool"].append(rule)
