@@ -1,7 +1,7 @@
 from googleapiclient.discovery import build as __build
 from googleapiclient.http import MediaIoBaseDownload as _MediaIoBaseDownload
 from googleapiclient.http import MediaFileUpload as _MediaFileUpload
-from oauth2client.service_account import ServiceAccountCredentials as _sac
+from google.oauth2.service_account import Credentials as _sac
 
 import io as _io
 import os as _os

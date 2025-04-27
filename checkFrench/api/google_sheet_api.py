@@ -1,5 +1,5 @@
 import gspread as _gspread
-from oauth2client.service_account import ServiceAccountCredentials as _sac
+from google.oauth2.service_account import ServiceAccountCredentials as _sac
 import os as _os
 import time as _time
 from typing import Callable, Any

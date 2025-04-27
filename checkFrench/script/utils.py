@@ -49,3 +49,15 @@ def get_before_arrow(text: str) -> str:
 def get_after_arrow(text: str) -> str:
     """Get the part of the string after ' =>'."""
     return text.split(' => ')[1]
+
+
+def sanitize_folder_name(name: str) -> str:
+    """Sanitize a folder name by removing or replacing invalid characters."""
+    # Replace forbidden characters with underscore
+    name = re.sub(r'[<>:"/\\|?*]', '_', name)
+    # Remove ASCII control characters
+    name = ''.join(c for c in name if ord(c) >= 32)
+    # Trim whitespace from the beginning and end
+    name = name.strip()
+    # Limit length to a safe maximum (255 characters)
+    return name[:255]
