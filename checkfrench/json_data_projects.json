@@ -2,6 +2,8 @@
     {
         "id": 1,
         "title": "428 Shibuya Scramble",
+        "language" : "fr",
+        "parser": "googlesheet",
         "specific_argument": "C",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=0#gid=0",
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ0123456789 .,;:?!()[]*=+-/\\\"'“”",
@@ -18,6 +20,8 @@
     {
         "id": 4,
         "title": "PARANOMASIGHT",
+        "language" : "fr",
+        "parser": "googlesheet",
         "specific_argument": "E",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=1091637872#gid=1091637872",
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒō0123456789 .,;:?!()[]*=+-/\\\"'★",
@@ -33,6 +37,8 @@
     {
         "id": 7,
         "title": "Zero Escape: Virtue's Last Reward",
+        "language" : "fr",
+        "parser": "googlesheet",
         "specific_argument": "E",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=2108599019#gid=2108599019",
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ0123456789 .,;:?!()[]*=+-/\\\"'",
@@ -49,6 +55,8 @@
     {
         "id": 0,
         "title": "Test project",
+        "language" : "fr",
+        "parser": "googlesheet",
         "specific_argument": "",
         "path_dictionary": "",
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ .,;:?!()[]*=+-/\\\"'",

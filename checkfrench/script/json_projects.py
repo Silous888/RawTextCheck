@@ -1,3 +1,26 @@
+"""
+Module for managing project configuration stored in a JSON file.
+
+This module provides functions to load, manipulate, and persist project metadata
+used by the application. Each project is represented by an entry in a JSON file and
+is identified by a unique ID.
+
+The JSON structure is expected to follow the `Item` TypedDict definition.
+
+Features:
+- Load and save project data from/to a JSON file
+- Create, update, and delete individual project entries
+- Modify specific fields such as valid characters or ignored patterns
+- Utility functions for managing nested lists and dictionaries within each project entry
+
+Dependencies:
+- checkfrench.default_parameters.JSON_FILE_PATH: path to the JSON configuration file
+- checkfrench.logger.get_logger: logging utility
+- checkfrench.script.utils.sanitize_folder_name: used for result folder naming
+
+"""
+
+
 import json
 from logging import Logger
 from typing import TypedDict
@@ -12,6 +35,8 @@ logger: Logger = get_logger(__name__)
 class Item(TypedDict):
     id: int
     title: str
+    language: str
+    parser: str
     specific_argument: str
     path_dictionary: str
     valid_characters: str
@@ -73,9 +98,11 @@ def save_json_projects() -> None:
 
 def create_new_entry(
     title: str,
-    specific_argument: str = "",
-    path_dictionary: str = "",
-    valid_characters: str = "",
+    language: str,
+    parser: str | None = None,
+    specific_argument: str | None = None,
+    path_dictionary: str | None = None,
+    valid_characters: str | None = None,
     ignored_codes_into_space: list[str] | None = None,
     ignored_codes_into_nospace: list[str] | None = None,
     ignored_substrings_space: dict[str, list[str]] | None = None,
@@ -98,13 +125,33 @@ def create_new_entry(
     Returns:
         int: Id of the entry created
     """
-    # TODO
-    return 0
+    id_project: int = create_id()
+
+    item: Item = {
+        "id": id_project,
+        "title": title,
+        "language": language,
+        "parser": parser or "",
+        "specific_argument": specific_argument or "",
+        "path_dictionary": path_dictionary or "",
+        "valid_characters": valid_characters or "",
+        "ignored_codes_into_space": ignored_codes_into_space or [],
+        "ignored_codes_into_nospace": ignored_codes_into_nospace or [],
+        "ignored_substrings_space": ignored_substrings_space or {},
+        "ignored_substrings_nospace": ignored_substrings_nospace or {},
+        "ignored_rules_languagetool": ignored_rules_languagetool or [],
+    }
+
+    data_json_projects[id_project] = item
+    save_json_projects()
+    return id_project
 
 
 def set_entry(
     id_project: int,
     title: str | None = None,
+    language: str | None = None,
+    parser: str | None = None,
     specific_argument: str | None = None,
     path_dictionary: str | None = None,
     valid_characters: str | None = None,
@@ -121,6 +168,10 @@ def set_entry(
         return
     if title is not None:
         set_title(id_project, title)
+    if language is not None:
+        set_language(id_project, language)
+    if parser is not None:
+        set_parser(id_project, parser)
     if specific_argument is not None:
         set_specific_argument(id_project, specific_argument)
     if path_dictionary is not None:
@@ -179,6 +230,38 @@ def set_title(id_project: int, title: str) -> None:
         logger.error("Title cannot be empty.")
         return
     data_json_projects[id_project]["title"] = title
+
+
+def set_language(id_project: int, language: str) -> None:
+    """set the language of the project
+
+    Args:
+        id_project (int): id of the project
+        language (str): language of the project
+    """
+    if not is_id_project_exist(id_project):
+        log_error_id_invalid(id_project)
+        return
+    if language == "":
+        logger.error("Language cannot be empty.")
+        return
+    data_json_projects[id_project]["language"] = language
+
+
+def set_parser(id_project: int, parser: str) -> None:
+    """set the parser of the project
+
+    Args:
+        id_project (int): id of the project
+        parser (str): parser of the project
+    """
+    if not is_id_project_exist(id_project):
+        log_error_id_invalid(id_project)
+        return
+    if parser == "":
+        logger.error("Parser cannot be empty.")
+        return
+    data_json_projects[id_project]["parser"] = parser
 
 
 def set_specific_argument(id_project: int, specific_argument: str) -> None:
