@@ -31,7 +31,7 @@ def log_error_id_invalid(id_project: int, stacklevel: int = 2) -> None:
     Args:
         id_project (int): id of the project
     """
-    logger.error(f"Project ID {id_project} is not valid.", stacklevel=stacklevel)
+    logger.error("Project ID %s is not valid.", id_project, stacklevel=stacklevel)
 
 
 def _log_error_if_id_or_value_invalid(id_project: int, *values: str) -> bool:
@@ -69,6 +69,69 @@ def save_json_projects() -> None:
     """save json data"""
     with open(JSON_FILE_PATH, "w", encoding="utf-8") as file:
         json.dump(list(data_json_projects.values()), file, ensure_ascii=False, indent=4)
+
+
+def create_new_entry(
+    title: str,
+    specific_argument: str = "",
+    path_dictionary: str = "",
+    valid_characters: str = "",
+    ignored_codes_into_space: list[str] | None = None,
+    ignored_codes_into_nospace: list[str] | None = None,
+    ignored_substrings_space: dict[str, list[str]] | None = None,
+    ignored_substrings_nospace: dict[str, list[str]] | None = None,
+    ignored_rules_languagetool: list[str] | None = None,
+) -> int:
+    """Add a new entry in the json
+
+    Args:
+        title (str): need to be specified
+        specific_argument (str, optional): Defaults to "".
+        path_dictionary (str, optional): Defaults to "".
+        valid_characters (str, optional): Defaults to "".
+        ignored_codes_into_space (list[str], optional): Defaults to [].
+        ignored_codes_into_nospace (list[str], optional): Defaults to [].
+        ignored_substrings_space (dict[str, list[str]], optional): Defaults to {}.
+        ignored_substrings_nospace (dict[str, list[str]], optional): Defaults to {}.
+        ignored_rules_languagetool (list[str], optional): Defaults to [].
+
+    Returns:
+        int: Id of the entry created
+    """
+    #TODO
+    return 0
+
+def set_entry(
+    id_project: int,
+    title: str,
+    specific_argument: str = "",
+    path_dictionary: str = "",
+    valid_characters: str = "",
+    ignored_codes_into_space: list[str] | None = None,
+    ignored_codes_into_nospace: list[str] | None = None,
+    ignored_substrings_space: dict[str, list[str]] | None = None,
+    ignored_substrings_nospace: dict[str, list[str]] | None = None,
+    ignored_rules_languagetool: list[str] | None = None,
+) -> None:
+    #TODO
+    return
+
+
+def delete_entry(id: int) -> None:
+    """delete entry by id
+    """
+    #TODO
+    return
+
+
+def create_id() -> int:
+    """Create a new id not used
+
+    Returns:
+        int: id for a new entry
+    """
+    #TODO
+    return 0
 
 
 def set_title(id_project: int, title: str) -> None:
@@ -193,7 +256,11 @@ def get_folder_result(id_project: int) -> str | int:
     if not is_id_project_exist(id_project):
         log_error_id_invalid(id_project)
         return 1
-    return str(id_project) + "-" + sanitize_folder_name(data_json_projects[id_project]["title"])
+    return (
+        str(id_project)
+        + "-"
+        + sanitize_folder_name(data_json_projects[id_project]["title"])
+    )
 
 
 def _add_to_list_field(id_project: int, field: str, value: str) -> None:
@@ -219,7 +286,9 @@ def _add_to_dict_list_field(id_project: int, field: str, key: str, value: str) -
         data_json_projects[id_project][field][key].append(value)  # type: ignore
 
 
-def _remove_from_dict_list_field(id_project: int, field: str, key: str, value: str) -> None:
+def _remove_from_dict_list_field(
+    id_project: int, field: str, key: str, value: str
+) -> None:
     if _log_error_if_id_or_value_invalid(id_project, key, value):
         return
     if key in data_json_projects[id_project][field]:
