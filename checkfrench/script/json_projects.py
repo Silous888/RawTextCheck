@@ -98,29 +98,59 @@ def create_new_entry(
     Returns:
         int: Id of the entry created
     """
-    #TODO
+    # TODO
     return 0
+
 
 def set_entry(
     id_project: int,
-    title: str,
-    specific_argument: str = "",
-    path_dictionary: str = "",
-    valid_characters: str = "",
+    title: str | None = None,
+    specific_argument: str | None = None,
+    path_dictionary: str | None = None,
+    valid_characters: str | None = None,
     ignored_codes_into_space: list[str] | None = None,
     ignored_codes_into_nospace: list[str] | None = None,
     ignored_substrings_space: dict[str, list[str]] | None = None,
     ignored_substrings_nospace: dict[str, list[str]] | None = None,
     ignored_rules_languagetool: list[str] | None = None,
 ) -> None:
-    #TODO
+    """set the entry in the json, if arg not specified, it will not be changed
+    """
+    if not is_id_project_exist(id_project):
+        log_error_id_invalid(id_project)
+        return
+    if title is not None:
+        set_title(id_project, title)
+    if specific_argument is not None:
+        set_specific_argument(id_project, specific_argument)
+    if path_dictionary is not None:
+        set_path_dictionary(id_project, path_dictionary)
+    if valid_characters is not None:
+        set_valid_characters(id_project, valid_characters)
+    if ignored_codes_into_space is not None:
+        set_ignored_codes_into_space(id_project, ignored_codes_into_space)
+    if ignored_codes_into_nospace is not None:
+        set_ignored_codes_into_nospace(id_project, ignored_codes_into_nospace)
+    if ignored_substrings_space is not None:
+        set_ignored_substrings_space(id_project, ignored_substrings_space)
+    if ignored_substrings_nospace is not None:
+        set_ignored_substrings_nospace(id_project, ignored_substrings_nospace)
+    if ignored_rules_languagetool is not None:
+        set_ignored_rules(id_project, ignored_rules_languagetool)
+    save_json_projects()
+    logger.info("Entry %s updated.", id_project)
     return
 
 
-def delete_entry(id: int) -> None:
+def delete_entry(id_project: int) -> None:
     """delete entry by id
     """
-    #TODO
+    if not is_id_project_exist(id_project):
+        log_error_id_invalid(id_project)
+        return
+    del data_json_projects[id_project]
+    save_json_projects()
+    logger.info("Entry %s deleted.", id_project)
     return
 
 
@@ -130,8 +160,9 @@ def create_id() -> int:
     Returns:
         int: id for a new entry
     """
-    #TODO
-    return 0
+    if not data_json_projects:
+        return 0
+    return max(data_json_projects.keys()) + 1
 
 
 def set_title(id_project: int, title: str) -> None:
@@ -204,12 +235,38 @@ def set_valid_characters(id_project: int, characters: str) -> None:
     data_json_projects[id_project]["valid_characters"] = characters
 
 
+def set_ignored_codes_into_space(id_project: int, codes: list[str]) -> None:
+    """set the ignored codes into space of the project
+
+    Args:
+        id_project (int): id of the project
+        codes (list[str]): codes to set
+    """
+    if not is_id_project_exist(id_project):
+        log_error_id_invalid(id_project)
+        return
+    data_json_projects[id_project]["ignored_codes_into_space"] = codes
+
+
 def add_ignored_codes_into_space(id_project: int, code: str) -> None:
     _add_to_list_field(id_project, "ignored_codes_into_space", code)
 
 
 def remove_ignored_codes_into_space(id_project: int, code: str) -> None:
     _remove_from_list_field(id_project, "ignored_codes_into_space", code)
+
+
+def set_ignored_codes_into_nospace(id_project: int, codes: list[str]) -> None:
+    """set the ignored codes into nospace of the project
+
+    Args:
+        id_project (int): id of the project
+        codes (list[str]): codes to set
+    """
+    if not is_id_project_exist(id_project):
+        log_error_id_invalid(id_project)
+        return
+    data_json_projects[id_project]["ignored_codes_into_nospace"] = codes
 
 
 def add_ignored_codes_into_nospace(id_project: int, code: str) -> None:
@@ -220,6 +277,19 @@ def remove_ignored_codes_into_nospace(id_project: int, code: str) -> None:
     _remove_from_list_field(id_project, "ignored_codes_into_nospace", code)
 
 
+def set_ignored_substrings_space(id_project: int, substrings: dict[str, list[str]]) -> None:
+    """set the ignored substrings into space of the project
+
+    Args:
+        id_project (int): id of the project
+        substrings (dict[str, list[str]]): substrings to set
+    """
+    if not is_id_project_exist(id_project):
+        log_error_id_invalid(id_project)
+        return
+    data_json_projects[id_project]["ignored_substrings_space"] = substrings
+
+
 def add_ignored_substrings_space(id_project: int, begin: str, end: str) -> None:
     _add_to_dict_list_field(id_project, "ignored_substrings_space", begin, end)
 
@@ -228,12 +298,38 @@ def remove_ignored_substrings_space(id_project: int, begin: str, end: str) -> No
     _remove_from_dict_list_field(id_project, "ignored_substrings_space", begin, end)
 
 
+def set_ignored_substrings_nospace(id_project: int, substrings: dict[str, list[str]]) -> None:
+    """set the ignored substrings into nospace of the project
+
+    Args:
+        id_project (int): id of the project
+        substrings (dict[str, list[str]]): substrings to set
+    """
+    if not is_id_project_exist(id_project):
+        log_error_id_invalid(id_project)
+        return
+    data_json_projects[id_project]["ignored_substrings_nospace"] = substrings
+
+
 def add_ignored_substrings_nospace(id_project: int, begin: str, end: str) -> None:
     _add_to_dict_list_field(id_project, "ignored_substrings_nospace", begin, end)
 
 
 def remove_ignored_substrings_nospace(id_project: int, begin: str, end: str) -> None:
     _remove_from_dict_list_field(id_project, "ignored_substrings_nospace", begin, end)
+
+
+def set_ignored_rules(id_project: int, rules: list[str]) -> None:
+    """set the ignored rules of the project
+
+    Args:
+        id_project (int): id of the project
+        rules (list[str]): rules to set
+    """
+    if not is_id_project_exist(id_project):
+        log_error_id_invalid(id_project)
+        return
+    data_json_projects[id_project]["ignored_rules_languagetool"] = rules
 
 
 def add_ignored_rules(id_project: int, rule: str) -> None:
