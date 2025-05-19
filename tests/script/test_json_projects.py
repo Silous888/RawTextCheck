@@ -3,6 +3,69 @@ import unittest
 from checkfrench.script import json_projects
 
 
+class TestCreateID(unittest.TestCase):
+
+    def test_create_id_empty(self) -> None:
+        json_projects.data_json_projects = {}
+        new_id: int = json_projects.create_id()
+        self.assertEqual(new_id, 0)
+
+    def test_create_id_non_empty(self) -> None:
+        json_projects.data_json_projects = {
+            0: {"id": 0},
+            1: {"id": 1},
+            5: {"id": 5}
+        }
+        new_id: int = json_projects.create_id()
+        self.assertEqual(new_id, 6)
+
+
+class TestCreateNewEntry(unittest.TestCase):
+
+    def setUp(self) -> None:
+        json_projects.data_json_projects = {}
+
+    def test_create_new_entry_with_title_and_language(self) -> None:
+        new_title = "My New Project"
+        new_language = "fr"
+        new_id: int = json_projects.create_new_entry(new_title, new_language)
+
+        self.assertIn(new_id, json_projects.data_json_projects)
+        entry: json_projects.Item = json_projects.data_json_projects[new_id]
+
+        self.assertEqual(entry["id"], new_id)
+        self.assertEqual(entry["title"], new_title)
+        self.assertEqual(entry["language"], new_language)
+        self.assertEqual(entry["path_dictionary"], "")
+        self.assertEqual(entry["specific_argument"], "")
+        self.assertEqual(entry["path_dictionary"], "")
+        self.assertEqual(entry["valid_characters"], "")
+        self.assertEqual(entry["ignored_codes_into_space"], [])
+        self.assertEqual(entry["ignored_codes_into_nospace"], [])
+        self.assertEqual(entry["ignored_substrings_space"], {})
+        self.assertEqual(entry["ignored_substrings_nospace"], {})
+        self.assertEqual(entry["ignored_rules_languagetool"], [])
+
+    def test_create_multiple_entries(self) -> None:
+        titles: list[str] = ["P1", "P2", "P3"]
+        languages: list[str] = ["fr", "en", "de"]
+        ids: list[int] = [json_projects.create_new_entry(t, l) for t, l in zip(titles, languages)]
+
+        self.assertEqual(ids, [0, 1, 2])
+        for i, (title, lang) in enumerate(zip(titles, languages)):
+            self.assertIn(i, json_projects.data_json_projects)
+            self.assertEqual(json_projects.data_json_projects[i]["title"], title)
+            self.assertEqual(json_projects.data_json_projects[i]["language"], lang)
+
+    def test_create_entry_with_empty_title_should_fail(self) -> None:
+        with self.assertRaises(ValueError):
+            json_projects.create_new_entry("", "fr")
+
+    def test_create_entry_with_empty_language_should_fail(self) -> None:
+        with self.assertRaises(ValueError):
+            json_projects.create_new_entry("My Project", "")
+
+
 class TestAddValidCharacters(unittest.TestCase):
 
     base_valid_characters: list[str] = ["ABC123.,:!", ""]
@@ -19,7 +82,8 @@ class TestAddValidCharacters(unittest.TestCase):
             0: {
                 "id": 0,
                 "title": "Test Project",
-                "folder_name": "Test Folder",
+                "language": "fr",
+                "parser": "sheet",
                 "specific_argument": "",
                 "path_dictionary": "",
                 "valid_characters": self.base_valid_characters[0],
@@ -32,7 +96,8 @@ class TestAddValidCharacters(unittest.TestCase):
             1: {
                 "id": 1,
                 "title": "Test Project 2",
-                "folder_name": "Test Folder 2",
+                "language": "fr",
+                "parser": "sheet",
                 "specific_argument": "",
                 "path_dictionary": "",
                 "valid_characters": self.base_valid_characters[1],
@@ -98,7 +163,8 @@ class TestSetValidCharacters(unittest.TestCase):
             0: {
                 "id": 0,
                 "title": "Test Project",
-                "folder_name": "Test Folder",
+                "language": "fr",
+                "parser": "sheet",
                 "specific_argument": "",
                 "path_dictionary": "",
                 "valid_characters": "ABC123.,:!",
@@ -111,7 +177,8 @@ class TestSetValidCharacters(unittest.TestCase):
             1: {
                 "id": 1,
                 "title": "Test Project 2",
-                "folder_name": "Test Folder 2",
+                "language": "fr",
+                "parser": "sheet",
                 "specific_argument": "",
                 "path_dictionary": "",
                 "valid_characters": "",

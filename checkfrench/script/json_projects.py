@@ -126,6 +126,13 @@ def create_new_entry(
         int: Id of the entry created
     """
     id_project: int = create_id()
+    if title == "":
+        logger.error("Title cannot be empty.")
+        raise ValueError
+
+    if language == "":
+        logger.error("Language cannot be empty.")
+        raise ValueError
 
     item: Item = {
         "id": id_project,
@@ -165,7 +172,7 @@ def set_entry(
     """
     if not is_id_project_exist(id_project):
         log_error_id_invalid(id_project)
-        return
+        raise ValueError
     if title is not None:
         set_title(id_project, title)
     if language is not None:
@@ -216,7 +223,7 @@ def create_id() -> int:
     return max(data_json_projects.keys()) + 1
 
 
-def set_title(id_project: int, title: str) -> None:
+def set_title(id_project: int, title: str) -> None | int:
     """set the title of the project
 
     Args:
@@ -225,10 +232,10 @@ def set_title(id_project: int, title: str) -> None:
     """
     if not is_id_project_exist(id_project):
         log_error_id_invalid(id_project)
-        return
+        raise ValueError
     if title == "":
         logger.error("Title cannot be empty.")
-        return
+        raise ValueError
     data_json_projects[id_project]["title"] = title
 
 
@@ -241,10 +248,10 @@ def set_language(id_project: int, language: str) -> None:
     """
     if not is_id_project_exist(id_project):
         log_error_id_invalid(id_project)
-        return
+        raise ValueError
     if language == "":
         logger.error("Language cannot be empty.")
-        return
+        raise ValueError
     data_json_projects[id_project]["language"] = language
 
 
@@ -260,7 +267,7 @@ def set_parser(id_project: int, parser: str) -> None:
         return
     if parser == "":
         logger.error("Parser cannot be empty.")
-        return
+        raise ValueError
     data_json_projects[id_project]["parser"] = parser
 
 
@@ -273,7 +280,7 @@ def set_specific_argument(id_project: int, specific_argument: str) -> None:
     """
     if not is_id_project_exist(id_project):
         log_error_id_invalid(id_project)
-        return
+        raise ValueError
     data_json_projects[id_project]["specific_argument"] = specific_argument
 
 
@@ -423,7 +430,7 @@ def remove_ignored_rules(id_project: int, rule: str) -> None:
     _remove_from_list_field(id_project, "ignored_rules_languagetool", rule)
 
 
-def get_folder_result(id_project: int) -> str | int:
+def get_folder_result(id_project: int) -> str:
     """get the folder name where results will be put
 
     Args:
@@ -434,7 +441,7 @@ def get_folder_result(id_project: int) -> str | int:
     """
     if not is_id_project_exist(id_project):
         log_error_id_invalid(id_project)
-        return 1
+        raise ValueError
     return (
         str(id_project)
         + "-"
