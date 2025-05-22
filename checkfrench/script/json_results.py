@@ -1,60 +1,190 @@
-from datetime import datetime
 import json
 import os
-from typing import Any
-
-from checkfrench.script import json_projects, utils
+from typing import TypedDict
 
 
-data_json: dict[str, Any] = {}
+from checkfrench.script import json_projects
+from default_parameters import RESULTS_FOLDER_PATH
 
 
-def save_result_process_one_str(id_game: int, name_file: str, method: int, data: list[tuple[int, str]]) -> None:
-    folder_name: str = json_projects.data_json_projects[id_game]["folder_name"]  # type: ignore
-    path: str = os.path.join("result", folder_name)
-    os.makedirs(path, exist_ok=True)
-
-    with open(os.path.join(path, name_file + ".json"), "w", encoding="utf-8") as file:
-        json.dump(data, file, ensure_ascii=False)
-
-
-def save_result_process_two_str(id_game: int, name_file: str, method: int, data: list[tuple[int, str, str]]) -> None:
-    folder_name: str = json_projects.data_json_projects[id_game]["folder_name"]  # type: ignore
-    path: str = os.path.join("result", folder_name)
-    os.makedirs(path, exist_ok=True)
-
-    with open(os.path.join(path, name_file + ".json"), "w", encoding="utf-8") as file:
-        json.dump(data, file, ensure_ascii=False)
+"""
+structure of the files:
+in the results folder
+    - name of the project (folder)
+        - name of the file with the extension of the original file (json file)
+"""
 
 
-def load_result_process(id_game: int, name_file: str) -> tuple[list[Any], list[str]]:
-    result: list[list[Any]] = [[], [], []]
-    modification_dates: list[str] = []
-    folder_name: str = json_projects.data_json_projects[id_game]["folder_name"]  # type: ignore
-    path: str = os.path.join("result", folder_name, name_file + ".json")
-    if os.path.isfile(path):
-        with open(path, "r", encoding="utf-8") as file:
-            result = json.load(file)
-        modification_time: float = os.path.getmtime(path)
-        modification_date: str = datetime.fromtimestamp(modification_time).strftime('%Y-%m-%d %H:%M')
-        modification_dates.append(modification_date)
-    else:
-        modification_dates.append("jamais lancée")
-    return result, modification_dates
+class ItemResult(TypedDict):
+    """Class to define the structure of the result item"""
+
+    # id_error: str as key
+    line_number: int
+    line: str
+    error: str
+    error_type: str
+    explanation: str
 
 
-def remove_entry(id_game: int, name_file: str, method: int, value: str, text: str) -> None:
+def save_data(id_project: int, name_file: str, data: dict[str, ItemResult]) -> None:
+    """save the data in a result json file
 
-    print(id, name_file, method, value, text)
-    folder_name: str = json_projects.data_json_projects[id_game]["folder_name"]  # type: ignore
-    path: str = os.path.join("result", folder_name)
-    with open(os.path.join(path, name_file + ".json"), "r", encoding="utf-8") as file:
-        data = json.load(file)
+    Args:
+        id_project (int): id of the project
+        name_file (str): name of the file
+        data (dict[str, Any]): data to save
+    """
+    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
+                                    json_projects.get_folder_result(id_project))
+    file_path: str = os.path.join(folder_path, name_file)
 
-    value_int: int | None = utils.safe_str_to_int(value)
-    if value_int is None:
+    # Create the folder if it doesn't exist
+    os.makedirs(folder_path, exist_ok=True)
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+def generate_id_errors(result: list[ItemResult]) -> dict[str, ItemResult]:
+    """generate the id of the errors
+    ex: 1a, 1b, 2a, 3a, 3b, 3c, 3d
+    where 1, 2, 3 are the line numbers and
+    a, b, c, d are the letters incremented for unique id
+
+    Args:
+        result (list[ItemResult]): list of errors
+
+    Returns:
+        dict[str, ItemResult]: dictionary with the id as key
+    """
+    data: dict[str, ItemResult] = {}
+
+    for item in result:
+        id_error: str = f"{item['line_number']}a"
+        if id_error in data:
+            # if the id already exists, increment the letter
+            i: int = 1
+            while id_error in data:
+                id_error = f"{item['line_number']}{chr(97 + i)}"
+        data[id_error] = item
+
+    return data
+
+
+def get_file_data(id_project: int, name_file: str) -> dict[str, ItemResult]:
+    """get the data from a result json file
+
+    Args:
+        id_project (int): id of the project
+        name_file (str): name of the file
+
+    Returns:
+        dict[str, Any]: data from the file
+    """
+    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
+                                    json_projects.get_folder_result(id_project))
+    file_path: str = os.path.join(folder_path, name_file)
+
+    if not os.path.exists(file_path):
+        return {}
+
+    with open(file_path, "r", encoding="utf-8") as f:
+        data: dict[str, ItemResult] = json.load(f)
+
+    return data
+
+
+def get_folder_data(id_project: int) -> list[tuple[str, dict[str, ItemResult]]]:
+    """get the data from a result json file
+
+    Args:
+        id_project (int): id of the project
+
+    Returns:
+        list[str, dict[str, ItemResult]]: list of files and their data
+    """
+    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
+                                    json_projects.get_folder_result(id_project))
+    files: list[str] = os.listdir(folder_path)
+
+    data: list[tuple[str, dict[str, ItemResult]]] = []
+    for file in files:
+        file_path: str = os.path.join(folder_path, file)
+        with open(file_path, "r", encoding="utf-8") as f:
+            data.append((file, json.load(f)))
+
+    return data
+
+
+def delete_entry(id_project: int, name_file: str, id_error: str) -> None:
+    """delete an entry in a result json file
+
+    Args:
+        id_project (int): id of the project
+        name_file (str): name of the file
+        id_error (str): id of the error to delete
+    """
+    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
+                                    json_projects.get_folder_result(id_project))
+    file_path: str = os.path.join(folder_path, name_file)
+
+    if not os.path.exists(file_path):
         return
-    data: list[str] = [entry for entry in data if entry[:2] != [value_int, text]]  # type: ignore
 
-    with open(os.path.join(path, name_file + ".json"), "w", encoding="utf-8") as file:
-        json.dump(data, file, ensure_ascii=False)
+    with open(file_path, "r", encoding="utf-8") as f:
+        data: dict[str, ItemResult] = json.load(f)
+
+    if id_error in data:
+        del data[id_error]
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+def delete_error_type(id_project: int, name_file: str, error_type: str) -> None:
+    """delete all errors of a specific type in a result json file
+
+    Args:
+        id_project (int): id of the project
+        name_file (str): name of the file
+        error_type (str): type of the error to delete
+    """
+    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
+                                    json_projects.get_folder_result(id_project))
+    file_path: str = os.path.join(folder_path, name_file)
+
+    if not os.path.exists(file_path):
+        return
+
+    with open(file_path, "r", encoding="utf-8") as f:
+        data: dict[str, ItemResult] = json.load(f)
+
+    data = {k: v for k, v in data.items() if v["error_type"] != error_type}
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+def delete_specific_error_with_type(id_project: int, name_file: str, error_type: str, error: str) -> None:
+    """delete all errors of a specific type and error in a result json file
+
+    Args:
+        id_project (int): id of the project
+        name_file (str): name of the file
+        error_type (str): type of the error to delete
+        error (str): error to delete
+    """
+    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
+                                    json_projects.get_folder_result(id_project))
+    file_path: str = os.path.join(folder_path, name_file)
+
+    if not os.path.exists(file_path):
+        return
+
+    with open(file_path, "r", encoding="utf-8") as f:
+        data: dict[str, ItemResult] = json.load(f)
+
+    data = {k: v for k, v in data.items() if v["error_type"] != error_type or v["error"] != error}
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
