@@ -3,7 +3,7 @@ import os
 from typing import TypedDict
 
 
-from checkfrench.script import json_projects
+from checkfrench.script.utils import sanitize_folder_name
 from default_parameters import RESULTS_FOLDER_PATH
 
 
@@ -26,16 +26,16 @@ class ItemResult(TypedDict):
     explanation: str
 
 
-def save_data(id_project: int, name_file: str, data: dict[str, ItemResult]) -> None:
+def save_data(title_project: str, name_file: str, data: dict[str, ItemResult]) -> None:
     """save the data in a result json file
 
     Args:
-        id_project (int): id of the project
+        title_project (int): id of the project
         name_file (str): name of the file
         data (dict[str, Any]): data to save
     """
     folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    json_projects.get_folder_result(id_project))
+                                    sanitize_folder_name(title_project))
     file_path: str = os.path.join(folder_path, name_file)
 
     # Create the folder if it doesn't exist
@@ -71,18 +71,18 @@ def generate_id_errors(result: list[ItemResult]) -> dict[str, ItemResult]:
     return data
 
 
-def get_file_data(id_project: int, name_file: str) -> dict[str, ItemResult]:
+def get_file_data(title_project: str, name_file: str) -> dict[str, ItemResult]:
     """get the data from a result json file
 
     Args:
-        id_project (int): id of the project
+        title_project (int): id of the project
         name_file (str): name of the file
 
     Returns:
         dict[str, Any]: data from the file
     """
     folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    json_projects.get_folder_result(id_project))
+                                    sanitize_folder_name(title_project))
     file_path: str = os.path.join(folder_path, name_file)
 
     if not os.path.exists(file_path):
@@ -94,17 +94,17 @@ def get_file_data(id_project: int, name_file: str) -> dict[str, ItemResult]:
     return data
 
 
-def get_folder_data(id_project: int) -> list[tuple[str, dict[str, ItemResult]]]:
+def get_folder_data(title_project: str) -> list[tuple[str, dict[str, ItemResult]]]:
     """get the data from a result json file
 
     Args:
-        id_project (int): id of the project
+        title_project (int): id of the project
 
     Returns:
         list[str, dict[str, ItemResult]]: list of files and their data
     """
     folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    json_projects.get_folder_result(id_project))
+                                    sanitize_folder_name(title_project))
     files: list[str] = os.listdir(folder_path)
 
     data: list[tuple[str, dict[str, ItemResult]]] = []
@@ -116,16 +116,16 @@ def get_folder_data(id_project: int) -> list[tuple[str, dict[str, ItemResult]]]:
     return data
 
 
-def delete_entry(id_project: int, name_file: str, id_error: str) -> None:
+def delete_entry(title_project: str, name_file: str, id_error: str) -> None:
     """delete an entry in a result json file
 
     Args:
-        id_project (int): id of the project
+        title_project (int): id of the project
         name_file (str): name of the file
         id_error (str): id of the error to delete
     """
     folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    json_projects.get_folder_result(id_project))
+                                    sanitize_folder_name(title_project))
     file_path: str = os.path.join(folder_path, name_file)
 
     if not os.path.exists(file_path):
@@ -141,16 +141,16 @@ def delete_entry(id_project: int, name_file: str, id_error: str) -> None:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
-def delete_error_type(id_project: int, name_file: str, error_type: str) -> None:
+def delete_error_type(title_project: str, name_file: str, error_type: str) -> None:
     """delete all errors of a specific type in a result json file
 
     Args:
-        id_project (int): id of the project
+        title_project (int): id of the project
         name_file (str): name of the file
         error_type (str): type of the error to delete
     """
     folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    json_projects.get_folder_result(id_project))
+                                    sanitize_folder_name(title_project))
     file_path: str = os.path.join(folder_path, name_file)
 
     if not os.path.exists(file_path):
@@ -165,17 +165,17 @@ def delete_error_type(id_project: int, name_file: str, error_type: str) -> None:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
-def delete_specific_error_with_type(id_project: int, name_file: str, error_type: str, error: str) -> None:
+def delete_specific_error_with_type(title_project: str, name_file: str, error_type: str, error: str) -> None:
     """delete all errors of a specific type and error in a result json file
 
     Args:
-        id_project (int): id of the project
+        title_project (int): id of the project
         name_file (str): name of the file
         error_type (str): type of the error to delete
         error (str): error to delete
     """
     folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    json_projects.get_folder_result(id_project))
+                                    sanitize_folder_name(title_project))
     file_path: str = os.path.join(folder_path, name_file)
 
     if not os.path.exists(file_path):

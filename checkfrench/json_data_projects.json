@@ -1,8 +1,6 @@
-[
-    {
-        "id": 1,
-        "title": "428 Shibuya Scramble",
-        "language" : "fr",
+{
+    "428 Shibuya Scramble": {
+        "language": "fr",
         "parser": "googlesheet",
         "specific_argument": "C",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=0#gid=0",
@@ -17,10 +15,8 @@
         "ignored_substrings_nospace": {},
         "ignored_rules_languagetool": []
     },
-    {
-        "id": 4,
-        "title": "PARANOMASIGHT",
-        "language" : "fr",
+    "PARANOMASIGHT": {
+        "language": "fr",
         "parser": "googlesheet",
         "specific_argument": "E",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=1091637872#gid=1091637872",
@@ -34,10 +30,8 @@
         "ignored_substrings_nospace": {},
         "ignored_rules_languagetool": []
     },
-    {
-        "id": 7,
-        "title": "Zero Escape: Virtue's Last Reward",
-        "language" : "fr",
+    "Zero Escape: Virtue's Last Reward": {
+        "language": "fr",
         "parser": "googlesheet",
         "specific_argument": "E",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=2108599019#gid=2108599019",
@@ -45,17 +39,15 @@
         "ignored_codes_into_space": [],
         "ignored_codes_into_nospace": [],
         "ignored_substrings_space": {
-            "<": ">"
+            "<": [">"]
         },
         "ignored_substrings_nospace": {},
         "ignored_rules_languagetool": [
             "ACCORD_COULEUR"
         ]
     },
-    {
-        "id": 0,
-        "title": "Test project",
-        "language" : "fr",
+    "Test project": {
+        "language": "fr",
         "parser": "googlesheet",
         "specific_argument": "",
         "path_dictionary": "",
@@ -70,4 +62,4 @@
             "ACCORD_COULEUR"
         ]
     }
-]
+}

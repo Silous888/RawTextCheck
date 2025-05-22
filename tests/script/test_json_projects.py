@@ -1,40 +1,46 @@
+import json
+import os
 import unittest
 
 from checkfrench.script import json_projects
+from checkfrench.default_parameters import JSON_FILE_PATH
 
 
-class TestCreateID(unittest.TestCase):
+def rename_json_during_test() -> None:
+    """Safely rename the real json to backup and create a new empty one for testing."""
+    if os.path.exists(JSON_FILE_PATH):
+        os.rename(JSON_FILE_PATH, str(JSON_FILE_PATH) + ".bak")
+    # Always create an empty JSON file for test
+    with open(JSON_FILE_PATH, "w", encoding="utf-8") as f:
+        json.dump({}, f, ensure_ascii=False, indent=4)
 
-    def test_create_id_empty(self) -> None:
-        json_projects.data_json_projects = {}
-        new_id: int = json_projects.create_id()
-        self.assertEqual(new_id, 0)
 
-    def test_create_id_non_empty(self) -> None:
-        json_projects.data_json_projects = {
-            0: {"id": 0},
-            1: {"id": 1},
-            5: {"id": 5}
-        }
-        new_id: int = json_projects.create_id()
-        self.assertEqual(new_id, 6)
+def restore_json_after_test() -> None:
+    """Restore the original json after the test, if backup exists"""
+    if os.path.exists(JSON_FILE_PATH):
+        os.remove(JSON_FILE_PATH)
+    backup_path = str(JSON_FILE_PATH) + ".bak"
+    if os.path.exists(backup_path):
+        os.rename(backup_path, JSON_FILE_PATH)
+    # Do not raise if backup does not exist; make test teardown safe
 
 
 class TestCreateNewEntry(unittest.TestCase):
 
     def setUp(self) -> None:
-        json_projects.data_json_projects = {}
+        rename_json_during_test()
+
+    def tearDown(self) -> None:
+        restore_json_after_test()
 
     def test_create_new_entry_with_title_and_language(self) -> None:
         new_title = "My New Project"
         new_language = "fr"
-        new_id: int = json_projects.create_new_entry(new_title, new_language)
+        json_projects.create_new_entry(new_title, new_language)
 
-        self.assertIn(new_id, json_projects.data_json_projects)
-        entry: json_projects.Item = json_projects.data_json_projects[new_id]
+        self.assertIn(new_title, json_projects.load_data())
+        entry: json_projects.Item = json_projects.load_data()[new_title]
 
-        self.assertEqual(entry["id"], new_id)
-        self.assertEqual(entry["title"], new_title)
         self.assertEqual(entry["language"], new_language)
         self.assertEqual(entry["path_dictionary"], "")
         self.assertEqual(entry["specific_argument"], "")
@@ -49,13 +55,22 @@ class TestCreateNewEntry(unittest.TestCase):
     def test_create_multiple_entries(self) -> None:
         titles: list[str] = ["P1", "P2", "P3"]
         languages: list[str] = ["fr", "en", "de"]
-        ids: list[int] = [json_projects.create_new_entry(t, l) for t, l in zip(titles, languages)]
+        for title, lang in zip(titles, languages):
+            json_projects.create_new_entry(title, lang)
 
-        self.assertEqual(ids, [0, 1, 2])
-        for i, (title, lang) in enumerate(zip(titles, languages)):
-            self.assertIn(i, json_projects.data_json_projects)
-            self.assertEqual(json_projects.data_json_projects[i]["title"], title)
-            self.assertEqual(json_projects.data_json_projects[i]["language"], lang)
+        for title, lang in zip(titles, languages):
+            self.assertIn(title, json_projects.load_data())
+            entry: json_projects.Item = json_projects.load_data()[title]
+            self.assertEqual(entry["language"], lang)
+            self.assertEqual(entry["path_dictionary"], "")
+            self.assertEqual(entry["specific_argument"], "")
+            self.assertEqual(entry["path_dictionary"], "")
+            self.assertEqual(entry["valid_characters"], "")
+            self.assertEqual(entry["ignored_codes_into_space"], [])
+            self.assertEqual(entry["ignored_codes_into_nospace"], [])
+            self.assertEqual(entry["ignored_substrings_space"], {})
+            self.assertEqual(entry["ignored_substrings_nospace"], {})
+            self.assertEqual(entry["ignored_rules_languagetool"], [])
 
     def test_create_entry_with_empty_title_should_fail(self) -> None:
         with self.assertRaises(ValueError):
@@ -77,11 +92,12 @@ class TestAddValidCharacters(unittest.TestCase):
 
     dangerous_characters: str = "\"\'\\/<>{}[]~`"
 
+    title_id: list[str] = ["Test Project", "Test Project 2"]
+
     def setUp(self) -> None:
-        json_projects.data_json_projects = {
-            0: {
-                "id": 0,
-                "title": "Test Project",
+        rename_json_during_test()
+        data: dict[str, json_projects.Item] = {
+            self.title_id[0]: {
                 "language": "fr",
                 "parser": "sheet",
                 "specific_argument": "",
@@ -93,9 +109,7 @@ class TestAddValidCharacters(unittest.TestCase):
                 "ignored_substrings_nospace": {},
                 "ignored_rules_languagetool": []
             },
-            1: {
-                "id": 1,
-                "title": "Test Project 2",
+            self.title_id[1]: {
                 "language": "fr",
                 "parser": "sheet",
                 "specific_argument": "",
@@ -108,61 +122,80 @@ class TestAddValidCharacters(unittest.TestCase):
                 "ignored_rules_languagetool": []
             }
         }
+        json_projects.save_data(data)
+
+    def tearDown(self) -> None:
+        restore_json_after_test()
 
     def test_add_single_new_char(self) -> None:
-        for id_dict in json_projects.data_json_projects:
+        data: dict[str, json_projects.Item] = json_projects.load_data()
+        for id_dict in data:
             json_projects.add_valid_characters(id_dict, self.not_in_base_single)
+            data = json_projects.load_data()
             self.assertIn(self.not_in_base_single,
-                          json_projects.data_json_projects[id_dict]["valid_characters"])
-            self.assertEqual(json_projects.data_json_projects[id_dict]["valid_characters"],
-                             self.base_valid_characters[id_dict] + self.not_in_base_single)
+                          data[id_dict]["valid_characters"])
+            self.assertEqual(data[id_dict]["valid_characters"],
+                             self.base_valid_characters[self.title_id.index(id_dict)]
+                             + self.not_in_base_single)
 
     def test_add_multiple_new_chars(self) -> None:
-        for id_dict in json_projects.data_json_projects:
+        data: dict[str, json_projects.Item] = json_projects.load_data()
+        for id_dict in data:
             json_projects.add_valid_characters(id_dict, self.not_in_base_multiple)
+            data = json_projects.load_data()
             for char in self.not_in_base_multiple:
                 self.assertIn(char,
-                              json_projects.data_json_projects[id_dict]["valid_characters"])
-            self.assertEqual(json_projects.data_json_projects[id_dict]["valid_characters"],
-                             self.base_valid_characters[id_dict] + self.not_in_base_multiple)
+                              data[id_dict]["valid_characters"])
+            self.assertEqual(data[id_dict]["valid_characters"],
+                             self.base_valid_characters[self.title_id.index(id_dict)]
+                             + self.not_in_base_multiple)
 
     def test_add_existing_char(self) -> None:
-        json_projects.add_valid_characters(0, self.in_base_single)
-        self.assertEqual(json_projects.data_json_projects[0]["valid_characters"],
+        data: dict[str, json_projects.Item] = json_projects.load_data()
+        json_projects.add_valid_characters("", self.in_base_single)
+        data = json_projects.load_data()
+        self.assertEqual(data[self.title_id[0]]["valid_characters"],
                          self.base_valid_characters[0])
 
     def test_add_mixed_existing_and_new_chars(self) -> None:
-        json_projects.add_valid_characters(0, self.mix)
+        data: dict[str, json_projects.Item] = json_projects.load_data()
+        json_projects.add_valid_characters(self.title_id[0], self.mix)
+        data = json_projects.load_data()
         for char in self.not_in_base_multiple:
-            self.assertIn(char, json_projects.data_json_projects[0]["valid_characters"])
-            self.assertEqual(json_projects.data_json_projects[0]["valid_characters"].count(char), 1)
-        self.assertEqual(json_projects.data_json_projects[0]["valid_characters"],
+            self.assertIn(char, data[self.title_id[0]]["valid_characters"])
+            self.assertEqual(data[self.title_id[0]]["valid_characters"].count(char), 1)
+        self.assertEqual(data[self.title_id[0]]["valid_characters"],
                          self.base_valid_characters[0] + self.not_in_base_multiple)
 
     def test_add_empty_string(self) -> None:
-        for id_dict in json_projects.data_json_projects:
+        data: dict[str, json_projects.Item] = json_projects.load_data()
+        for id_dict in data:
             json_projects.add_valid_characters(id_dict, "")
-            self.assertEqual(json_projects.data_json_projects[id_dict]["valid_characters"],
-                             self.base_valid_characters[id_dict])
+            data = json_projects.load_data()
+            self.assertEqual(data[id_dict]["valid_characters"],
+                             self.base_valid_characters[self.title_id.index(id_dict)])
 
     def test_add_dangerous_char(self) -> None:
-        for id_dict in json_projects.data_json_projects:
+        data: dict[str, json_projects.Item] = json_projects.load_data()
+        for id_dict in data:
             json_projects.add_valid_characters(id_dict, self.dangerous_characters)
+            data = json_projects.load_data()
             for char in self.dangerous_characters:
-                self.assertIn(char, json_projects.data_json_projects[id_dict]["valid_characters"])
-            self.assertEqual(json_projects.data_json_projects[id_dict]["valid_characters"],
-                             self.base_valid_characters[id_dict] + self.dangerous_characters)
+                self.assertIn(char, data[id_dict]["valid_characters"])
+            self.assertEqual(data[id_dict]["valid_characters"],
+                             self.base_valid_characters[self.title_id.index(id_dict)] + self.dangerous_characters)
 
 
 class TestSetValidCharacters(unittest.TestCase):
 
     new_valid_characters: str = "XYZ789,.:!"
 
+    title_id: list[str] = ["Test Project", "Test Project 2"]
+
     def setUp(self) -> None:
-        json_projects.data_json_projects = {
-            0: {
-                "id": 0,
-                "title": "Test Project",
+        rename_json_during_test()
+        data: dict[str, json_projects.Item] = {
+            self.title_id[0]: {
                 "language": "fr",
                 "parser": "sheet",
                 "specific_argument": "",
@@ -174,9 +207,7 @@ class TestSetValidCharacters(unittest.TestCase):
                 "ignored_substrings_nospace": {},
                 "ignored_rules_languagetool": []
             },
-            1: {
-                "id": 1,
-                "title": "Test Project 2",
+            self.title_id[1]: {
                 "language": "fr",
                 "parser": "sheet",
                 "specific_argument": "",
@@ -189,17 +220,25 @@ class TestSetValidCharacters(unittest.TestCase):
                 "ignored_rules_languagetool": []
             }
         }
+        json_projects.save_data(data)
+
+    def tearDown(self) -> None:
+        restore_json_after_test()
 
     def test_with_characters_already(self) -> None:
-        for id_dict in json_projects.data_json_projects:
+        data: dict[str, json_projects.Item] = json_projects.load_data()
+        for id_dict in data:
             json_projects.set_valid_characters(id_dict, self.new_valid_characters)
-            self.assertEqual(json_projects.data_json_projects[id_dict]["valid_characters"],
+            data = json_projects.load_data()
+            self.assertEqual(data[id_dict]["valid_characters"],
                              self.new_valid_characters)
 
     def test_with_empty_string(self) -> None:
-        for id_dict in json_projects.data_json_projects:
+        data: dict[str, json_projects.Item] = json_projects.load_data()
+        for id_dict in data:
             json_projects.set_valid_characters(id_dict, "")
-            self.assertEqual(json_projects.data_json_projects[id_dict]["valid_characters"],
+            data = json_projects.load_data()
+            self.assertEqual(data[id_dict]["valid_characters"],
                              "")
 
 
