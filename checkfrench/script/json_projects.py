@@ -3,7 +3,7 @@ Module for managing project configuration stored in a JSON file.
 
 This module provides functions to load, manipulate, and persist project metadata
 used by the application. Each project is represented by an entry in a JSON file and
-is identified by a unique ID.
+is identified by a unique title that will be used as ID.
 
 The JSON structure is expected to follow the `Item` TypedDict definition.
 
@@ -16,7 +16,6 @@ Features:
 Dependencies:
 - checkfrench.default_parameters.JSON_FILE_PATH: path to the JSON configuration file
 - checkfrench.logger.get_logger: logging utility
-- checkfrench.script.utils.sanitize_folder_name: used for result folder naming
 
 """
 
@@ -32,6 +31,8 @@ logger: Logger = get_logger(__name__)
 
 
 class Item(TypedDict):
+
+    # title_project: str as key
     language: str
     parser: str
     specific_argument: str

@@ -1,18 +1,37 @@
+"""
+Module for managing results of language check, stored JSON files.
+
+This module provides functions to load, save, and manipulate JSON files that contain results of language checks.
+The results are stored in a specific folder structure, where each project has its own folder,
+and each file within that project has its own JSON file.
+The JSON files contain a dictionary of results, where each key is a unique identifier for an error,
+and the value is a dictionary containing details about the error.
+
+The JSON structure is expected to follow the `ItemResult` TypedDict definition.
+
+Features:
+- Saving data
+- Loading data
+- Generating unique error IDs
+- Deleting specific entries
+
+Dependencies:
+- checkfrench.default_parameters.RESULTS_FOLDER_PAH: path to the JSON results folder
+- checkfrench.script.utils.sanitize_folder_name: used for result folder naming
+
+"""
+
 import json
+from logging import Logger
 import os
 from typing import TypedDict
 
 
+from checkfrench.default_parameters import RESULTS_FOLDER_PATH
+from checkfrench.logger import get_logger
 from checkfrench.script.utils import sanitize_folder_name
-from default_parameters import RESULTS_FOLDER_PATH
 
-
-"""
-structure of the files:
-in the results folder
-    - name of the project (folder)
-        - name of the file with the extension of the original file (json file)
-"""
+logger: Logger = get_logger(__name__)
 
 
 class ItemResult(TypedDict):
@@ -135,6 +154,7 @@ def delete_entry(title_project: str, name_file: str, id_error: str) -> None:
         data: dict[str, ItemResult] = json.load(f)
 
     if id_error in data:
+        logger.info(f"Deleting error {id_error} from {name_file}")
         del data[id_error]
 
     with open(file_path, "w", encoding="utf-8") as f:
@@ -161,6 +181,8 @@ def delete_error_type(title_project: str, name_file: str, error_type: str) -> No
 
     data = {k: v for k, v in data.items() if v["error_type"] != error_type}
 
+    logger.info(f"Deleting error type {error_type} from {name_file}")
+
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
@@ -185,6 +207,8 @@ def delete_specific_error_with_type(title_project: str, name_file: str, error_ty
         data: dict[str, ItemResult] = json.load(f)
 
     data = {k: v for k, v in data.items() if v["error_type"] != error_type or v["error"] != error}
+
+    logger.info(f"Deleting error {error} of type {error_type} from {name_file}")
 
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
