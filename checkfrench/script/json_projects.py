@@ -3,7 +3,7 @@ Module for managing project configuration stored in a JSON file.
 
 This module provides functions to load, manipulate, and persist project metadata
 used by the application. Each project is represented by an entry in a JSON file and
-is identified by a unique title that will be used as ID.
+is identified by a unique name that will be used as ID.
 
 The JSON structure is expected to follow the `Item` TypedDict definition.
 
@@ -32,7 +32,7 @@ logger: Logger = get_logger(__name__)
 
 class Item(TypedDict):
 
-    # title_project: str as key
+    # project_name: str as key
     language: str
     parser: str
     specific_argument: str
@@ -46,19 +46,19 @@ class Item(TypedDict):
     ignored_rules_languagetool: list[str]
 
 
-def log_error_id_invalid(title_project: str, stacklevel: int = 2) -> None:
+def log_error_id_invalid(project_name: str, stacklevel: int = 2) -> None:
     """log error if the id of the project is invalid
 
     Args:
-        title_project (int): id of the project
+        project_name (int): id of the project
     """
-    logger.error("Project ID %s is not valid.", title_project, stacklevel=stacklevel)
+    logger.error("Project ID %s is not valid.", project_name, stacklevel=stacklevel)
 
 
-def _log_error_if_id_or_value_invalid(title_project: str, *values: str) -> bool:
+def _log_error_if_id_or_value_invalid(project_name: str, *values: str) -> bool:
     """Internal function to log error and return True if any value is invalid"""
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project, stacklevel=4)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name, stacklevel=4)
         return True
     if any(value == "" for value in values):
         logger.error("Value(s) cannot be empty.", stacklevel=3)
@@ -66,17 +66,17 @@ def _log_error_if_id_or_value_invalid(title_project: str, *values: str) -> bool:
     return False
 
 
-def is_title_project_exist(title_project: str) -> bool:
+def is_project_name_exist(project_name: str) -> bool:
     """check if the id of the project is valid
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
 
     Returns:
         bool: True if the id is valid, False otherwise
     """
     data: dict[str, Item] = load_data()
-    return title_project in data
+    return project_name in data
 
 
 def load_data() -> dict[str, Item]:
@@ -90,7 +90,7 @@ def save_data(data: dict[str, Item]) -> None:
 
 
 def create_new_entry(
-        title: str,
+        project_name: str,
         language: str,
         parser: str = "",
         specific_argument: str = "",
@@ -106,7 +106,7 @@ def create_new_entry(
     """Add a new entry in the json
 
     Args:
-        title (str): need to be specified and must be unique
+        project_name (str): need to be specified and must be unique
         language (str): need to be specified
         specific_argument (str, optional): Defaults to "".
         path_dictionary (str, optional): Defaults to "".
@@ -121,8 +121,8 @@ def create_new_entry(
     Returns:
         int: Id of the entry created
     """
-    if not title:
-        logger.error("Title cannot be empty.")
+    if not project_name:
+        logger.error("project_name cannot be empty.")
         raise ValueError
     if not language:
         logger.error("Language cannot be empty.")
@@ -130,11 +130,11 @@ def create_new_entry(
 
     data: dict[str, Item] = load_data()
 
-    if title in data:
-        logger.error("Project title already exists: %s", title)
+    if project_name in data:
+        logger.error("Project name already exists: %s", project_name)
         raise ValueError
 
-    data[title] = {
+    data[project_name] = {
         "language": language,
         "parser": parser,
         "specific_argument": specific_argument,
@@ -149,11 +149,11 @@ def create_new_entry(
     }
 
     save_data(data)
-    logger.info("Project '%s' created.", title)
+    logger.info("Project '%s' created.", project_name)
 
 
 def set_entry(
-    title_project: str,
+    project_name: str,
     language: str | None = None,
     parser: str | None = None,
     specific_argument: str | None = None,
@@ -168,403 +168,403 @@ def set_entry(
 ) -> None:
     """set the entry in the json, if arg not specified, it will not be changed
     """
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         raise ValueError
     if language is not None:
-        set_language(title_project, language)
+        set_language(project_name, language)
     if parser is not None:
-        set_parser(title_project, parser)
+        set_parser(project_name, parser)
     if specific_argument is not None:
-        set_specific_argument(title_project, specific_argument)
+        set_specific_argument(project_name, specific_argument)
     if path_dictionary is not None:
-        set_path_dictionary(title_project, path_dictionary)
+        set_path_dictionary(project_name, path_dictionary)
     if valid_characters is not None:
-        set_valid_characters(title_project, valid_characters)
+        set_valid_characters(project_name, valid_characters)
     if banwords is not None:
-        set_banwords(title_project, banwords)
+        set_banwords(project_name, banwords)
     if ignored_codes_into_space is not None:
-        set_ignored_codes_into_space(title_project, ignored_codes_into_space)
+        set_ignored_codes_into_space(project_name, ignored_codes_into_space)
     if ignored_codes_into_nospace is not None:
-        set_ignored_codes_into_nospace(title_project, ignored_codes_into_nospace)
+        set_ignored_codes_into_nospace(project_name, ignored_codes_into_nospace)
     if ignored_substrings_space is not None:
-        set_ignored_substrings_space(title_project, ignored_substrings_space)
+        set_ignored_substrings_space(project_name, ignored_substrings_space)
     if ignored_substrings_nospace is not None:
-        set_ignored_substrings_nospace(title_project, ignored_substrings_nospace)
+        set_ignored_substrings_nospace(project_name, ignored_substrings_nospace)
     if ignored_rules_languagetool is not None:
-        set_ignored_rules(title_project, ignored_rules_languagetool)
-    logger.info("Entry %s updated.", title_project)
+        set_ignored_rules(project_name, ignored_rules_languagetool)
+    logger.info("Entry %s updated.", project_name)
     return
 
 
-def delete_entry(title_project: str) -> None:
+def delete_entry(project_name: str) -> None:
     """delete entry by id
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
     """
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         return
     data: dict[str, Item] = load_data()
-    if title_project not in data:
+    if project_name not in data:
         return
-    del data[title_project]
+    del data[project_name]
     save_data(data)
-    logger.info("Entry %s deleted.", title_project)
+    logger.info("Entry %s deleted.", project_name)
     return
 
 
-def set_new_title(title_project: str, new_title: str) -> None:
-    """set the new title of the project
+def set_new_project_name(project_name: str, new_project_name: str) -> None:
+    """set the new project_name of the project
 
     Args:
-        title_project (str): id of the project
-        new_title (str): new title of the project
+        project_name (str): id of the project
+        new_project_name (str): new project_name of the project
     """
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         raise ValueError
-    if new_title == "":
-        logger.error("Title cannot be empty.")
+    if new_project_name == "":
+        logger.error("project_name cannot be empty.")
         raise ValueError
     data: dict[str, Item] = load_data()
-    data[new_title] = data[title_project]
-    del data[title_project]
+    data[new_project_name] = data[project_name]
+    del data[project_name]
     save_data(data)
 
 
-def set_language(title_project: str, language: str) -> None:
+def set_language(project_name: str, language: str) -> None:
     """set the language of the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         language (str): language of the project
     """
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         raise ValueError
     if language == "":
         logger.error("Language cannot be empty.")
         raise ValueError
     data: dict[str, Item] = load_data()
-    data[title_project]["language"] = language
+    data[project_name]["language"] = language
     save_data(data)
 
 
-def set_parser(title_project: str, parser: str) -> None:
+def set_parser(project_name: str, parser: str) -> None:
     """set the parser of the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         parser (str): parser of the project
     """
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         return
     if parser == "":
         logger.error("Parser cannot be empty.")
         raise ValueError
     data: dict[str, Item] = load_data()
-    data[title_project]["parser"] = parser
+    data[project_name]["parser"] = parser
     save_data(data)
 
 
-def set_specific_argument(title_project: str, specific_argument: str) -> None:
+def set_specific_argument(project_name: str, specific_argument: str) -> None:
     """set the specific argument of the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         specific_argument (str): specific argument of the project
     """
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         raise ValueError
     data: dict[str, Item] = load_data()
-    data[title_project]["specific_argument"] = specific_argument
+    data[project_name]["specific_argument"] = specific_argument
     save_data(data)
 
 
-def set_path_dictionary(title_project: str, path_dictionary: str) -> None:
+def set_path_dictionary(project_name: str, path_dictionary: str) -> None:
     """set the path of the dictionary of the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         path_dictionary (str): path of the dictionary of the project
     """
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         return
     data: dict[str, Item] = load_data()
-    data[title_project]["path_dictionary"] = path_dictionary
+    data[project_name]["path_dictionary"] = path_dictionary
     save_data(data)
 
 
-def set_valid_characters(title_project: str, characters: str) -> None:
+def set_valid_characters(project_name: str, characters: str) -> None:
     """set the valid alphanumeric chars to a project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         characters (str): characters to set
     """
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         return
     data: dict[str, Item] = load_data()
-    data[title_project]["valid_characters"] = characters
+    data[project_name]["valid_characters"] = characters
     save_data(data)
 
 
-def add_valid_characters(title_project: str, characters: str) -> None:
+def add_valid_characters(project_name: str, characters: str) -> None:
     """add one or several characters in the json to valid_characters
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         characters (str): characters to add
     """
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         return
     data: dict[str, Item] = load_data()
     for character in characters:
-        if character not in data[title_project]["valid_characters"]:
-            data[title_project]["valid_characters"] += character
+        if character not in data[project_name]["valid_characters"]:
+            data[project_name]["valid_characters"] += character
     save_data(data)
 
 
-def set_banwords(title_project: str, banwords: list[str]) -> None:
+def set_banwords(project_name: str, banwords: list[str]) -> None:
     """set the banwords of the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         banwords (list[str]): banwords to set
     """
-    _set_to_list_field(title_project, "banwords", banwords)
+    _set_to_list_field(project_name, "banwords", banwords)
 
 
-def add_banword(title_project: str, banword: str) -> None:
+def add_banword(project_name: str, banword: str) -> None:
     """add a banword to the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         banword (str): banword to add
     """
-    _add_to_list_field(title_project, "banwords", banword)
+    _add_to_list_field(project_name, "banwords", banword)
 
 
-def remove_banword(title_project: str, banword: str) -> None:
+def remove_banword(project_name: str, banword: str) -> None:
     """remove a banword from the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         banword (str): banword to remove
     """
-    _remove_from_list_field(title_project, "banwords", banword)
+    _remove_from_list_field(project_name, "banwords", banword)
 
 
-def set_ignored_codes_into_space(title_project: str, codes: list[str]) -> None:
+def set_ignored_codes_into_space(project_name: str, codes: list[str]) -> None:
     """set the ignored codes into space of the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         codes (list[str]): codes to set
     """
-    _set_to_list_field(title_project, "ignored_codes_into_space", codes)
+    _set_to_list_field(project_name, "ignored_codes_into_space", codes)
 
 
-def add_ignored_codes_into_space(title_project: str, code: str) -> None:
+def add_ignored_codes_into_space(project_name: str, code: str) -> None:
     """add a code to the ignored codes into space of the project
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         code (str): code to add
     """
-    _add_to_list_field(title_project, "ignored_codes_into_space", code)
+    _add_to_list_field(project_name, "ignored_codes_into_space", code)
 
 
-def remove_ignored_codes_into_space(title_project: str, code: str) -> None:
+def remove_ignored_codes_into_space(project_name: str, code: str) -> None:
     """remove a code from the ignored codes into space of the project
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         code (str): code to remove
     """
-    _remove_from_list_field(title_project, "ignored_codes_into_space", code)
+    _remove_from_list_field(project_name, "ignored_codes_into_space", code)
 
 
-def set_ignored_codes_into_nospace(title_project: str, codes: list[str]) -> None:
+def set_ignored_codes_into_nospace(project_name: str, codes: list[str]) -> None:
     """set the ignored codes into nospace of the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         codes (list[str]): codes to set
     """
-    _set_to_list_field(title_project, "ignored_codes_into_nospace", codes)
+    _set_to_list_field(project_name, "ignored_codes_into_nospace", codes)
 
 
-def add_ignored_codes_into_nospace(title_project: str, code: str) -> None:
+def add_ignored_codes_into_nospace(project_name: str, code: str) -> None:
     """add a code to the ignored codes into nospace of the project
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         code (str): code to add
     """
-    _add_to_list_field(title_project, "ignored_codes_into_nospace", code)
+    _add_to_list_field(project_name, "ignored_codes_into_nospace", code)
 
 
-def remove_ignored_codes_into_nospace(title_project: str, code: str) -> None:
+def remove_ignored_codes_into_nospace(project_name: str, code: str) -> None:
     """remove a code from the ignored codes into nospace of the project
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         code (str): code to remove
     """
-    _remove_from_list_field(title_project, "ignored_codes_into_nospace", code)
+    _remove_from_list_field(project_name, "ignored_codes_into_nospace", code)
 
 
-def set_ignored_substrings_space(title_project: str, substrings: dict[str, list[str]]) -> None:
+def set_ignored_substrings_space(project_name: str, substrings: dict[str, list[str]]) -> None:
     """set the ignored substrings into space of the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         substrings (dict[str, list[str]]): substrings to set
     """
-    _set_to_dict_list_field(title_project, "ignored_substrings_space", substrings)
+    _set_to_dict_list_field(project_name, "ignored_substrings_space", substrings)
 
 
-def add_ignored_substrings_space(title_project: str, begin: str, end: str) -> None:
+def add_ignored_substrings_space(project_name: str, begin: str, end: str) -> None:
     """add a substring to the ignored substrings into space of the project
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         begin (str): beginning of the substring
         end (str): end of the substring
     """
-    _add_to_dict_list_field(title_project, "ignored_substrings_space", begin, end)
+    _add_to_dict_list_field(project_name, "ignored_substrings_space", begin, end)
 
 
-def remove_ignored_substrings_space(title_project: str, begin: str, end: str) -> None:
+def remove_ignored_substrings_space(project_name: str, begin: str, end: str) -> None:
     """remove a substring from the ignored substrings into space of the project
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         begin (str): beginning of the substring
         end (str): end of the substring
     """
-    _remove_from_dict_list_field(title_project, "ignored_substrings_space", begin, end)
+    _remove_from_dict_list_field(project_name, "ignored_substrings_space", begin, end)
 
 
-def set_ignored_substrings_nospace(title_project: str, substrings: dict[str, list[str]]) -> None:
+def set_ignored_substrings_nospace(project_name: str, substrings: dict[str, list[str]]) -> None:
     """set the ignored substrings into nospace of the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         substrings (dict[str, list[str]]): substrings to set
     """
-    _set_to_dict_list_field(title_project, "ignored_substrings_nospace", substrings)
+    _set_to_dict_list_field(project_name, "ignored_substrings_nospace", substrings)
 
 
-def add_ignored_substrings_nospace(title_project: str, begin: str, end: str) -> None:
+def add_ignored_substrings_nospace(project_name: str, begin: str, end: str) -> None:
     """add a substring to the ignored substrings into nospace of the project
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         begin (str): beginning of the substring
         end (str): end of the substring
     """
-    _add_to_dict_list_field(title_project, "ignored_substrings_nospace", begin, end)
+    _add_to_dict_list_field(project_name, "ignored_substrings_nospace", begin, end)
 
 
-def remove_ignored_substrings_nospace(title_project: str, begin: str, end: str) -> None:
+def remove_ignored_substrings_nospace(project_name: str, begin: str, end: str) -> None:
     """remove a substring from the ignored substrings into nospace of the project
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         begin (str): beginning of the substring
         end (str): end of the substring
     """
-    _remove_from_dict_list_field(title_project, "ignored_substrings_nospace", begin, end)
+    _remove_from_dict_list_field(project_name, "ignored_substrings_nospace", begin, end)
 
 
-def set_ignored_rules(title_project: str, rules: list[str]) -> None:
+def set_ignored_rules(project_name: str, rules: list[str]) -> None:
     """set the ignored rules of the project
 
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         rules (list[str]): rules to set
     """
-    _set_to_list_field(title_project, "ignored_rules_languagetool", rules)
+    _set_to_list_field(project_name, "ignored_rules_languagetool", rules)
 
 
-def add_ignored_rules(title_project: str, rule: str) -> None:
+def add_ignored_rules(project_name: str, rule: str) -> None:
     """add a rule to the ignored rules of the project
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         rule (str): rule to add
     """
-    _add_to_list_field(title_project, "ignored_rules_languagetool", rule)
+    _add_to_list_field(project_name, "ignored_rules_languagetool", rule)
 
 
-def remove_ignored_rules(title_project: str, rule: str) -> None:
+def remove_ignored_rules(project_name: str, rule: str) -> None:
     """remove a rule from the ignored rules of the project
     Args:
-        title_project (str): id of the project
+        project_name (str): id of the project
         rule (str): rule to remove
     """
-    _remove_from_list_field(title_project, "ignored_rules_languagetool", rule)
+    _remove_from_list_field(project_name, "ignored_rules_languagetool", rule)
 
 
 # ------------------------------Internal utility functions---------------------
 
-def _set_to_list_field(title_project: str, field: str, values: list[str]) -> None:
+def _set_to_list_field(project_name: str, field: str, values: list[str]) -> None:
     """Set the field to a new list of values"""
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         return
     data: dict[str, Item] = load_data()
-    data[title_project][field] = values
+    data[project_name][field] = values
     save_data(data)
 
 
-def _add_to_list_field(title_project: str, field: str, value: str) -> None:
-    if _log_error_if_id_or_value_invalid(title_project, value):
+def _add_to_list_field(project_name: str, field: str, value: str) -> None:
+    if _log_error_if_id_or_value_invalid(project_name, value):
         return
     data: dict[str, Item] = load_data()
-    if value not in data[title_project][field]:
-        data[title_project][field].append(value)  # type: ignore
+    if value not in data[project_name][field]:
+        data[project_name][field].append(value)  # type: ignore
         save_data(data)
 
 
-def _remove_from_list_field(title_project: str, field: str, value: str) -> None:
-    if _log_error_if_id_or_value_invalid(title_project, value):
+def _remove_from_list_field(project_name: str, field: str, value: str) -> None:
+    if _log_error_if_id_or_value_invalid(project_name, value):
         return
     data: dict[str, Item] = load_data()
-    if value in data[title_project][field]:
-        data[title_project][field].remove(value)  # type: ignore
+    if value in data[project_name][field]:
+        data[project_name][field].remove(value)  # type: ignore
         save_data(data)
 
 
-def _set_to_dict_list_field(title_project: str, field: str, values: dict[str, list[str]]) -> None:
+def _set_to_dict_list_field(project_name: str, field: str, values: dict[str, list[str]]) -> None:
     """Set the field to a new dictionary of lists"""
-    if not is_title_project_exist(title_project):
-        log_error_id_invalid(title_project)
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
         return
     data: dict[str, Item] = load_data()
-    data[title_project][field] = values
+    data[project_name][field] = values
     save_data(data)
 
 
-def _add_to_dict_list_field(title_project: str, field: str, key: str, value: str) -> None:
-    if _log_error_if_id_or_value_invalid(title_project, key, value):
+def _add_to_dict_list_field(project_name: str, field: str, key: str, value: str) -> None:
+    if _log_error_if_id_or_value_invalid(project_name, key, value):
         return
     data: dict[str, Item] = load_data()
-    if key not in data[title_project][field]:
-        data[title_project][field][key] = []
-    if value not in data[title_project][field][key]:
-        data[title_project][field][key].append(value)  # type: ignore
+    if key not in data[project_name][field]:
+        data[project_name][field][key] = []
+    if value not in data[project_name][field][key]:
+        data[project_name][field][key].append(value)  # type: ignore
     save_data(data)
 
 
 def _remove_from_dict_list_field(
-    title_project: str, field: str, key: str, value: str
+    project_name: str, field: str, key: str, value: str
 ) -> None:
-    if _log_error_if_id_or_value_invalid(title_project, key, value):
+    if _log_error_if_id_or_value_invalid(project_name, key, value):
         return
     data: dict[str, Item] = load_data()
-    if key in data[title_project][field]:
-        if value in data[title_project][field][key]:
-            data[title_project][field][key].remove(value)  # type: ignore
-        if not data[title_project][field][key]:
-            del data[title_project][field][key]
+    if key in data[project_name][field]:
+        if value in data[project_name][field][key]:
+            data[project_name][field][key].remove(value)  # type: ignore
+        if not data[project_name][field][key]:
+            del data[project_name][field][key]
     save_data(data)
