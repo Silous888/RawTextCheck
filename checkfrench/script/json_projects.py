@@ -89,6 +89,16 @@ def save_data(data: dict[str, Item]) -> None:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
+def get_projects_name() -> list[str]:
+    """Get the list of project names from the JSON file.
+
+    Returns:
+        list[str]: List of project names.
+    """
+    data: dict[str, Item] = load_data()
+    return list(data.keys())
+
+
 def create_new_entry(
         project_name: str,
         language: str,
