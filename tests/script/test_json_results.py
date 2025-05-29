@@ -15,21 +15,21 @@ class TestJsonResults(unittest.TestCase):
 
         self.sample_data: list[json_results.ItemResult] = [
             {
-                "line_number": 1,
+                "line_number": "1",
                 "line": "Ceci est une ligne.",
                 "error": "Erreur A",
                 "error_type": "TypeA",
                 "explanation": "Explication A"
             },
             {
-                "line_number": 3,
+                "line_number": "3",
                 "line": "Une autre ligne",
                 "error": "Erreur B",
                 "error_type": "TypeB",
                 "explanation": "Explication B"
             },
             {
-                "line_number": 3,
+                "line_number": "3",
                 "line": "Encore une autre ligne",
                 "error": "Erreur C",
                 "error_type": "TypeB",

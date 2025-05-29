@@ -38,7 +38,7 @@ class ItemResult(TypedDict):
     """Class to define the structure of the result item"""
 
     # id_error: str as key
-    line_number: int
+    line_number: str
     line: str
     error: str
     error_type: str
