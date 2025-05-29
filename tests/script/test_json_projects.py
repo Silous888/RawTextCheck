@@ -46,6 +46,7 @@ class TestCreateNewEntry(unittest.TestCase):
         self.assertEqual(entry["specific_argument"], "")
         self.assertEqual(entry["path_dictionary"], "")
         self.assertEqual(entry["valid_characters"], "")
+        self.assertEqual(entry["banwords"], [])
         self.assertEqual(entry["ignored_codes_into_space"], [])
         self.assertEqual(entry["ignored_codes_into_nospace"], [])
         self.assertEqual(entry["ignored_substrings_space"], {})
@@ -66,6 +67,7 @@ class TestCreateNewEntry(unittest.TestCase):
             self.assertEqual(entry["specific_argument"], "")
             self.assertEqual(entry["path_dictionary"], "")
             self.assertEqual(entry["valid_characters"], "")
+            self.assertEqual(entry["banwords"], [])
             self.assertEqual(entry["ignored_codes_into_space"], [])
             self.assertEqual(entry["ignored_codes_into_nospace"], [])
             self.assertEqual(entry["ignored_substrings_space"], {})
@@ -103,6 +105,7 @@ class TestAddValidCharacters(unittest.TestCase):
                 "specific_argument": "",
                 "path_dictionary": "",
                 "valid_characters": self.base_valid_characters[0],
+                "banwords": [],
                 "ignored_codes_into_space": [],
                 "ignored_codes_into_nospace": [],
                 "ignored_substrings_space": {},
@@ -115,6 +118,7 @@ class TestAddValidCharacters(unittest.TestCase):
                 "specific_argument": "",
                 "path_dictionary": "",
                 "valid_characters": self.base_valid_characters[1],
+                "banwords": [],
                 "ignored_codes_into_space": [],
                 "ignored_codes_into_nospace": [],
                 "ignored_substrings_space": {},
@@ -201,6 +205,7 @@ class TestSetValidCharacters(unittest.TestCase):
                 "specific_argument": "",
                 "path_dictionary": "",
                 "valid_characters": "ABC123.,:!",
+                "banwords": [],
                 "ignored_codes_into_space": [],
                 "ignored_codes_into_nospace": [],
                 "ignored_substrings_space": {},
@@ -213,6 +218,7 @@ class TestSetValidCharacters(unittest.TestCase):
                 "specific_argument": "",
                 "path_dictionary": "",
                 "valid_characters": "",
+                "banwords": [],
                 "ignored_codes_into_space": [],
                 "ignored_codes_into_nospace": [],
                 "ignored_substrings_space": {},
