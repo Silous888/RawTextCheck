@@ -41,8 +41,8 @@ class Item(TypedDict):
     banwords: list[str]
     ignored_codes_into_space: list[str]
     ignored_codes_into_nospace: list[str]
-    ignored_substrings_space: dict[str, list[str]]
-    ignored_substrings_nospace: dict[str, list[str]]
+    ignored_substrings_into_space: dict[str, list[str]]
+    ignored_substrings_into_nospace: dict[str, list[str]]
     ignored_rules_languagetool: list[str]
 
 
@@ -99,8 +99,8 @@ def create_new_entry(
         banwords: list[str] | None = None,
         ignored_codes_into_space: list[str] | None = None,
         ignored_codes_into_nospace: list[str] | None = None,
-        ignored_substrings_space: dict[str, list[str]] | None = None,
-        ignored_substrings_nospace: dict[str, list[str]] | None = None,
+        ignored_substrings_into_space: dict[str, list[str]] | None = None,
+        ignored_substrings_into_nospace: dict[str, list[str]] | None = None,
         ignored_rules_languagetool: list[str] | None = None
         ) -> None:
     """Add a new entry in the json
@@ -114,8 +114,8 @@ def create_new_entry(
         banwords (list[str], optional): Defaults to [].
         ignored_codes_into_space (list[str], optional): Defaults to [].
         ignored_codes_into_nospace (list[str], optional): Defaults to [].
-        ignored_substrings_space (dict[str, list[str]], optional): Defaults to {}.
-        ignored_substrings_nospace (dict[str, list[str]], optional): Defaults to {}.
+        ignored_substrings_into_space (dict[str, list[str]], optional): Defaults to {}.
+        ignored_substrings_into_nospace (dict[str, list[str]], optional): Defaults to {}.
         ignored_rules_languagetool (list[str], optional): Defaults to [].
 
     Returns:
@@ -143,8 +143,8 @@ def create_new_entry(
         "banwords": banwords or [],
         "ignored_codes_into_space": ignored_codes_into_space or [],
         "ignored_codes_into_nospace": ignored_codes_into_nospace or [],
-        "ignored_substrings_space": ignored_substrings_space or {},
-        "ignored_substrings_nospace": ignored_substrings_nospace or {},
+        "ignored_substrings_into_space": ignored_substrings_into_space or {},
+        "ignored_substrings_into_nospace": ignored_substrings_into_nospace or {},
         "ignored_rules_languagetool": ignored_rules_languagetool or [],
     }
 
@@ -162,8 +162,8 @@ def set_entry(
     banwords: list[str] | None = None,
     ignored_codes_into_space: list[str] | None = None,
     ignored_codes_into_nospace: list[str] | None = None,
-    ignored_substrings_space: dict[str, list[str]] | None = None,
-    ignored_substrings_nospace: dict[str, list[str]] | None = None,
+    ignored_substrings_into_space: dict[str, list[str]] | None = None,
+    ignored_substrings_into_nospace: dict[str, list[str]] | None = None,
     ignored_rules_languagetool: list[str] | None = None,
 ) -> None:
     """set the entry in the json, if arg not specified, it will not be changed
@@ -187,10 +187,10 @@ def set_entry(
         set_ignored_codes_into_space(project_name, ignored_codes_into_space)
     if ignored_codes_into_nospace is not None:
         set_ignored_codes_into_nospace(project_name, ignored_codes_into_nospace)
-    if ignored_substrings_space is not None:
-        set_ignored_substrings_space(project_name, ignored_substrings_space)
-    if ignored_substrings_nospace is not None:
-        set_ignored_substrings_nospace(project_name, ignored_substrings_nospace)
+    if ignored_substrings_into_space is not None:
+        set_ignored_substrings_into_space(project_name, ignored_substrings_into_space)
+    if ignored_substrings_into_nospace is not None:
+        set_ignored_substrings_into_nospace(project_name, ignored_substrings_into_nospace)
     if ignored_rules_languagetool is not None:
         set_ignored_rules(project_name, ignored_rules_languagetool)
     logger.info("Entry %s updated.", project_name)
@@ -417,64 +417,64 @@ def remove_ignored_codes_into_nospace(project_name: str, code: str) -> None:
     _remove_from_list_field(project_name, "ignored_codes_into_nospace", code)
 
 
-def set_ignored_substrings_space(project_name: str, substrings: dict[str, list[str]]) -> None:
+def set_ignored_substrings_into_space(project_name: str, substrings: dict[str, list[str]]) -> None:
     """set the ignored substrings into space of the project
 
     Args:
         project_name (str): id of the project
         substrings (dict[str, list[str]]): substrings to set
     """
-    _set_to_dict_list_field(project_name, "ignored_substrings_space", substrings)
+    _set_to_dict_list_field(project_name, "ignored_substrings_into_space", substrings)
 
 
-def add_ignored_substrings_space(project_name: str, begin: str, end: str) -> None:
+def add_ignored_substrings_into_space(project_name: str, begin: str, end: str) -> None:
     """add a substring to the ignored substrings into space of the project
     Args:
         project_name (str): id of the project
         begin (str): beginning of the substring
         end (str): end of the substring
     """
-    _add_to_dict_list_field(project_name, "ignored_substrings_space", begin, end)
+    _add_to_dict_list_field(project_name, "ignored_substrings_into_space", begin, end)
 
 
-def remove_ignored_substrings_space(project_name: str, begin: str, end: str) -> None:
+def remove_ignored_substrings_into_space(project_name: str, begin: str, end: str) -> None:
     """remove a substring from the ignored substrings into space of the project
     Args:
         project_name (str): id of the project
         begin (str): beginning of the substring
         end (str): end of the substring
     """
-    _remove_from_dict_list_field(project_name, "ignored_substrings_space", begin, end)
+    _remove_from_dict_list_field(project_name, "ignored_substrings_into_space", begin, end)
 
 
-def set_ignored_substrings_nospace(project_name: str, substrings: dict[str, list[str]]) -> None:
+def set_ignored_substrings_into_nospace(project_name: str, substrings: dict[str, list[str]]) -> None:
     """set the ignored substrings into nospace of the project
 
     Args:
         project_name (str): id of the project
         substrings (dict[str, list[str]]): substrings to set
     """
-    _set_to_dict_list_field(project_name, "ignored_substrings_nospace", substrings)
+    _set_to_dict_list_field(project_name, "ignored_substrings_into_nospace", substrings)
 
 
-def add_ignored_substrings_nospace(project_name: str, begin: str, end: str) -> None:
+def add_ignored_substrings_into_nospace(project_name: str, begin: str, end: str) -> None:
     """add a substring to the ignored substrings into nospace of the project
     Args:
         project_name (str): id of the project
         begin (str): beginning of the substring
         end (str): end of the substring
     """
-    _add_to_dict_list_field(project_name, "ignored_substrings_nospace", begin, end)
+    _add_to_dict_list_field(project_name, "ignored_substrings_into_nospace", begin, end)
 
 
-def remove_ignored_substrings_nospace(project_name: str, begin: str, end: str) -> None:
+def remove_ignored_substrings_into_nospace(project_name: str, begin: str, end: str) -> None:
     """remove a substring from the ignored substrings into nospace of the project
     Args:
         project_name (str): id of the project
         begin (str): beginning of the substring
         end (str): end of the substring
     """
-    _remove_from_dict_list_field(project_name, "ignored_substrings_nospace", begin, end)
+    _remove_from_dict_list_field(project_name, "ignored_substrings_into_nospace", begin, end)
 
 
 def set_ignored_rules(project_name: str, rules: list[str]) -> None:

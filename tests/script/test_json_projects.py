@@ -49,8 +49,8 @@ class TestCreateNewEntry(unittest.TestCase):
         self.assertEqual(entry["banwords"], [])
         self.assertEqual(entry["ignored_codes_into_space"], [])
         self.assertEqual(entry["ignored_codes_into_nospace"], [])
-        self.assertEqual(entry["ignored_substrings_space"], {})
-        self.assertEqual(entry["ignored_substrings_nospace"], {})
+        self.assertEqual(entry["ignored_substrings_into_space"], {})
+        self.assertEqual(entry["ignored_substrings_into_nospace"], {})
         self.assertEqual(entry["ignored_rules_languagetool"], [])
 
     def test_create_multiple_entries(self) -> None:
@@ -70,8 +70,8 @@ class TestCreateNewEntry(unittest.TestCase):
             self.assertEqual(entry["banwords"], [])
             self.assertEqual(entry["ignored_codes_into_space"], [])
             self.assertEqual(entry["ignored_codes_into_nospace"], [])
-            self.assertEqual(entry["ignored_substrings_space"], {})
-            self.assertEqual(entry["ignored_substrings_nospace"], {})
+            self.assertEqual(entry["ignored_substrings_into_space"], {})
+            self.assertEqual(entry["ignored_substrings_into_nospace"], {})
             self.assertEqual(entry["ignored_rules_languagetool"], [])
 
     def test_create_entry_with_empty_title_should_fail(self) -> None:
@@ -108,8 +108,8 @@ class TestAddValidCharacters(unittest.TestCase):
                 "banwords": [],
                 "ignored_codes_into_space": [],
                 "ignored_codes_into_nospace": [],
-                "ignored_substrings_space": {},
-                "ignored_substrings_nospace": {},
+                "ignored_substrings_into_space": {},
+                "ignored_substrings_into_nospace": {},
                 "ignored_rules_languagetool": []
             },
             self.title_id[1]: {
@@ -121,8 +121,8 @@ class TestAddValidCharacters(unittest.TestCase):
                 "banwords": [],
                 "ignored_codes_into_space": [],
                 "ignored_codes_into_nospace": [],
-                "ignored_substrings_space": {},
-                "ignored_substrings_nospace": {},
+                "ignored_substrings_into_space": {},
+                "ignored_substrings_into_nospace": {},
                 "ignored_rules_languagetool": []
             }
         }
@@ -208,8 +208,8 @@ class TestSetValidCharacters(unittest.TestCase):
                 "banwords": [],
                 "ignored_codes_into_space": [],
                 "ignored_codes_into_nospace": [],
-                "ignored_substrings_space": {},
-                "ignored_substrings_nospace": {},
+                "ignored_substrings_into_space": {},
+                "ignored_substrings_into_nospace": {},
                 "ignored_rules_languagetool": []
             },
             self.title_id[1]: {
@@ -221,8 +221,8 @@ class TestSetValidCharacters(unittest.TestCase):
                 "banwords": [],
                 "ignored_codes_into_space": [],
                 "ignored_codes_into_nospace": [],
-                "ignored_substrings_space": {},
-                "ignored_substrings_nospace": {},
+                "ignored_substrings_into_space": {},
+                "ignored_substrings_into_nospace": {},
                 "ignored_rules_languagetool": []
             }
         }

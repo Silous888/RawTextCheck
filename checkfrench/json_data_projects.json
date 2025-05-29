@@ -5,14 +5,15 @@
         "specific_argument": "C",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=0#gid=0",
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ0123456789 .,;:?!()[]*=+-/\\\"'“”",
+        "banwords": [],
         "ignored_codes_into_space": [
             "\\n"
         ],
         "ignored_codes_into_nospace": [],
-        "ignored_substrings_space": {
+        "ignored_substrings_into_space": {
             "{": ["}"]
         },
-        "ignored_substrings_nospace": {},
+        "ignored_substrings_into_nospace": {},
         "ignored_rules_languagetool": []
     },
     "PARANOMASIGHT": {
@@ -21,13 +22,14 @@
         "specific_argument": "E",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=1091637872#gid=1091637872",
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒō0123456789 .,;:?!()[]*=+-/\\\"'★",
+        "banwords": [],
         "ignored_codes_into_space": [],
         "ignored_codes_into_nospace": [],
-        "ignored_substrings_space": {
+        "ignored_substrings_into_space": {
             "[": ["]"],
             "<": [">"]
         },
-        "ignored_substrings_nospace": {},
+        "ignored_substrings_into_nospace": {},
         "ignored_rules_languagetool": []
     },
     "Zero Escape: Virtue's Last Reward": {
@@ -36,12 +38,13 @@
         "specific_argument": "E",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=2108599019#gid=2108599019",
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ0123456789 .,;:?!()[]*=+-/\\\"'",
+        "banwords": [],
         "ignored_codes_into_space": [],
         "ignored_codes_into_nospace": [],
-        "ignored_substrings_space": {
+        "ignored_substrings_into_space": {
             "<": [">"]
         },
-        "ignored_substrings_nospace": {},
+        "ignored_substrings_into_nospace": {},
         "ignored_rules_languagetool": [
             "ACCORD_COULEUR"
         ]
@@ -52,12 +55,13 @@
         "specific_argument": "",
         "path_dictionary": "",
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ .,;:?!()[]*=+-/\\\"'",
+        "banwords": [],
         "ignored_codes_into_space": [],
         "ignored_codes_into_nospace": [],
-        "ignored_substrings_space": {
+        "ignored_substrings_into_space": {
             "<": [">"]
         },
-        "ignored_substrings_nospace": {},
+        "ignored_substrings_into_nospace": {},
         "ignored_rules_languagetool": [
             "ACCORD_COULEUR"
         ]
