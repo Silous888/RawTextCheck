@@ -57,8 +57,8 @@ class MainWindow(QMainWindow):
         """populate comboBox_game
         """
         self.ui.comboBox_game.addItem(self.tr("-- Choisissez un jeu --"))
-        for game in json_projects.data_json_projects:
-            self.ui.comboBox_game.addItem(game["title"])  # type: ignore
+        # for game in json_projects.data_json_projects:
+        #     self.ui.comboBox_game.addItem(game["title"])  # type: ignore
 
     def toggle_ui_enabled_except_combobox_game(self, enabled: bool) -> None:
         """toggle the enabled state of the ui except the comboBox_game
