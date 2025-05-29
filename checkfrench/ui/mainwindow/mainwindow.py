@@ -9,6 +9,7 @@ from PyQt5.QtGui import QCloseEvent, QColor
 # -------------------- Import Lib User -------------------
 from checkfrench.ui.mainwindow.Ui_mainwindow import Ui_MainWindow
 from checkfrench.ui.dialog_excluded_words.dialog_excluded_words import DialogExcludedWords
+from checkfrench.ui.project_manager.project_manager import DialogProjectManager
 from checkfrench.ui.confirm_exit.confirm_exit import ConfirmExit
 from checkfrench.ui.mainwindow.mainwindow_worker import WorkerMainWindow
 
@@ -613,7 +614,7 @@ class MainWindow(QMainWindow):
         self.ui.comboBox_game.setToolTip("")
         self.ui.pushButton_gameDictionary.setToolTip("")
 
-    def closeEvent(self, a0: QCloseEvent) -> None:
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
         process.language_tool_close()
         if len(process.list_specific_word_to_upload) > 0:
             self.exit_widget = ConfirmExit()
@@ -622,4 +623,5 @@ class MainWindow(QMainWindow):
         if self.m_thread.isRunning():
             self.m_thread.quit()
             self.m_thread.wait()
-        a0.accept()
+        if a0 is not None:
+            a0.accept()

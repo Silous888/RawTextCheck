@@ -601,12 +601,12 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuConfiguration">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen_result"/>
-    <addaction name="actionOpen_recent_result"/>
+    <addaction name="actionOpen_Result"/>
+    <addaction name="actionOpen_Recent_Result"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -621,50 +621,40 @@
     <addaction name="actionTheme"/>
     <addaction name="actionCheck_for_Update"/>
    </widget>
-   <widget class="QMenu" name="menuProject">
+   <widget class="QMenu" name="menuManage">
     <property name="title">
      <string>Manage</string>
     </property>
-    <addaction name="actionCreate_Project"/>
-    <addaction name="actionRemove_Project"/>
-    <addaction name="actionEdit_Project"/>
+    <addaction name="actionProjects"/>
+    <addaction name="actionParsers"/>
+    <addaction name="actionResults"/>
    </widget>
-   <addaction name="menuConfiguration"/>
-   <addaction name="menuProject"/>
+   <addaction name="menuFile"/>
+   <addaction name="menuManage"/>
    <addaction name="menuView"/>
    <addaction name="menuPreferences"/>
   </widget>
-  <action name="action_diter_le_json_des_jeux">
-   <property name="text">
-    <string>éditer le json des jeux</string>
-   </property>
-  </action>
-  <action name="actionconfiguration">
-   <property name="text">
-    <string>configuration</string>
-   </property>
-  </action>
-  <action name="actionOpen_recent_result">
+  <action name="actionOpen_Recent_Result">
    <property name="text">
     <string>Open Recent Result</string>
    </property>
   </action>
-  <action name="actionOpen_result">
+  <action name="actionOpen_Result">
    <property name="text">
     <string>Open Result</string>
    </property>
   </action>
-  <action name="actionCreate_Project">
+  <action name="actionProjects">
    <property name="text">
     <string>Projects</string>
    </property>
   </action>
-  <action name="actionRemove_Project">
+  <action name="actionParsers">
    <property name="text">
     <string>Parsers</string>
    </property>
   </action>
-  <action name="actionEdit_Project">
+  <action name="actionResults">
    <property name="text">
     <string>Results</string>
    </property>
