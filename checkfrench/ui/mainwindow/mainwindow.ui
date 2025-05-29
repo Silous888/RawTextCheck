@@ -603,12 +603,36 @@
    </property>
    <widget class="QMenu" name="menuConfiguration">
     <property name="title">
-     <string>menu</string>
+     <string>File</string>
     </property>
-    <addaction name="action_diter_le_json_des_jeux"/>
-    <addaction name="actionconfiguration"/>
+    <addaction name="actionOpen_result"/>
+    <addaction name="actionOpen_recent_result"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuPreferences">
+    <property name="title">
+     <string>Preferences</string>
+    </property>
+    <addaction name="actionKeybinding"/>
+    <addaction name="actionTheme"/>
+    <addaction name="actionCheck_for_Update"/>
+   </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Manage</string>
+    </property>
+    <addaction name="actionCreate_Project"/>
+    <addaction name="actionRemove_Project"/>
+    <addaction name="actionEdit_Project"/>
    </widget>
    <addaction name="menuConfiguration"/>
+   <addaction name="menuProject"/>
+   <addaction name="menuView"/>
+   <addaction name="menuPreferences"/>
   </widget>
   <action name="action_diter_le_json_des_jeux">
    <property name="text">
@@ -618,6 +642,46 @@
   <action name="actionconfiguration">
    <property name="text">
     <string>configuration</string>
+   </property>
+  </action>
+  <action name="actionOpen_recent_result">
+   <property name="text">
+    <string>Open Recent Result</string>
+   </property>
+  </action>
+  <action name="actionOpen_result">
+   <property name="text">
+    <string>Open Result</string>
+   </property>
+  </action>
+  <action name="actionCreate_Project">
+   <property name="text">
+    <string>Projects</string>
+   </property>
+  </action>
+  <action name="actionRemove_Project">
+   <property name="text">
+    <string>Parsers</string>
+   </property>
+  </action>
+  <action name="actionEdit_Project">
+   <property name="text">
+    <string>Results</string>
+   </property>
+  </action>
+  <action name="actionKeybinding">
+   <property name="text">
+    <string>Keybinding</string>
+   </property>
+  </action>
+  <action name="actionTheme">
+   <property name="text">
+    <string>Theme</string>
+   </property>
+  </action>
+  <action name="actionCheck_for_Update">
+   <property name="text">
+    <string>Check for Updates</string>
    </property>
   </action>
  </widget>
