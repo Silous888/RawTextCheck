@@ -25,6 +25,49 @@ class DialogProjectManager(QDialog):
     def set_up_connect(self) -> None:
         """connect slots and signals
         """
+        # buttons
+        self.ui.pushButton_createProject.clicked.connect(self.pushButton_createProject_clicked)
+        self.ui.pushButton_deleteProject.clicked.connect(self.pushButton_deleteProject_clicked)
+        self.ui.pushButton_save.clicked.connect(self.pushButton_save_clicked)
+        self.ui.pushButton_saveAndQuit.clicked.connect(self.pushButton_saveAndQuit_clicked)
+        self.ui.pushButton_SearchDictionary.clicked.connect(self.pushButton_SearchDictionary_clicked)
+        self.ui.pushButton_validCharacters.clicked.connect(self.pushButton_validCharacters_clicked)
+
+        # comboboxes
+        self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
+
+        # lineEdits
+        self.ui.lineEdit_projectName.editingFinished.connect(self.lineEdit_projectName_editingFinished)
+        self.ui.lineEdit_pathDictionary.editingFinished.connect(self.lineEdit_pathDictionary_editingFinished)
+
+    # -------------------- Slots -------------------
+
+    def pushButton_createProject_clicked(self) -> None:
+        pass
+
+    def pushButton_deleteProject_clicked(self) -> None:
+        pass
+
+    def pushButton_save_clicked(self) -> None:
+
+        pass
+
+    def pushButton_saveAndQuit_clicked(self) -> None:
+        pass
+
+    def pushButton_SearchDictionary_clicked(self) -> None:
+        pass
+
+    def pushButton_validCharacters_clicked(self) -> None:
+        pass
+
+    def comboBox_project_currentIndexChanged(self, index: int) -> None:
+        pass
+
+    def lineEdit_projectName_editingFinished(self) -> None:
+        pass
+
+    def lineEdit_pathDictionary_editingFinished(self) -> None:
         pass
 
     def closeEvent(self, a0: QCloseEvent | None) -> None:

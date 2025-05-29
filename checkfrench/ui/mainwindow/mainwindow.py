@@ -300,6 +300,8 @@ class MainWindow(QMainWindow):
     def set_up_connect(self) -> None:
         """connect slots and signals
         """
+        # Menu
+        self.ui.actionProjects.triggered.connect(self.actionProjects_triggered)
         # pushButton
         self.ui.pushButton_gameDictionary.clicked.connect(self.pushbutton_gamedictionary_clicked)
         self.ui.pushButton_process.clicked.connect(self.pushbutton_process_clicked)
@@ -331,6 +333,12 @@ class MainWindow(QMainWindow):
         self.m_worker.signal_find_string_process_finished.connect(self.find_string_process_finished)
         self.m_worker.signal_replace_string_process_finished.connect(self.replace_string_process_finished)
         self.m_worker.signal_add_specific_words_finished.connect(self.add_specific_words_finished)
+
+    def actionProjects_triggered(self) -> None:
+        """slot for actionProjects
+        """
+        self.dialog_project_manager = DialogProjectManager()
+        self.dialog_project_manager.exec()
 
     def pushbutton_gamedictionary_clicked(self) -> None:
         """slot for pushButton_gameDictionary
