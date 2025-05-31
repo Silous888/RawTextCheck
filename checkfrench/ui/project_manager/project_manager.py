@@ -19,8 +19,9 @@ class DialogProjectManager(QDialog):
 
         self.m_model = ProjectManagerModel()
         self.ui.comboBox_project.setModel(self.m_model.comboBoxModel)
-        self.ui.tableView_banwords.setModel(self.m_model.banwordsModel)
-        self.ui.tableView_rules.setModel(self.m_model.rulesModel)
+
+        self.ui.dataTableView_banwords.setModel(self.m_model.banwordsModel)
+        self.ui.dataTableView_rules.setModel(self.m_model.rulesModel)
 
         self.load_project_data(self.ui.comboBox_project.currentIndex())
 
@@ -30,6 +31,7 @@ class DialogProjectManager(QDialog):
         # buttons
         self.ui.pushButton_createProject.clicked.connect(self.pushButton_createProject_clicked)
         self.ui.pushButton_deleteProject.clicked.connect(self.pushButton_deleteProject_clicked)
+        self.ui.pushButton_restore.clicked.connect(self.pushButton_restore_clicked)
         self.ui.pushButton_save.clicked.connect(self.pushButton_save_clicked)
         self.ui.pushButton_saveAndQuit.clicked.connect(self.pushButton_saveAndQuit_clicked)
         self.ui.pushButton_SearchDictionary.clicked.connect(self.pushButton_SearchDictionary_clicked)
@@ -49,6 +51,12 @@ class DialogProjectManager(QDialog):
 
     def pushButton_deleteProject_clicked(self) -> None:
         pass
+
+    def pushButton_restore_clicked(self) -> None:
+        """Slot for the restore button click."""
+        index: int = self.ui.comboBox_project.currentIndex()
+        if index >= 0:
+            self.load_project_data(index)
 
     def pushButton_save_clicked(self) -> None:
         project_name: str | None = self.m_model.comboBoxModel.get_value(self.ui.comboBox_project.currentIndex())

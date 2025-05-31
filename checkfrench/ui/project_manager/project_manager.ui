@@ -135,7 +135,7 @@
           </attribute>
           <layout class="QGridLayout" name="gridLayout_4">
            <item row="0" column="0">
-            <widget class="QTableView" name="tableView_banwords">
+            <widget class="DataTableView" name="dataTableView_banwords">
              <property name="dragDropOverwriteMode">
               <bool>false</bool>
              </property>
@@ -164,7 +164,7 @@
           </attribute>
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0">
-            <widget class="QTableView" name="tableView_ignoredCodes">
+            <widget class="DataTableView" name="dataTableView_ignoredCodes">
              <property name="dragDropOverwriteMode">
               <bool>false</bool>
              </property>
@@ -193,7 +193,7 @@
           </attribute>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
-            <widget class="QTableView" name="tableView_ignoredSubstrings">
+            <widget class="DataTableView" name="dataTableView_ignoredSubstrings">
              <property name="dragDropOverwriteMode">
               <bool>false</bool>
              </property>
@@ -222,7 +222,7 @@
           </attribute>
           <layout class="QGridLayout" name="gridLayout_2">
            <item row="0" column="0">
-            <widget class="QTableView" name="tableView_rules">
+            <widget class="DataTableView" name="dataTableView_rules">
              <property name="dragDropOverwriteMode">
               <bool>false</bool>
              </property>
@@ -639,7 +639,14 @@
           </spacer>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_Save" stretch="4,1,0,1,0">
+          <layout class="QHBoxLayout" name="horizontalLayout_Save" stretch="0,1,0,0,0,0">
+           <item>
+            <widget class="QPushButton" name="pushButton_restore">
+             <property name="text">
+              <string>Restore</string>
+             </property>
+            </widget>
+           </item>
            <item>
             <spacer name="horizontalSpacer_Save_2">
              <property name="orientation">
@@ -716,6 +723,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DataTableView</class>
+   <extends>QTableView</extends>
+   <header>checkfrench/ui/widgets/data_tableview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

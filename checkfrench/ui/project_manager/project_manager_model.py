@@ -151,12 +151,3 @@ class ListTableModel(QAbstractTableModel):
     def get_data(self) -> list[str]:
         # Return only non-empty unique values
         return [word for word in self._values if word.strip()]
-
-    def add_banword(self, word: str) -> bool:
-        clean_word: str = word.strip()
-        if clean_word and clean_word not in self._values:
-            self.beginInsertRows(QModelIndex(), len(self._values), len(self._values))
-            self._values.append(clean_word)
-            self.endInsertRows()
-            return True
-        return False
