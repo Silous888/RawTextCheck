@@ -16,34 +16,20 @@ Features:
 Dependencies:
 - checkfrench.default_parameters.JSON_FILE_PATH: path to the JSON configuration file
 - checkfrench.logger.get_logger: logging utility
+- checkfrench.newtype.Item: type definition for project items
 
 """
 
 
 import json
 from logging import Logger
-from typing import TypedDict
+
 
 from checkfrench.default_parameters import JSON_FILE_PATH
 from checkfrench.logger import get_logger
+from checkfrench.newtype import Item
 
 logger: Logger = get_logger(__name__)
-
-
-class Item(TypedDict):
-
-    # project_name: str as key
-    language: str
-    parser: str
-    specific_argument: str
-    path_dictionary: str
-    valid_characters: str
-    banwords: list[str]
-    ignored_codes_into_space: list[str]
-    ignored_codes_into_nospace: list[str]
-    ignored_substrings_into_space: dict[str, list[str]]
-    ignored_substrings_into_nospace: dict[str, list[str]]
-    ignored_rules_languagetool: list[str]
 
 
 def log_error_id_invalid(project_name: str, stacklevel: int = 2) -> None:
@@ -97,6 +83,22 @@ def get_projects_name() -> list[str]:
     """
     data: dict[str, Item] = load_data()
     return list(data.keys())
+
+
+def get_project_data(project_name: str) -> Item | None:
+    """Get the project data for a given project name.
+
+    Args:
+        project_name (str): The name of the project to retrieve.
+
+    Returns:
+        Item | None: The project data if found, otherwise None.
+    """
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
+        return None
+    data: dict[str, Item] = load_data()
+    return data.get(project_name)
 
 
 def create_new_entry(

@@ -1,7 +1,5 @@
 from PyQt5.QtCore import QObject
 
-from checkfrench.script import json_projects
-
 
 class WorkerProjectManager(QObject):
 

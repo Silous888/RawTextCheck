@@ -18,31 +18,21 @@ Features:
 Dependencies:
 - checkfrench.default_parameters.RESULTS_FOLDER_PAH: path to the JSON results folder
 - checkfrench.script.utils.sanitize_folder_name: used for result folder naming
+- checkfrench.newtype.ItemResult: type definition for result items
 
 """
 
 import json
 from logging import Logger
 import os
-from typing import TypedDict
 
 
 from checkfrench.default_parameters import RESULTS_FOLDER_PATH
 from checkfrench.logger import get_logger
+from checkfrench.newtype import ItemResult
 from checkfrench.script.utils import sanitize_folder_name
 
 logger: Logger = get_logger(__name__)
-
-
-class ItemResult(TypedDict):
-    """Class to define the structure of the result item"""
-
-    # id_error: str as key
-    line_number: str
-    line: str
-    error: str
-    error_type: str
-    explanation: str
 
 
 def save_data(title_project: str, name_file: str, data: dict[str, ItemResult]) -> None:
