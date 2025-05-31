@@ -11,8 +11,14 @@
             "rtnestnue",
             "tinodnta"
         ],
-        "ignored_codes_into_space": [],
-        "ignored_codes_into_nospace": [],
+        "ignored_codes_into_space": [
+            "<ii/>",
+            "rnfs",
+            "test"
+        ],
+        "ignored_codes_into_nospace": [
+            "<ii>"
+        ],
         "ignored_substrings_into_space": {},
         "ignored_substrings_into_nospace": {},
         "ignored_rules_languagetool": [

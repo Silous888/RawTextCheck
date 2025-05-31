@@ -83,9 +83,8 @@ class Ui_Dialog_projectManager(object):
         self.dataTableView_ignoredCodes = DataTableView(self.tab_2)
         self.dataTableView_ignoredCodes.setDragDropOverwriteMode(False)
         self.dataTableView_ignoredCodes.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.dataTableView_ignoredCodes.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
+        self.dataTableView_ignoredCodes.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.dataTableView_ignoredCodes.setObjectName("dataTableView_ignoredCodes")
-        self.dataTableView_ignoredCodes.horizontalHeader().setVisible(False)
         self.dataTableView_ignoredCodes.horizontalHeader().setStretchLastSection(True)
         self.dataTableView_ignoredCodes.verticalHeader().setVisible(False)
         self.gridLayout.addWidget(self.dataTableView_ignoredCodes, 0, 0, 1, 1)
@@ -308,6 +307,7 @@ class Ui_Dialog_projectManager(object):
         self.horizontalLayout_2.addLayout(self.verticalLayout_main)
 
         self.retranslateUi(Dialog_projectManager)
+        self.tabWidget_editArea.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Dialog_projectManager)
 
     def retranslateUi(self, Dialog_projectManager):

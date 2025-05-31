@@ -27,6 +27,7 @@ class ProjectManagerModel():
         self.comboBoxModel = ProjectManagerComboBoxModel()
         self.banwordsModel = ListTableModel()
         self.rulesModel = ListTableModel()
+        self.codesModel = IgnoredCodesModel()
 
     def get_project_data(self, project_name: str) -> Item | None:
         """Returns the project data from the JSON file."""
@@ -151,3 +152,137 @@ class ListTableModel(QAbstractTableModel):
     def get_data(self) -> list[str]:
         # Return only non-empty unique values
         return [word for word in self._values if word.strip()]
+
+
+class IgnoredCodesModel(QAbstractTableModel):
+
+    checkbox_col: int = 0
+    code_col: int = 1
+
+    def __init__(self, space_list: list[str] = [], nospace_list: list[str] = []) -> None:
+        super().__init__()
+        # Each item is a tuple: (code: str, is_space: bool)
+        self._data: list[tuple[str, bool]] = (
+            [(code, True) for code in space_list] +
+            [(code, False) for code in nospace_list]
+        )
+
+    def load_data(self, space_list: list[str] | None = None,
+                  nospace_list: list[str] | None = None) -> None:
+        self.beginResetModel()
+        if space_list is not None:
+            self._data = [(code.strip(), True) for code in space_list if code.strip()]
+        else:
+            self._data = []
+        if nospace_list is not None:
+            self._data += [(code.strip(), False) for code in nospace_list if code.strip()]
+        self._data.sort(key=lambda x: (x[0].lower(), x[1]))
+        self.endResetModel()
+
+    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return len(self._data) + 1  # always one empty row for adding
+
+    def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return 2  # Code + Checkbox
+
+    def data(self, index: QModelIndex,
+             role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | Qt.CheckState | str:
+        if not index.isValid():
+            return QVariant()
+
+        if index.row() >= len(self._data):
+            if role == Qt.ItemDataRole.DisplayRole:
+                return ""
+            if role == Qt.ItemDataRole.CheckStateRole and index.column() == self.checkbox_col:
+                return Qt.CheckState.Checked
+            return QVariant()
+
+        code, is_space = self._data[index.row()]
+
+        if role in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole):
+            if index.column() == self.code_col:
+                return code
+        if role == Qt.ItemDataRole.CheckStateRole and index.column() == self.checkbox_col:
+            return Qt.CheckState.Checked if is_space else Qt.CheckState.Unchecked
+
+        return QVariant()
+
+    def setData(self, index: QModelIndex, value: str, role: int = Qt.ItemDataRole.EditRole) -> bool:
+        if not index.isValid():
+            return False
+
+        row: int = index.row()
+        col: int = index.column()
+
+        if row == len(self._data):
+            if col == self.code_col and role == Qt.ItemDataRole.EditRole and value:
+                self.beginInsertRows(QModelIndex(), row, row)
+                self._data.append((value.strip(), True))  # default to space
+                self.endInsertRows()
+                return True
+            return False
+
+        code, is_space = self._data[row]
+
+        if col == self.checkbox_col and role == Qt.ItemDataRole.CheckStateRole:
+            self._data[row] = (code, value == Qt.CheckState.Checked)
+            self.dataChanged.emit(index, index)
+            return True
+
+        if col == self.code_col and role == Qt.ItemDataRole.EditRole:
+            self._data[row] = (str(value).strip(), is_space)
+            self.dataChanged.emit(index, index)
+            return True
+
+        return False
+
+    def headerData(self, section: int, orientation: Qt.Orientation,
+                   role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
+        if role == Qt.ItemDataRole.DisplayRole:
+            if orientation == Qt.Orientation.Horizontal:
+                return "Replace with space" if section == self.checkbox_col else "Code"
+            return str(section + 1)
+        return QVariant()
+
+    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+        if not index.isValid():
+            return Qt.ItemFlag.NoItemFlags  # type: ignore
+        if index.column() == self.checkbox_col:
+            return (
+                Qt.ItemFlag.ItemIsUserCheckable
+                | Qt.ItemFlag.ItemIsEnabled
+                | Qt.ItemFlag.ItemIsSelectable  # type: ignore
+            )
+        return (
+            Qt.ItemFlag.ItemIsEditable
+            | Qt.ItemFlag.ItemIsEnabled
+            | Qt.ItemFlag.ItemIsSelectable  # type: ignore
+        )
+
+    def insertRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
+        self.beginInsertRows(QModelIndex(), row, row + count - 1)
+        for _ in range(count):
+            self._data.insert(row, ("", True))
+        self.endInsertRows()
+        return True
+
+    def removeRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
+        self.beginRemoveRows(QModelIndex(), row, row + count - 1)
+        for _ in range(count):
+            if row < len(self._data):
+                del self._data[row]
+        self.endRemoveRows()
+        return True
+
+    def get_data(self) -> tuple[list[str], list[str]]:
+        """Returns two lists: one for space codes and one for nospace codes.
+
+        Returns:
+            tuple[list[str], list[str]]: A tuple containing two lists:
+            - The first list is ignored_space.
+            - The second list is ignored_nospace.
+        """
+        # Remove duplicates and empty values
+        space: list[str] = [code for code, is_space in self._data if is_space and code.strip()]
+        nospace: list[str] = [code for code, is_space in self._data if not is_space and code.strip()]
+        return space, nospace

@@ -129,6 +129,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
          <widget class="QWidget" name="tab_1">
           <attribute name="title">
            <string>Banwords</string>
@@ -172,11 +175,8 @@
               <enum>QAbstractItemView::ExtendedSelection</enum>
              </property>
              <property name="selectionBehavior">
-              <enum>QAbstractItemView::SelectItems</enum>
+              <enum>QAbstractItemView::SelectRows</enum>
              </property>
-             <attribute name="horizontalHeaderVisible">
-              <bool>false</bool>
-             </attribute>
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>true</bool>
              </attribute>

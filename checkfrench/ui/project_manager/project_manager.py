@@ -21,6 +21,7 @@ class DialogProjectManager(QDialog):
         self.ui.comboBox_project.setModel(self.m_model.comboBoxModel)
 
         self.ui.dataTableView_banwords.setModel(self.m_model.banwordsModel)
+        self.ui.dataTableView_ignoredCodes.setModel(self.m_model.codesModel)
         self.ui.dataTableView_rules.setModel(self.m_model.rulesModel)
 
         self.load_project_data(self.ui.comboBox_project.currentIndex())
@@ -102,6 +103,7 @@ class DialogProjectManager(QDialog):
         self.ui.textEdit_validCharacters.setPlainText(data['valid_characters'])
         self.m_model.banwordsModel.load_data(data['banwords'])
         self.ui.lineEdit_pathDictionary.setText(data['path_dictionary'])
+        self.m_model.codesModel.load_data(data['ignored_codes_into_space'], data['ignored_codes_into_nospace'])
         self.m_model.rulesModel.load_data(data['ignored_rules_languagetool'])
 
     def save_project_data(self, project_name: str) -> None:
@@ -113,8 +115,8 @@ class DialogProjectManager(QDialog):
             'path_dictionary': self.ui.lineEdit_pathDictionary.text(),
             'valid_characters': self.ui.textEdit_validCharacters.toPlainText(),
             'banwords': self.m_model.banwordsModel.get_data(),
-            'ignored_codes_into_space': [],
-            'ignored_codes_into_nospace': [],
+            'ignored_codes_into_space': self.m_model.codesModel.get_data()[0],
+            'ignored_codes_into_nospace': self.m_model.codesModel.get_data()[1],
             'ignored_substrings_into_space': {},
             'ignored_substrings_into_nospace': {},
             'ignored_rules_languagetool': self.m_model.rulesModel.get_data()
