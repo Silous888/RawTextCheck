@@ -25,7 +25,8 @@ class ProjectManagerModel():
 
     def model_start(self) -> None:
         self.comboBoxModel = ProjectManagerComboBoxModel()
-        self.banwordsModel = BanwordsTableModel()
+        self.banwordsModel = ListTableModel()
+        self.rulesModel = ListTableModel()
 
     def get_project_data(self, project_name: str) -> Item | None:
         """Returns the project data from the JSON file."""
@@ -70,24 +71,23 @@ class ProjectManagerComboBoxModel(QAbstractListModel):
         return None
 
 
-class BanwordsTableModel(QAbstractTableModel):
+class ListTableModel(QAbstractTableModel):
 
-    def __init__(self, banwords: list[str] | None = None) -> None:
+    def __init__(self, values: list[str] | None = None) -> None:
         super().__init__()
-        self._banwords: list[str] = banwords if banwords else []
+        self._values: list[str] = values if values else []
 
-    def load_data(self, banwords: list[str] | None = None) -> None:
-        """Load banwords data into the model."""
+    def load_data(self, values: list[str] | None = None) -> None:
         self.beginResetModel()
-        if banwords is not None:
-            self._banwords = list(set(banwords))
+        if values is not None:
+            self._values = list(set(values))
         else:
-            self._banwords = []
-        self._banwords.sort(key=lambda word: word.lower())
+            self._values = []
+        self._values.sort(key=lambda word: word.lower())
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
-        return len(self._banwords)
+        return len(self._values)
 
     def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
         return 1  # Only one column
@@ -95,7 +95,7 @@ class BanwordsTableModel(QAbstractTableModel):
     def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
         if not index.isValid() or role not in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole):
             return QVariant()
-        return self._banwords[index.row()]
+        return self._values[index.row()]
 
     def setData(self, index: QModelIndex, value: str, role: int = Qt.ItemDataRole.EditRole) -> bool:
         if not index.isValid() or role != Qt.ItemDataRole.EditRole:
@@ -103,10 +103,10 @@ class BanwordsTableModel(QAbstractTableModel):
 
         new_value: str = str(value).strip()
 
-        if not new_value or new_value in self._banwords:
+        if not new_value or new_value in self._values:
             return False  # Reject empty or duplicate values
 
-        self._banwords[index.row()] = new_value
+        self._values[index.row()] = new_value
         self.dataChanged.emit(index, index, [Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole])
         return True
 
@@ -118,26 +118,26 @@ class BanwordsTableModel(QAbstractTableModel):
     def insertRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
         self.beginInsertRows(QModelIndex(), row, row + count - 1)
         for _ in range(count):
-            self._banwords.insert(row, "")
+            self._values.insert(row, "")
         self.endInsertRows()
         return True
 
     def removeRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
         self.beginRemoveRows(QModelIndex(), row, row + count - 1)
         for _ in range(count):
-            del self._banwords[row]
+            del self._values[row]
         self.endRemoveRows()
         return True
 
     def get_data(self) -> list[str]:
         # Return only non-empty unique values
-        return [word for word in self._banwords if word.strip()]
+        return [word for word in self._values if word.strip()]
 
     def add_banword(self, word: str) -> bool:
         clean_word: str = word.strip()
-        if clean_word and clean_word not in self._banwords:
-            self.beginInsertRows(QModelIndex(), len(self._banwords), len(self._banwords))
-            self._banwords.append(clean_word)
+        if clean_word and clean_word not in self._values:
+            self.beginInsertRows(QModelIndex(), len(self._values), len(self._values))
+            self._values.append(clean_word)
             self.endInsertRows()
             return True
         return False

@@ -18,6 +18,7 @@ class DialogProjectManager(QDialog):
         self.m_model = ProjectManagerModel()
         self.ui.comboBox_project.setModel(self.m_model.comboBoxModel)
         self.ui.tableView_banwords.setModel(self.m_model.banwordsModel)
+        self.ui.tableView_rules.setModel(self.m_model.rulesModel)
 
         self.set_up_connect()
 
@@ -86,3 +87,4 @@ class DialogProjectManager(QDialog):
         self.ui.textEdit_validCharacters.setPlainText(data['valid_characters'])
         self.m_model.banwordsModel.load_data(data['banwords'])
         self.ui.lineEdit_pathDictionary.setText(data['path_dictionary'])
+        self.m_model.rulesModel.load_data(data['ignored_rules_languagetool'])
