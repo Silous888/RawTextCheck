@@ -209,6 +209,31 @@ def set_entry(
     return
 
 
+def set_entry_from_item(project_name: str, data: Item) -> None:
+    """set the entry in the json with a complete Item
+    """
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
+        raise ValueError
+    if "language" not in data or data["language"] == "":
+        logger.error("Language cannot be empty.")
+        raise ValueError
+    set_entry(
+        project_name,
+        language=data["language"],
+        parser=data["parser"],
+        specific_argument=data["specific_argument"],
+        path_dictionary=data["path_dictionary"],
+        valid_characters=data["valid_characters"],
+        banwords=data["banwords"],
+        ignored_codes_into_space=data["ignored_codes_into_space"],
+        ignored_codes_into_nospace=data["ignored_codes_into_nospace"],
+        ignored_substrings_into_space=data["ignored_substrings_into_space"],
+        ignored_substrings_into_nospace=data["ignored_substrings_into_nospace"],
+        ignored_rules_languagetool=data["ignored_rules_languagetool"]
+    )
+
+
 def delete_entry(project_name: str) -> None:
     """delete entry by id
     Args:

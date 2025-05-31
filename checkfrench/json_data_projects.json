@@ -1,24 +1,30 @@
 {
     "428 Shibuya Scramble": {
         "language": "fr",
-        "parser": "googlesheet",
-        "specific_argument": "C",
+        "parser": "generic",
+        "specific_argument": "Cevns",
         "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=0#gid=0",
-        "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ0123456789 .,;:?!()[]*=+-/\\\"'“”",
-        "banwords": ["tnor", "tnoré", "tnorée", "tnorées", "tnorés"],
-        "ignored_codes_into_space": [
-            "\\n"
+        "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙû",
+        "banwords": [
+            "fnftrlfen",
+            "fopa",
+            "fsfpv",
+            "lswjrewj",
+            "nono",
+            "nonononono",
+            "tnor",
+            "tnorés"
         ],
-        "ignored_codes_into_nospace": [
-            "\\t", "\\r"
-        ],
-        "ignored_substrings_into_space": {
-            "{": ["}"]
-        },
-        "ignored_substrings_into_nospace": {
-            "<": [">"]
-        },
-        "ignored_rules_languagetool": ["ACCORD_COULEUR", "ACCORD_VERBE"]
+        "ignored_codes_into_space": [],
+        "ignored_codes_into_nospace": [],
+        "ignored_substrings_into_space": {},
+        "ignored_substrings_into_nospace": {},
+        "ignored_rules_languagetool": [
+            "ACCORD_COULEUR",
+            "ACCORD_VERBE",
+            "5pm56m",
+            "jwnlfrtijr"
+        ]
     },
     "PARANOMASIGHT": {
         "language": "fr",
@@ -30,8 +36,12 @@
         "ignored_codes_into_space": [],
         "ignored_codes_into_nospace": [],
         "ignored_substrings_into_space": {
-            "[": ["]"],
-            "<": [">"]
+            "[": [
+                "]"
+            ],
+            "<": [
+                ">"
+            ]
         },
         "ignored_substrings_into_nospkeyace": {},
         "ignored_rules_languagetool": []
@@ -46,7 +56,9 @@
         "ignored_codes_into_space": [],
         "ignored_codes_into_nospace": [],
         "ignored_substrings_into_space": {
-            "<": [">"]
+            "<": [
+                ">"
+            ]
         },
         "ignored_substrings_into_nospace": {},
         "ignored_rules_languagetool": [
@@ -63,7 +75,9 @@
         "ignored_codes_into_space": [],
         "ignored_codes_into_nospace": [],
         "ignored_substrings_into_space": {
-            "<": [">"]
+            "<": [
+                ">"
+            ]
         },
         "ignored_substrings_into_nospace": {},
         "ignored_rules_languagetool": [

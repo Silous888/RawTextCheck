@@ -15,12 +15,14 @@ class DialogProjectManager(QDialog):
         self.ui = Ui_Dialog_projectManager()
         self.ui.setupUi(self)  # type: ignore
 
+        self.set_up_connect()
+
         self.m_model = ProjectManagerModel()
         self.ui.comboBox_project.setModel(self.m_model.comboBoxModel)
         self.ui.tableView_banwords.setModel(self.m_model.banwordsModel)
         self.ui.tableView_rules.setModel(self.m_model.rulesModel)
 
-        self.set_up_connect()
+        self.load_project_data(self.ui.comboBox_project.currentIndex())
 
     def set_up_connect(self) -> None:
         """connect slots and signals
@@ -49,8 +51,9 @@ class DialogProjectManager(QDialog):
         pass
 
     def pushButton_save_clicked(self) -> None:
-
-        pass
+        project_name: str | None = self.m_model.comboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
+        if project_name is not None:
+            self.save_project_data(project_name)
 
     def pushButton_saveAndQuit_clicked(self) -> None:
         pass
@@ -62,9 +65,10 @@ class DialogProjectManager(QDialog):
         pass
 
     def comboBox_project_currentIndexChanged(self, index: int) -> None:
-        project_name: str | None = self.m_model.comboBoxModel.get_value(index)
-        if project_name is not None:
-            self.load_project_data(project_name)
+        """Slot for the combobox project index change."""
+        if index < 0:
+            return
+        self.load_project_data(index)
 
     def lineEdit_projectName_editingFinished(self) -> None:
         pass
@@ -77,8 +81,11 @@ class DialogProjectManager(QDialog):
         if a0 is not None:
             a0.accept()
 
-    def load_project_data(self, project_name: str) -> None:
+    def load_project_data(self, index: int) -> None:
         """Load project data from the model."""
+        project_name: str | None = self.m_model.comboBoxModel.get_value(index)
+        if project_name is None:
+            return
         data: Item | None = self.m_model.get_project_data(project_name)
         if data is None:
             return
@@ -88,3 +95,21 @@ class DialogProjectManager(QDialog):
         self.m_model.banwordsModel.load_data(data['banwords'])
         self.ui.lineEdit_pathDictionary.setText(data['path_dictionary'])
         self.m_model.rulesModel.load_data(data['ignored_rules_languagetool'])
+
+    def save_project_data(self, project_name: str) -> None:
+        """Save project data to the model."""
+        data: Item = {
+            'language': "fr",
+            'parser': "generic",
+            'specific_argument': self.ui.lineEdit_specificArgument.text(),
+            'path_dictionary': self.ui.lineEdit_pathDictionary.text(),
+            'valid_characters': self.ui.textEdit_validCharacters.toPlainText(),
+            'banwords': self.m_model.banwordsModel.get_data(),
+            'ignored_codes_into_space': [],
+            'ignored_codes_into_nospace': [],
+            'ignored_substrings_into_space': {},
+            'ignored_substrings_into_nospace': {},
+            'ignored_rules_languagetool': self.m_model.rulesModel.get_data()
+        }
+        # Save the data to the model or JSON file
+        self.m_model.save_project_data(project_name, data)

@@ -34,6 +34,12 @@ class ProjectManagerModel():
             return None
         return json_projects.get_project_data(project_name)
 
+    def save_project_data(self, project_name: str, data: Item) -> None:
+        """Saves the project data to the JSON file."""
+        if not project_name or not data:
+            return
+        json_projects.set_entry_from_item(project_name, data)
+
 
 class ProjectManagerComboBoxModel(QAbstractListModel):
     """Model for the combobox in the project manager dialog.
@@ -73,9 +79,10 @@ class ProjectManagerComboBoxModel(QAbstractListModel):
 
 class ListTableModel(QAbstractTableModel):
 
-    def __init__(self, values: list[str] | None = None) -> None:
+    def __init__(self, values: list[str] = []) -> None:
         super().__init__()
-        self._values: list[str] = values if values else []
+        values.append("")
+        self._values: list[str] = values
 
     def load_data(self, values: list[str] | None = None) -> None:
         self.beginResetModel()
@@ -87,27 +94,39 @@ class ListTableModel(QAbstractTableModel):
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
-        return len(self._values)
+        return len(self._values) + 1
 
     def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
-        return 1  # Only one column
+        return 1
 
     def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
-        if not index.isValid() or role not in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole):
+        if not index.isValid() or index.column() != 0:
             return QVariant()
-        return self._values[index.row()]
+
+        if role in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole):
+            if index.row() < len(self._values):
+                return self._values[index.row()]
+            else:
+                return ""  # For the last empty row
+
+        return QVariant()
 
     def setData(self, index: QModelIndex, value: str, role: int = Qt.ItemDataRole.EditRole) -> bool:
-        if not index.isValid() or role != Qt.ItemDataRole.EditRole:
+        if not index.isValid() or index.column() != 0 or role != Qt.ItemDataRole.EditRole:
             return False
 
-        new_value: str = str(value).strip()
+        value = str(value).strip()
 
-        if not new_value or new_value in self._values:
-            return False  # Reject empty or duplicate values
+        if index.row() < len(self._values):
+            self._values[index.row()] = value
+        elif index.row() == len(self._values) and value != "":
+            self.beginInsertRows(QModelIndex(), len(self._values), len(self._values))
+            self._values.append(value)
+            self.endInsertRows()
+        else:
+            return False
 
-        self._values[index.row()] = new_value
-        self.dataChanged.emit(index, index, [Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole])
+        self.dataChanged.emit(index, index, [Qt.ItemDataRole.EditRole])
         return True
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
