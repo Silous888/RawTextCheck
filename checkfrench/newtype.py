@@ -6,15 +6,16 @@ class Item(TypedDict):
     # project_name: str as key
     language: str
     parser: str
-    specific_argument: str
-    path_dictionary: str
+    arg_parser: str
     valid_characters: str
+    dictionary: list[str]
     banwords: list[str]
     ignored_codes_into_space: list[str]
-    ignored_codes_into_nospace: list[str]
+    ignored_codes_into_nothing: list[str]
     ignored_substrings_into_space: dict[str, list[str]]
-    ignored_substrings_into_nospace: dict[str, list[str]]
-    ignored_rules_languagetool: list[str]
+    ignored_substrings_into_nothing: dict[str, list[str]]
+    ignored_rules: list[str]
+    synchronized_path: str
 
 
 class ItemResult(TypedDict):

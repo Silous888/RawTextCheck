@@ -2,9 +2,14 @@
     "428 Shibuya Scramble": {
         "language": "fr",
         "parser": "generic",
-        "specific_argument": "Cevns",
-        "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=0#gid=0",
+        "arg_parser": "Cevns",
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙû",
+        "dictionary": [
+            "Achi",
+            "Shibuya",
+            "Scramble",
+            "Kano"
+        ],
         "banwords": [
             "lswjrewj",
             "nono",
@@ -16,74 +21,138 @@
             "rnfs",
             "test"
         ],
-        "ignored_codes_into_nospace": [
+        "ignored_codes_into_nothing": [
             "<ii>"
         ],
         "ignored_substrings_into_space": {},
-        "ignored_substrings_into_nospace": {},
-        "ignored_rules_languagetool": [
+        "ignored_substrings_into_nothing": {},
+        "ignored_rules": [
             "5pm56m",
             "ACCORD_COULEUR",
             "ACCORD_VERBE",
             "jwnlfrtijr"
-        ]
+        ],
+        "synchronized_path": ""
     },
-    "PARANOMASIGHT": {
+    "429 Shibuya Scramble 2": {
         "language": "fr",
-        "parser": "googlesheet",
-        "specific_argument": "E",
-        "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=1091637872#gid=1091637872",
-        "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒō0123456789 .,;:?!()[]*=+-/\\\"'★",
-        "banwords": [],
-        "ignored_codes_into_space": [],
-        "ignored_codes_into_nospace": [],
+        "parser": "generic",
+        "arg_parser": "Cevns",
+        "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙû",
+        "dictionary": [
+            "Shibuya",
+            "Achi",
+            "Aoi"
+        ],
+        "banwords": [
+            "lswjrewj",
+            "nono",
+            "rtnestnue",
+            "tinodnta"
+        ],
+        "ignored_codes_into_space": [
+            "<ii/>",
+            "rnfs",
+            "test"
+        ],
+        "ignored_codes_into_nothing": [
+            "<ii>"
+        ],
+        "ignored_substrings_into_space": {},
+        "ignored_substrings_into_nothing": {},
+        "ignored_rules": [
+            "5pm56m",
+            "ACCORD_COULEUR",
+            "ACCORD_VERBE",
+            "jwnlfrtijr"
+        ],
+        "synchronized_path": ""
+    },
+    "430 Test Project A": {
+        "language": "en",
+        "parser": "custom",
+        "arg_parser": "ABC",
+        "valid_characters": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "dictionary": [
+            "Test",
+            "Project",
+            "Alpha"
+        ],
+        "banwords": [
+            "forbidden",
+            "invalid"
+        ],
+        "ignored_codes_into_space": [
+            "<br/>",
+            "[space]"
+        ],
+        "ignored_codes_into_nothing": [
+            "<br>"
+        ],
         "ignored_substrings_into_space": {
-            "[": [
-                "]"
-            ],
-            "<": [
-                ">"
+            "{": [
+                "}"
             ]
         },
-        "ignored_substrings_into_nospkeyace": {},
-        "ignored_rules_languagetool": []
+        "ignored_substrings_into_nothing": {},
+        "ignored_rules": [
+            "RULE_A",
+            "RULE_B"
+        ],
+        "synchronized_path": ""
     },
-    "Zero Escape: Virtue's Last Reward": {
-        "language": "fr",
-        "parser": "googlesheet",
-        "specific_argument": "E",
-        "path_dictionary": "https://docs.google.com/spreadsheets/d/1tjUT3K4kX5_ArT6GXXovWEMf1JmeQRr6_JiqxBCSVrc/edit?gid=2108599019#gid=2108599019",
-        "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ0123456789 .,;:?!()[]*=+-/\\\"'",
-        "banwords": [],
-        "ignored_codes_into_space": [],
-        "ignored_codes_into_nospace": [],
-        "ignored_substrings_into_space": {
-            "<": [
-                ">"
+    "431 Sample Project B": {
+        "language": "ja",
+        "parser": "generic",
+        "arg_parser": "XYZ",
+        "valid_characters": "あいうえおアイウエオ漢字",
+        "dictionary": [
+            "サンプル",
+            "プロジェクト",
+            "ベータ"
+        ],
+        "banwords": [
+            "バッド",
+            "エラー"
+        ],
+        "ignored_codes_into_space": [
+            "<jp_space>"
+        ],
+        "ignored_codes_into_nothing": [],
+        "ignored_substrings_into_space": {},
+        "ignored_substrings_into_nothing": {
+            "【": [
+                "】"
             ]
         },
-        "ignored_substrings_into_nospace": {},
-        "ignored_rules_languagetool": [
-            "ACCORD_COULEUR"
-        ]
+        "ignored_rules": [
+            "RULE_JP"
+        ],
+        "synchronized_path": ""
     },
-    "Test project": {
+    "432 Debug Example C": {
         "language": "fr",
-        "parser": "googlesheet",
-        "specific_argument": "",
-        "path_dictionary": "",
-        "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜçÇœŒ .,;:?!()[]*=+-/\\\"'",
-        "banwords": [],
+        "parser": "debug",
+        "arg_parser": "DBG",
+        "valid_characters": "abcdeABCDE12345",
+        "dictionary": [
+            "Debug",
+            "Exemple",
+            "C"
+        ],
+        "banwords": [
+            "tmp",
+            "debugme"
+        ],
         "ignored_codes_into_space": [],
-        "ignored_codes_into_nospace": [],
-        "ignored_substrings_into_space": {
-            "<": [
-                ">"
-            ]
-        },
-        "ignored_substrings_into_nospace": {},
-        "ignored_rules_languagetool": [
-            "ACCORD_COULEUR"
-        ]
+        "ignored_codes_into_nothing": [
+            "<remove>"
+        ],
+        "ignored_substrings_into_space": {},
+        "ignored_substrings_into_nothing": {},
+        "ignored_rules": [
+            "DEBUG_ONLY"
+        ],
+        "synchronized_path": ""
     }
 }

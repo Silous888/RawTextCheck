@@ -105,30 +105,32 @@ def create_new_entry(
         project_name: str,
         language: str,
         parser: str = "",
-        specific_argument: str = "",
-        path_dictionary: str = "",
+        arg_parser: str = "",
         valid_characters: str = "",
+        dictionary: list[str] | None = None,
         banwords: list[str] | None = None,
         ignored_codes_into_space: list[str] | None = None,
-        ignored_codes_into_nospace: list[str] | None = None,
+        ignored_codes_into_nothing: list[str] | None = None,
         ignored_substrings_into_space: dict[str, list[str]] | None = None,
-        ignored_substrings_into_nospace: dict[str, list[str]] | None = None,
-        ignored_rules_languagetool: list[str] | None = None
+        ignored_substrings_into_nothing: dict[str, list[str]] | None = None,
+        ignored_rules: list[str] | None = None,
+        synchronized_path: str = ""
         ) -> None:
     """Add a new entry in the json
 
     Args:
         project_name (str): need to be specified and must be unique
         language (str): need to be specified
-        specific_argument (str, optional): Defaults to "".
-        path_dictionary (str, optional): Defaults to "".
+        parser (str, optional): Defaults to "".
+        arg_parser (str, optional): Defaults to "".
         valid_characters (str, optional): Defaults to "".
+        dictionary (list[str], optional): Defaults to [].
         banwords (list[str], optional): Defaults to [].
         ignored_codes_into_space (list[str], optional): Defaults to [].
-        ignored_codes_into_nospace (list[str], optional): Defaults to [].
+        ignored_codes_into_nothing (list[str], optional): Defaults to [].
         ignored_substrings_into_space (dict[str, list[str]], optional): Defaults to {}.
-        ignored_substrings_into_nospace (dict[str, list[str]], optional): Defaults to {}.
-        ignored_rules_languagetool (list[str], optional): Defaults to [].
+        ignored_substrings_into_nothing (dict[str, list[str]], optional): Defaults to {}.
+        ignored_rules (list[str], optional): Defaults to [].
 
     Returns:
         int: Id of the entry created
@@ -149,15 +151,16 @@ def create_new_entry(
     data[project_name] = {
         "language": language,
         "parser": parser,
-        "specific_argument": specific_argument,
-        "path_dictionary": path_dictionary,
+        "arg_parser": arg_parser,
         "valid_characters": valid_characters,
+        "dictionary": dictionary or [],
         "banwords": banwords or [],
         "ignored_codes_into_space": ignored_codes_into_space or [],
-        "ignored_codes_into_nospace": ignored_codes_into_nospace or [],
+        "ignored_codes_into_nothing": ignored_codes_into_nothing or [],
         "ignored_substrings_into_space": ignored_substrings_into_space or {},
-        "ignored_substrings_into_nospace": ignored_substrings_into_nospace or {},
-        "ignored_rules_languagetool": ignored_rules_languagetool or [],
+        "ignored_substrings_into_nothing": ignored_substrings_into_nothing or {},
+        "ignored_rules": ignored_rules or [],
+        "synchronized_path": synchronized_path
     }
 
     save_data(data)
@@ -168,15 +171,16 @@ def set_entry(
     project_name: str,
     language: str | None = None,
     parser: str | None = None,
-    specific_argument: str | None = None,
-    path_dictionary: str | None = None,
+    arg_parser: str | None = None,
     valid_characters: str | None = None,
+    dictionary: list[str] | None = None,
     banwords: list[str] | None = None,
     ignored_codes_into_space: list[str] | None = None,
-    ignored_codes_into_nospace: list[str] | None = None,
+    ignored_codes_into_nothing: list[str] | None = None,
     ignored_substrings_into_space: dict[str, list[str]] | None = None,
-    ignored_substrings_into_nospace: dict[str, list[str]] | None = None,
-    ignored_rules_languagetool: list[str] | None = None,
+    ignored_substrings_into_nothing: dict[str, list[str]] | None = None,
+    ignored_rules: list[str] | None = None,
+    synchronized_path: str | None = None
 ) -> None:
     """set the entry in the json, if arg not specified, it will not be changed
     """
@@ -187,24 +191,26 @@ def set_entry(
         set_language(project_name, language)
     if parser is not None:
         set_parser(project_name, parser)
-    if specific_argument is not None:
-        set_specific_argument(project_name, specific_argument)
-    if path_dictionary is not None:
-        set_path_dictionary(project_name, path_dictionary)
+    if arg_parser is not None:
+        set_arg_parser(project_name, arg_parser)
     if valid_characters is not None:
         set_valid_characters(project_name, valid_characters)
+    if dictionary is not None:
+        set_dictionary_words(project_name, dictionary)
     if banwords is not None:
         set_banwords(project_name, banwords)
     if ignored_codes_into_space is not None:
         set_ignored_codes_into_space(project_name, ignored_codes_into_space)
-    if ignored_codes_into_nospace is not None:
-        set_ignored_codes_into_nospace(project_name, ignored_codes_into_nospace)
+    if ignored_codes_into_nothing is not None:
+        set_ignored_codes_into_nothing(project_name, ignored_codes_into_nothing)
     if ignored_substrings_into_space is not None:
         set_ignored_substrings_into_space(project_name, ignored_substrings_into_space)
-    if ignored_substrings_into_nospace is not None:
-        set_ignored_substrings_into_nospace(project_name, ignored_substrings_into_nospace)
-    if ignored_rules_languagetool is not None:
-        set_ignored_rules(project_name, ignored_rules_languagetool)
+    if ignored_substrings_into_nothing is not None:
+        set_ignored_substrings_into_nothing(project_name, ignored_substrings_into_nothing)
+    if ignored_rules is not None:
+        set_ignored_rules(project_name, ignored_rules)
+    if synchronized_path is not None:
+        set_synchronized_path(project_name, synchronized_path)
     logger.info("Entry %s updated.", project_name)
     return
 
@@ -222,15 +228,16 @@ def set_entry_from_item(project_name: str, data: Item) -> None:
         project_name,
         language=data["language"],
         parser=data["parser"],
-        specific_argument=data["specific_argument"],
-        path_dictionary=data["path_dictionary"],
+        arg_parser=data["arg_parser"],
         valid_characters=data["valid_characters"],
+        dictionary=data["dictionary"],
         banwords=data["banwords"],
         ignored_codes_into_space=data["ignored_codes_into_space"],
-        ignored_codes_into_nospace=data["ignored_codes_into_nospace"],
+        ignored_codes_into_nothing=data["ignored_codes_into_nothing"],
         ignored_substrings_into_space=data["ignored_substrings_into_space"],
-        ignored_substrings_into_nospace=data["ignored_substrings_into_nospace"],
-        ignored_rules_languagetool=data["ignored_rules_languagetool"]
+        ignored_substrings_into_nothing=data["ignored_substrings_into_nothing"],
+        ignored_rules=data["ignored_rules"],
+        synchronized_path=data["synchronized_path"]
     )
 
 
@@ -306,7 +313,7 @@ def set_parser(project_name: str, parser: str) -> None:
     save_data(data)
 
 
-def set_specific_argument(project_name: str, specific_argument: str) -> None:
+def set_arg_parser(project_name: str, specific_argument: str) -> None:
     """set the specific argument of the project
 
     Args:
@@ -317,22 +324,7 @@ def set_specific_argument(project_name: str, specific_argument: str) -> None:
         log_error_id_invalid(project_name)
         raise ValueError
     data: dict[str, Item] = load_data()
-    data[project_name]["specific_argument"] = specific_argument
-    save_data(data)
-
-
-def set_path_dictionary(project_name: str, path_dictionary: str) -> None:
-    """set the path of the dictionary of the project
-
-    Args:
-        project_name (str): id of the project
-        path_dictionary (str): path of the dictionary of the project
-    """
-    if not is_project_name_exist(project_name):
-        log_error_id_invalid(project_name)
-        return
-    data: dict[str, Item] = load_data()
-    data[project_name]["path_dictionary"] = path_dictionary
+    data[project_name]["arg_parser"] = specific_argument
     save_data(data)
 
 
@@ -366,6 +358,36 @@ def add_valid_characters(project_name: str, characters: str) -> None:
         if character not in data[project_name]["valid_characters"]:
             data[project_name]["valid_characters"] += character
     save_data(data)
+
+
+def set_dictionary_words(project_name: str, dictionary_words: list[str]) -> None:
+    """set the dictionary_words of the project
+
+    Args:
+        project_name (str): id of the project
+        dictionary_words (list[str]): dictionary_words to set
+    """
+    _set_to_list_field(project_name, "dictionary", dictionary_words)
+
+
+def add_dictionary_word(project_name: str, dictionary_word: str) -> None:
+    """add a word to the dictionary of the project
+
+    Args:
+        project_name (str): id of the project
+        dictionary_word (str): word to add
+    """
+    _add_to_list_field(project_name, "dictionary_words", dictionary_word)
+
+
+def remove_dictionary_word(project_name: str, dictionary_word: str) -> None:
+    """remove a word to the dictionary of the project
+
+    Args:
+        project_name (str): id of the project
+        dictionary_word (str): word to remove
+    """
+    _remove_from_list_field(project_name, "dictionary", dictionary_word)
 
 
 def set_banwords(project_name: str, banwords: list[str]) -> None:
@@ -426,32 +448,32 @@ def remove_ignored_codes_into_space(project_name: str, code: str) -> None:
     _remove_from_list_field(project_name, "ignored_codes_into_space", code)
 
 
-def set_ignored_codes_into_nospace(project_name: str, codes: list[str]) -> None:
-    """set the ignored codes into nospace of the project
+def set_ignored_codes_into_nothing(project_name: str, codes: list[str]) -> None:
+    """set the ignored codes into nothing of the project
 
     Args:
         project_name (str): id of the project
         codes (list[str]): codes to set
     """
-    _set_to_list_field(project_name, "ignored_codes_into_nospace", codes)
+    _set_to_list_field(project_name, "ignored_codes_into_nothing", codes)
 
 
-def add_ignored_codes_into_nospace(project_name: str, code: str) -> None:
-    """add a code to the ignored codes into nospace of the project
+def add_ignored_codes_into_nothing(project_name: str, code: str) -> None:
+    """add a code to the ignored codes into nothing of the project
     Args:
         project_name (str): id of the project
         code (str): code to add
     """
-    _add_to_list_field(project_name, "ignored_codes_into_nospace", code)
+    _add_to_list_field(project_name, "ignored_codes_into_nothing", code)
 
 
-def remove_ignored_codes_into_nospace(project_name: str, code: str) -> None:
-    """remove a code from the ignored codes into nospace of the project
+def remove_ignored_codes_into_nothing(project_name: str, code: str) -> None:
+    """remove a code from the ignored codes into nothing of the project
     Args:
         project_name (str): id of the project
         code (str): code to remove
     """
-    _remove_from_list_field(project_name, "ignored_codes_into_nospace", code)
+    _remove_from_list_field(project_name, "ignored_codes_into_nothing", code)
 
 
 def set_ignored_substrings_into_space(project_name: str, substrings: dict[str, list[str]]) -> None:
@@ -484,34 +506,34 @@ def remove_ignored_substrings_into_space(project_name: str, begin: str, end: str
     _remove_from_dict_list_field(project_name, "ignored_substrings_into_space", begin, end)
 
 
-def set_ignored_substrings_into_nospace(project_name: str, substrings: dict[str, list[str]]) -> None:
-    """set the ignored substrings into nospace of the project
+def set_ignored_substrings_into_nothing(project_name: str, substrings: dict[str, list[str]]) -> None:
+    """set the ignored substrings into nothing of the project
 
     Args:
         project_name (str): id of the project
         substrings (dict[str, list[str]]): substrings to set
     """
-    _set_to_dict_list_field(project_name, "ignored_substrings_into_nospace", substrings)
+    _set_to_dict_list_field(project_name, "ignored_substrings_into_nothing", substrings)
 
 
-def add_ignored_substrings_into_nospace(project_name: str, begin: str, end: str) -> None:
-    """add a substring to the ignored substrings into nospace of the project
+def add_ignored_substrings_into_nothing(project_name: str, begin: str, end: str) -> None:
+    """add a substring to the ignored substrings into nothing of the project
     Args:
         project_name (str): id of the project
         begin (str): beginning of the substring
         end (str): end of the substring
     """
-    _add_to_dict_list_field(project_name, "ignored_substrings_into_nospace", begin, end)
+    _add_to_dict_list_field(project_name, "ignored_substrings_into_nothing", begin, end)
 
 
-def remove_ignored_substrings_into_nospace(project_name: str, begin: str, end: str) -> None:
-    """remove a substring from the ignored substrings into nospace of the project
+def remove_ignored_substrings_into_nothing(project_name: str, begin: str, end: str) -> None:
+    """remove a substring from the ignored substrings into nothing of the project
     Args:
         project_name (str): id of the project
         begin (str): beginning of the substring
         end (str): end of the substring
     """
-    _remove_from_dict_list_field(project_name, "ignored_substrings_into_nospace", begin, end)
+    _remove_from_dict_list_field(project_name, "ignored_substrings_into_nothing", begin, end)
 
 
 def set_ignored_rules(project_name: str, rules: list[str]) -> None:
@@ -521,7 +543,7 @@ def set_ignored_rules(project_name: str, rules: list[str]) -> None:
         project_name (str): id of the project
         rules (list[str]): rules to set
     """
-    _set_to_list_field(project_name, "ignored_rules_languagetool", rules)
+    _set_to_list_field(project_name, "ignored_rules", rules)
 
 
 def add_ignored_rules(project_name: str, rule: str) -> None:
@@ -530,7 +552,7 @@ def add_ignored_rules(project_name: str, rule: str) -> None:
         project_name (str): id of the project
         rule (str): rule to add
     """
-    _add_to_list_field(project_name, "ignored_rules_languagetool", rule)
+    _add_to_list_field(project_name, "ignored_rules", rule)
 
 
 def remove_ignored_rules(project_name: str, rule: str) -> None:
@@ -539,10 +561,26 @@ def remove_ignored_rules(project_name: str, rule: str) -> None:
         project_name (str): id of the project
         rule (str): rule to remove
     """
-    _remove_from_list_field(project_name, "ignored_rules_languagetool", rule)
+    _remove_from_list_field(project_name, "ignored_rules", rule)
+
+
+def set_synchronized_path(project_name: str, path: str) -> None:
+    """set the synchronized path of the project
+
+    Args:
+        project_name (str): id of the project
+        path (str): path for synchronizing the project
+    """
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
+        return
+    data: dict[str, Item] = load_data()
+    data[project_name]["synchronized_path"] = path
+    save_data(data)
 
 
 # ------------------------------Internal utility functions---------------------
+
 
 def _set_to_list_field(project_name: str, field: str, values: list[str]) -> None:
     """Set the field to a new list of values"""

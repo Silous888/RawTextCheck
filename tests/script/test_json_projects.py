@@ -42,16 +42,17 @@ class TestCreateNewEntry(unittest.TestCase):
         entry: json_projects.Item = json_projects.load_data()[new_title]
 
         self.assertEqual(entry["language"], new_language)
-        self.assertEqual(entry["path_dictionary"], "")
-        self.assertEqual(entry["specific_argument"], "")
-        self.assertEqual(entry["path_dictionary"], "")
+        self.assertEqual(entry["parser"], "")
+        self.assertEqual(entry["arg_parser"], "")
         self.assertEqual(entry["valid_characters"], "")
+        self.assertEqual(entry["dictionary"], [])
         self.assertEqual(entry["banwords"], [])
         self.assertEqual(entry["ignored_codes_into_space"], [])
-        self.assertEqual(entry["ignored_codes_into_nospace"], [])
+        self.assertEqual(entry["ignored_codes_into_nothing"], [])
         self.assertEqual(entry["ignored_substrings_into_space"], {})
-        self.assertEqual(entry["ignored_substrings_into_nospace"], {})
-        self.assertEqual(entry["ignored_rules_languagetool"], [])
+        self.assertEqual(entry["ignored_substrings_into_nothing"], {})
+        self.assertEqual(entry["ignored_rules"], [])
+        self.assertEqual(entry["synchronized_path"], "")
 
     def test_create_multiple_entries(self) -> None:
         titles: list[str] = ["P1", "P2", "P3"]
@@ -63,16 +64,17 @@ class TestCreateNewEntry(unittest.TestCase):
             self.assertIn(title, json_projects.load_data())
             entry: json_projects.Item = json_projects.load_data()[title]
             self.assertEqual(entry["language"], lang)
-            self.assertEqual(entry["path_dictionary"], "")
-            self.assertEqual(entry["specific_argument"], "")
-            self.assertEqual(entry["path_dictionary"], "")
+            self.assertEqual(entry["parser"], "")
+            self.assertEqual(entry["arg_parser"], "")
+            self.assertEqual(entry["dictionary"], [])
             self.assertEqual(entry["valid_characters"], "")
             self.assertEqual(entry["banwords"], [])
             self.assertEqual(entry["ignored_codes_into_space"], [])
-            self.assertEqual(entry["ignored_codes_into_nospace"], [])
+            self.assertEqual(entry["ignored_codes_into_nothing"], [])
             self.assertEqual(entry["ignored_substrings_into_space"], {})
-            self.assertEqual(entry["ignored_substrings_into_nospace"], {})
-            self.assertEqual(entry["ignored_rules_languagetool"], [])
+            self.assertEqual(entry["ignored_substrings_into_nothing"], {})
+            self.assertEqual(entry["ignored_rules"], [])
+            self.assertEqual(entry["synchronized_path"], "")
 
     def test_create_entry_with_empty_title_should_fail(self) -> None:
         with self.assertRaises(ValueError):
@@ -102,28 +104,30 @@ class TestAddValidCharacters(unittest.TestCase):
             self.title_id[0]: {
                 "language": "fr",
                 "parser": "sheet",
-                "specific_argument": "",
-                "path_dictionary": "",
+                "arg_parser": "",
                 "valid_characters": self.base_valid_characters[0],
+                "dictionary": [],
                 "banwords": [],
                 "ignored_codes_into_space": [],
-                "ignored_codes_into_nospace": [],
+                "ignored_codes_into_nothing": [],
                 "ignored_substrings_into_space": {},
-                "ignored_substrings_into_nospace": {},
-                "ignored_rules_languagetool": []
+                "ignored_substrings_into_nothing": {},
+                "ignored_rules": [],
+                "synchronized_path": ""
             },
             self.title_id[1]: {
                 "language": "fr",
                 "parser": "sheet",
-                "specific_argument": "",
-                "path_dictionary": "",
+                "arg_parser": "",
                 "valid_characters": self.base_valid_characters[1],
+                "dictionary": [],
                 "banwords": [],
                 "ignored_codes_into_space": [],
-                "ignored_codes_into_nospace": [],
+                "ignored_codes_into_nothing": [],
                 "ignored_substrings_into_space": {},
-                "ignored_substrings_into_nospace": {},
-                "ignored_rules_languagetool": []
+                "ignored_substrings_into_nothing": {},
+                "ignored_rules": [],
+                "synchronized_path": ""
             }
         }
         json_projects.save_data(data)
@@ -202,28 +206,30 @@ class TestSetValidCharacters(unittest.TestCase):
             self.title_id[0]: {
                 "language": "fr",
                 "parser": "sheet",
-                "specific_argument": "",
-                "path_dictionary": "",
+                "arg_parser": "",
                 "valid_characters": "ABC123.,:!",
+                "dictionary": [],
                 "banwords": [],
                 "ignored_codes_into_space": [],
-                "ignored_codes_into_nospace": [],
+                "ignored_codes_into_nothing": [],
                 "ignored_substrings_into_space": {},
-                "ignored_substrings_into_nospace": {},
-                "ignored_rules_languagetool": []
+                "ignored_substrings_into_nothing": {},
+                "ignored_rules": [],
+                "synchronized_path": ""
             },
             self.title_id[1]: {
                 "language": "fr",
                 "parser": "sheet",
-                "specific_argument": "",
-                "path_dictionary": "",
+                "arg_parser": "",
                 "valid_characters": "",
+                "dictionary": [],
                 "banwords": [],
                 "ignored_codes_into_space": [],
-                "ignored_codes_into_nospace": [],
+                "ignored_codes_into_nothing": [],
                 "ignored_substrings_into_space": {},
-                "ignored_substrings_into_nospace": {},
-                "ignored_rules_languagetool": []
+                "ignored_substrings_into_nothing": {},
+                "ignored_rules": [],
+                "synchronized_path": ""
             }
         }
         json_projects.save_data(data)

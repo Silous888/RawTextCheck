@@ -25,6 +25,7 @@ class ProjectManagerModel():
 
     def model_start(self) -> None:
         self.comboBoxModel = ProjectManagerComboBoxModel()
+        self.dictionaryModel = ListTableModel()
         self.banwordsModel = ListTableModel()
         self.rulesModel = ListTableModel()
         self.codesModel = IgnoredCodesModel()
