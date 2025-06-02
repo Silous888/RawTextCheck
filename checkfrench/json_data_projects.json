@@ -6,9 +6,9 @@
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙû",
         "dictionary": [
             "Achi",
-            "Shibuya",
+            "Kano",
             "Scramble",
-            "Kano"
+            "Shibuya"
         ],
         "banwords": [
             "lswjrewj",
@@ -24,8 +24,24 @@
         "ignored_codes_into_nothing": [
             "<ii>"
         ],
-        "ignored_substrings_into_space": {},
-        "ignored_substrings_into_nothing": {},
+        "ignored_substrings_into_space": {
+            "<": [
+                ">",
+                "/>"
+            ],
+            "nono": [
+                "afpf"
+            ]
+        },
+        "ignored_substrings_into_nothing": {
+            "<": [
+                "/>",
+                "!>"
+            ],
+            "nono": [
+                "cponp"
+            ]
+        },
         "ignored_rules": [
             "5pm56m",
             "ACCORD_COULEUR",
@@ -90,8 +106,9 @@
             "<br>"
         ],
         "ignored_substrings_into_space": {
-            "{": [
-                "}"
+            "<": [
+                ">",
+                "/>"
             ]
         },
         "ignored_substrings_into_nothing": {},
@@ -102,7 +119,7 @@
         "synchronized_path": ""
     },
     "431 Sample Project B": {
-        "language": "ja",
+        "language": "fr",
         "parser": "generic",
         "arg_parser": "XYZ",
         "valid_characters": "あいうえおアイウエオ漢字",
@@ -112,14 +129,18 @@
             "ベータ"
         ],
         "banwords": [
-            "バッド",
-            "エラー"
+            "エラー",
+            "バッド"
         ],
         "ignored_codes_into_space": [
             "<jp_space>"
         ],
         "ignored_codes_into_nothing": [],
-        "ignored_substrings_into_space": {},
+        "ignored_substrings_into_space": {
+            "【": [
+                "neflt"
+            ]
+        },
         "ignored_substrings_into_nothing": {
             "【": [
                 "】"

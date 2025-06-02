@@ -24,6 +24,7 @@ class DialogProjectManager(QDialog):
         self.ui.dataTableView_banwords.setModel(self.m_model.banwordsModel)
         self.ui.dataTableView_ignoredCodes.setModel(self.m_model.codesModel)
         self.ui.dataTableView_rules.setModel(self.m_model.rulesModel)
+        self.ui.dataTableView_ignoredSubstrings.setModel(self.m_model.substringsModel)
 
         self.load_project_data(self.ui.comboBox_project.currentIndex())
 
@@ -105,7 +106,10 @@ class DialogProjectManager(QDialog):
         self.ui.textEdit_validCharacters.setPlainText(data["valid_characters"])
         self.m_model.dictionaryModel.load_data(data["dictionary"])
         self.m_model.banwordsModel.load_data(data["banwords"])
-        self.m_model.codesModel.load_data(data["ignored_codes_into_space"], data["ignored_codes_into_nothing"])
+        self.m_model.codesModel.load_data(data["ignored_codes_into_space"],
+                                          data["ignored_codes_into_nothing"])
+        self.m_model.substringsModel.load_data(data["ignored_substrings_into_space"],
+                                               data["ignored_substrings_into_nothing"])
         self.m_model.rulesModel.load_data(data["ignored_rules"])
         self.ui.lineEdit_synchronizedPath.setText(data["synchronized_path"])
 
@@ -120,8 +124,8 @@ class DialogProjectManager(QDialog):
             "banwords": self.m_model.banwordsModel.get_data(),
             "ignored_codes_into_space": self.m_model.codesModel.get_data()[0],
             "ignored_codes_into_nothing": self.m_model.codesModel.get_data()[1],
-            "ignored_substrings_into_space": {},
-            "ignored_substrings_into_nothing": {},
+            "ignored_substrings_into_space": self.m_model.substringsModel.get_data()[0],
+            "ignored_substrings_into_nothing": self.m_model.substringsModel.get_data()[1],
             "ignored_rules": self.m_model.rulesModel.get_data(),
             "synchronized_path": self.ui.lineEdit_synchronizedPath.text()
         }

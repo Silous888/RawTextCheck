@@ -132,7 +132,7 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="QWidget" name="tab">
+         <widget class="QWidget" name="tab_1">
           <attribute name="title">
            <string>Dictionary</string>
           </attribute>
@@ -161,7 +161,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tab_1">
+         <widget class="QWidget" name="tab_2">
           <attribute name="title">
            <string>Banwords</string>
           </attribute>
@@ -190,7 +190,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tab_2">
+         <widget class="QWidget" name="tab_3">
           <attribute name="title">
            <string>Ignored codes</string>
           </attribute>
@@ -216,7 +216,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tab_3">
+         <widget class="QWidget" name="tab_4">
           <attribute name="title">
            <string>Ignored substrings</string>
           </attribute>
@@ -232,9 +232,6 @@
              <property name="selectionBehavior">
               <enum>QAbstractItemView::SelectItems</enum>
              </property>
-             <attribute name="horizontalHeaderVisible">
-              <bool>false</bool>
-             </attribute>
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>true</bool>
              </attribute>
@@ -245,7 +242,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tab_4">
+         <widget class="QWidget" name="tab_5">
           <attribute name="title">
            <string>Ignored grammar rules</string>
           </attribute>
