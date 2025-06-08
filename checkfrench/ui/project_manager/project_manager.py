@@ -13,10 +13,14 @@ class DialogProjectManager(QDialog):
     def __init__(self) -> None:
         super(QDialog, self).__init__()
         self.ui = Ui_Dialog_projectManager()
+
         self.ui.setupUi(self)  # type: ignore
-
         self.set_up_connect()
+        self.set_up_model()
 
+        self.load_project_data(self.ui.comboBox_project.currentIndex())
+
+    def set_up_model(self) -> None:
         self.m_model = ProjectManagerModel()
         self.ui.comboBox_project.setModel(self.m_model.titleComboBoxModel)
         self.ui.comboBox_language.setModel(self.m_model.languageComboBoxModel)
@@ -25,8 +29,6 @@ class DialogProjectManager(QDialog):
         self.ui.dataTableView_ignoredCodes.setModel(self.m_model.codesModel)
         self.ui.dataTableView_rules.setModel(self.m_model.rulesModel)
         self.ui.dataTableView_ignoredSubstrings.setModel(self.m_model.substringsModel)
-
-        self.load_project_data(self.ui.comboBox_project.currentIndex())
 
     def set_up_connect(self) -> None:
         """connect slots and signals
@@ -70,9 +72,6 @@ class DialogProjectManager(QDialog):
             self.save_project_data(project_name)
         self.close()
 
-    def pushButton_SearchDictionary_clicked(self) -> None:
-        pass
-
     def pushButton_validCharacters_clicked(self) -> None:
         pass
 
@@ -92,6 +91,8 @@ class DialogProjectManager(QDialog):
         self.m_model.worker_stop()
         if a0 is not None:
             a0.accept()
+
+    # -------------------- Methods -------------------
 
     def load_project_data(self, index: int) -> None:
         """Load project data from the model."""
@@ -134,5 +135,4 @@ class DialogProjectManager(QDialog):
             "ignored_rules": self.m_model.rulesModel.get_data(),
             "synchronized_path": self.ui.lineEdit_synchronizedPath.text()
         }
-        # Save the data to the model or JSON file
         self.m_model.save_project_data(project_name, data)
