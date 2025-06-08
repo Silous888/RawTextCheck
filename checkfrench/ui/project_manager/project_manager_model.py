@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
 
 
+from checkfrench.default_parameters import LANGUAGES_LANGUAGETOOL
 from checkfrench.newtype import Item
 from checkfrench.script import json_projects
 from checkfrench.ui.project_manager.project_manager_worker import WorkerProjectManager
@@ -24,7 +25,8 @@ class ProjectManagerModel():
             self.m_thread.wait()
 
     def model_start(self) -> None:
-        self.comboBoxModel = ProjectManagerComboBoxModel()
+        self.titleComboBoxModel = ProjectTitleComboBoxModel()
+        self.languageComboBoxModel = LanguagesComboBoxModel(LANGUAGES_LANGUAGETOOL)
         self.dictionaryModel = ListTableModel()
         self.banwordsModel = ListTableModel()
         self.rulesModel = ListTableModel()
@@ -44,7 +46,7 @@ class ProjectManagerModel():
         json_projects.set_entry_from_item(project_name, data)
 
 
-class ProjectManagerComboBoxModel(QAbstractListModel):
+class ProjectTitleComboBoxModel(QAbstractListModel):
     """Model for the combobox in the project manager dialog.
     """
 
@@ -78,6 +80,43 @@ class ProjectManagerComboBoxModel(QAbstractListModel):
         if 0 <= index < len(self._projects):
             return self._projects[index]
         return None
+
+
+class LanguagesComboBoxModel(QAbstractListModel):
+    def __init__(self, data: list[tuple[str, str]], parent: QAbstractListModel | None = None) -> None:
+        super().__init__(parent)
+        self._data: list[tuple[str, str]] = sorted(data, key=lambda x: x[1].lower())
+
+    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return len(self._data)
+
+    def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
+        if not index.isValid() or not (0 <= index.row() < len(self._data)):
+            return QVariant()
+
+        code, label = self._data[index.row()]
+        if role == Qt.ItemDataRole.DisplayRole:
+            return label
+        if role == Qt.ItemDataRole.UserRole:
+            return code
+
+        return QVariant()
+
+    def get_code(self, row: int) -> str:
+        if 0 <= row < len(self._data):
+            return self._data[row][0]
+        return "!!!"
+
+    def get_label(self, row: int) -> str:
+        if 0 <= row < len(self._data):
+            return self._data[row][1]
+        return "!!!"
+
+    def get_index_by_code(self, code: str) -> int:
+        for i, (c, _) in enumerate(self._data):
+            if c == code:
+                return i
+        return -1
 
 
 class ListTableModel(QAbstractTableModel):

@@ -1,6 +1,6 @@
 {
     "428 Shibuya Scramble": {
-        "language": "fr",
+        "language": "it",
         "parser": "generic",
         "arg_parser": "Cevns",
         "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙû",
@@ -26,8 +26,8 @@
         ],
         "ignored_substrings_into_space": {
             "<": [
-                ">",
-                "/>"
+                "/>",
+                ">"
             ],
             "nono": [
                 "afpf"
@@ -35,8 +35,8 @@
         },
         "ignored_substrings_into_nothing": {
             "<": [
-                "/>",
-                "!>"
+                "!>",
+                "/>"
             ],
             "nono": [
                 "cponp"

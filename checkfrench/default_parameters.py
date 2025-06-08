@@ -18,7 +18,6 @@ DEFAULT_VALID_PUNCTUATION: str = ".,;:!?" \
                                  "-+=" \
                                  " "  # Space
 
-# Default valid characters for the language
 LANGUAGES_LANGUAGETOOL: list[Tuple[str, str]] = [
     ("ast", QCA.translate("Languages", "Asturian")),
     ("da", QCA.translate("Language", "Danish")),

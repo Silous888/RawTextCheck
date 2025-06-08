@@ -18,8 +18,8 @@ class DialogProjectManager(QDialog):
         self.set_up_connect()
 
         self.m_model = ProjectManagerModel()
-        self.ui.comboBox_project.setModel(self.m_model.comboBoxModel)
-
+        self.ui.comboBox_project.setModel(self.m_model.titleComboBoxModel)
+        self.ui.comboBox_language.setModel(self.m_model.languageComboBoxModel)
         self.ui.dataTableView_dictionary.setModel(self.m_model.dictionaryModel)
         self.ui.dataTableView_banwords.setModel(self.m_model.banwordsModel)
         self.ui.dataTableView_ignoredCodes.setModel(self.m_model.codesModel)
@@ -60,12 +60,15 @@ class DialogProjectManager(QDialog):
             self.load_project_data(index)
 
     def pushButton_save_clicked(self) -> None:
-        project_name: str | None = self.m_model.comboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
+        project_name: str | None = self.m_model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
         if project_name is not None:
             self.save_project_data(project_name)
 
     def pushButton_saveAndQuit_clicked(self) -> None:
-        pass
+        project_name: str | None = self.m_model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
+        if project_name is not None:
+            self.save_project_data(project_name)
+        self.close()
 
     def pushButton_SearchDictionary_clicked(self) -> None:
         pass
@@ -93,7 +96,7 @@ class DialogProjectManager(QDialog):
     def load_project_data(self, index: int) -> None:
         """Load project data from the model."""
 
-        project_name: str | None = self.m_model.comboBoxModel.get_value(index)
+        project_name: str | None = self.m_model.titleComboBoxModel.get_value(index)
 
         if project_name is None:
             return
@@ -102,6 +105,8 @@ class DialogProjectManager(QDialog):
             return
 
         self.ui.lineEdit_projectName.setText(project_name)
+        self.ui.comboBox_language.setCurrentIndex(
+            self.m_model.languageComboBoxModel.get_index_by_code(data["language"]))
         self.ui.lineEdit_argParser.setText(data["arg_parser"])
         self.ui.textEdit_validCharacters.setPlainText(data["valid_characters"])
         self.m_model.dictionaryModel.load_data(data["dictionary"])
@@ -116,7 +121,7 @@ class DialogProjectManager(QDialog):
     def save_project_data(self, project_name: str) -> None:
         """Save project data to the model."""
         data: Item = {
-            "language": "fr",
+            "language": self.m_model.languageComboBoxModel.get_code(self.ui.comboBox_language.currentIndex()),
             "parser": "generic",
             "arg_parser": self.ui.lineEdit_argParser.text(),
             "valid_characters": self.ui.textEdit_validCharacters.toPlainText(),
