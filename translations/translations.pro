@@ -1,14 +1,15 @@
 SOURCES = \
-    ../qt/confirm_exit/confirm_exit.py \
-    ../qt/dialog_excluded_words/dialog_excluded_words.py \
-    ../qt/mainwindow/mainwindow.py \
-    ../qt/project_manager/project_manager.py
+    ../checkfrench/ui/confirm_exit/confirm_exit.py \
+    ../checkfrench/ui/dialog_excluded_words/dialog_excluded_words.py \
+    ../checkfrench/ui/mainwindow/mainwindow.py \
+    ../checkfrench/ui/project_manager/project_manager.py \
+    ../checkfrench/default_parameters.py
 
 FORMS = \
-    ../qt/confirm_exit/confirm_exit.ui \
-    ../qt/dialog_excluded_words/dialog_excluded_words.ui \
-    ../qt/mainwindow/mainwindow.ui \
-    ../qt/project_manager/project_manager.ui
+    ../checkfrench/ui/confirm_exit/confirm_exit.ui \
+    ../checkfrench/ui/dialog_excluded_words/dialog_excluded_words.ui \
+    ../checkfrench/ui/mainwindow/mainwindow.ui \
+    ../checkfrench/ui/project_manager/project_manager.ui
 
 TRANSLATIONS = fr.ts en.ts
 
