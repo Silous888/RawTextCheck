@@ -1,6 +1,7 @@
+# -------------------- Import Lib Tier -------------------
 from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
 
-
+# -------------------- Import Lib User -------------------
 from checkfrench.default_parameters import LANGUAGES_LANGUAGETOOL
 from checkfrench.newtype import Item
 from checkfrench.script import json_projects
