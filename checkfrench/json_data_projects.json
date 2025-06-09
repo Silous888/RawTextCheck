@@ -176,34 +176,6 @@
         ],
         "synchronized_path": ""
     },
-    "tiernitsatuo": {
-        "language": "nl-BE",
-        "parser": "",
-        "arg_parser": "",
-        "valid_characters": "",
-        "dictionary": [],
-        "banwords": [],
-        "ignored_codes_into_space": [],
-        "ignored_codes_into_nothing": [],
-        "ignored_substrings_into_space": {},
-        "ignored_substrings_into_nothing": {},
-        "ignored_rules": [],
-        "synchronized_path": ""
-    },
-    "nitalritofpswdm": {
-        "language": "es",
-        "parser": "",
-        "arg_parser": "",
-        "valid_characters": "",
-        "dictionary": [],
-        "banwords": [],
-        "ignored_codes_into_space": [],
-        "ignored_codes_into_nothing": [],
-        "ignored_substrings_into_space": {},
-        "ignored_substrings_into_nothing": {},
-        "ignored_rules": [],
-        "synchronized_path": ""
-    },
     "project_testrnrua": {
         "language": "en",
         "parser": "",

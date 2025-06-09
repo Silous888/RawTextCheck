@@ -5,6 +5,7 @@ from PyQt5.QtGui import QCloseEvent
 # -------------------- Import Lib User -------------------
 from checkfrench.newtype import Item
 from checkfrench.ui.create_project.create_project import DialogCreateProject
+from checkfrench.ui.delete_project.delete_project import DialogDeleteProject
 from checkfrench.ui.project_manager.Ui_project_manager import Ui_Dialog_projectManager
 from checkfrench.ui.project_manager.project_manager_model import ProjectManagerModel
 
@@ -57,7 +58,16 @@ class DialogProjectManager(QDialog):
         self.m_model.titleComboBoxModel.load_data()
 
     def pushButton_deleteProject_clicked(self) -> None:
-        pass
+        index: int = self.ui.comboBox_project.currentIndex()
+        project_name: str | None = self.m_model.titleComboBoxModel.get_value(index)
+
+        if project_name is None:
+            return
+        dialog: DialogDeleteProject = DialogDeleteProject(project_name)
+        dialog.exec_()
+        self.m_model.titleComboBoxModel.load_data()
+        self.ui.comboBox_project.setCurrentText(project_name)
+        self.load_project_data(self.ui.comboBox_project.currentIndex())
 
     def pushButton_restore_clicked(self) -> None:
         """Slot for the restore button click."""
