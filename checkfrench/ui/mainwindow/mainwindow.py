@@ -8,10 +8,7 @@ from PyQt5.QtGui import QCloseEvent
 # -------------------- Import Lib User -------------------
 from checkfrench.ui.mainwindow.Ui_mainwindow import Ui_MainWindow
 from checkfrench.ui.project_manager.project_manager import DialogProjectManager
-from checkfrench.ui.confirm_exit.confirm_exit import ConfirmExit
 from checkfrench.ui.mainwindow.mainwindow_worker import WorkerMainWindow
-
-from checkfrench.script import process
 
 
 # -------------------------------------------------------------------#
@@ -97,10 +94,6 @@ class MainWindow(QMainWindow):
         # self.ui.pushButton_method_2.setEnabled(bool(self.ui.comboBox_game.currentIndex() and self.is_url_correct))
 
     def closeEvent(self, a0: QCloseEvent | None) -> None:
-        process.language_tool_close()
-        if len(process.list_specific_word_to_upload) > 0:
-            self.exit_widget = ConfirmExit()
-            self.exit_widget.exec()
         self.urlsheet_timer.stop()
         if self.m_thread.isRunning():
             self.m_thread.quit()
