@@ -2,7 +2,6 @@
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtCore import QThread
-from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
 
@@ -49,8 +48,3 @@ class ConfirmExit(QDialog):
         """Save specific words finished
         """
         self.close()
-
-    def closeEvent(self, a0: QCloseEvent) -> None:
-        """Close event
-        """
-        a0.accept()
