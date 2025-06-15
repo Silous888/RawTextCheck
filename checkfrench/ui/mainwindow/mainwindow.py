@@ -59,13 +59,9 @@ class MainWindow(QMainWindow):
         self.ui.lineEdit_urlSheet.textChanged.connect(self.lineedit_urlsheet_textchanged)
         self.urlsheet_timer.timeout.connect(self.check_urlsheet_access)
         # thread start
-        self.m_worker.signal_load_word_excluded_start.connect(self.m_worker.load_excluded_word_in_table_thread)
         self.m_worker.signal_get_name_sheet_start.connect(self.m_worker.get_name_sheet_thread)
         self.m_worker.signal_languagetool_initialize_start.connect(self.m_worker.languagetool_initialize_thread)
         self.m_worker.signal_language_tool_process_start.connect(self.m_worker.language_tool_process_thread)
-        self.m_worker.signal_find_string_process_start.connect(self.m_worker.find_string_process_thread)
-        self.m_worker.signal_replace_string_process_start.connect(self.m_worker.replace_string_process_thread)
-        self.m_worker.signal_add_specific_words_start.connect(self.m_worker.add_specific_words_thread)
         # thread finish
         self.m_worker.signal_languagetool_initialize_finished.connect(self.languagetool_initialize_finished)
 
