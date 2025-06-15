@@ -2,6 +2,7 @@
 credentials.py
 checkfrench/results/*
 checkfrench/test.py
+test_parse.txt
 
 
 # Byte-compiled / optimized / DLL files

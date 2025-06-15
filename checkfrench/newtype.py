@@ -27,3 +27,4 @@ class ItemResult(TypedDict):
     error: str
     error_type: str
     explanation: str
+    suggestion: str

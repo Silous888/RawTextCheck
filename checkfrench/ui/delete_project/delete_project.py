@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import QDialog
 
 # -------------------- Import Lib User -------------------
-from checkfrench.script.json_projects import delete_entry
+from checkfrench.script import json_projects
 from checkfrench.ui.delete_project.Ui_delete_project import Ui_Dialog_deleteProject
 
 
@@ -38,4 +38,4 @@ class DialogDeleteProject(QDialog):
     # -------------------- Methods -------------------
 
     def delete_project(self) -> None:
-        delete_entry(self.m_project_name)
+        json_projects.delete_entry(self.m_project_name)
