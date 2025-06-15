@@ -39,7 +39,7 @@ class TestCreateNewEntry(unittest.TestCase):
         json_projects.create_new_entry(new_title, new_language)
 
         self.assertIn(new_title, json_projects.load_data())
-        entry: json_projects.Item = json_projects.load_data()[new_title]
+        entry: json_projects.ItemProject = json_projects.load_data()[new_title]
 
         self.assertEqual(entry["language"], new_language)
         self.assertEqual(entry["parser"], "")
@@ -62,7 +62,7 @@ class TestCreateNewEntry(unittest.TestCase):
 
         for title, lang in zip(titles, languages):
             self.assertIn(title, json_projects.load_data())
-            entry: json_projects.Item = json_projects.load_data()[title]
+            entry: json_projects.ItemProject = json_projects.load_data()[title]
             self.assertEqual(entry["language"], lang)
             self.assertEqual(entry["parser"], "")
             self.assertEqual(entry["arg_parser"], "")
@@ -100,7 +100,7 @@ class TestAddValidCharacters(unittest.TestCase):
 
     def setUp(self) -> None:
         rename_json_during_test()
-        data: dict[str, json_projects.Item] = {
+        data: dict[str, json_projects.ItemProject] = {
             self.title_id[0]: {
                 "language": "fr",
                 "parser": "sheet",
@@ -136,7 +136,7 @@ class TestAddValidCharacters(unittest.TestCase):
         restore_json_after_test()
 
     def test_add_single_new_char(self) -> None:
-        data: dict[str, json_projects.Item] = json_projects.load_data()
+        data: dict[str, json_projects.ItemProject] = json_projects.load_data()
         for id_dict in data:
             json_projects.add_valid_characters(id_dict, self.not_in_base_single)
             data = json_projects.load_data()
@@ -147,7 +147,7 @@ class TestAddValidCharacters(unittest.TestCase):
                              + self.not_in_base_single)
 
     def test_add_multiple_new_chars(self) -> None:
-        data: dict[str, json_projects.Item] = json_projects.load_data()
+        data: dict[str, json_projects.ItemProject] = json_projects.load_data()
         for id_dict in data:
             json_projects.add_valid_characters(id_dict, self.not_in_base_multiple)
             data = json_projects.load_data()
@@ -159,14 +159,14 @@ class TestAddValidCharacters(unittest.TestCase):
                              + self.not_in_base_multiple)
 
     def test_add_existing_char(self) -> None:
-        data: dict[str, json_projects.Item] = json_projects.load_data()
+        data: dict[str, json_projects.ItemProject] = json_projects.load_data()
         json_projects.add_valid_characters("", self.in_base_single)
         data = json_projects.load_data()
         self.assertEqual(data[self.title_id[0]]["valid_characters"],
                          self.base_valid_characters[0])
 
     def test_add_mixed_existing_and_new_chars(self) -> None:
-        data: dict[str, json_projects.Item] = json_projects.load_data()
+        data: dict[str, json_projects.ItemProject] = json_projects.load_data()
         json_projects.add_valid_characters(self.title_id[0], self.mix)
         data = json_projects.load_data()
         for char in self.not_in_base_multiple:
@@ -176,7 +176,7 @@ class TestAddValidCharacters(unittest.TestCase):
                          self.base_valid_characters[0] + self.not_in_base_multiple)
 
     def test_add_empty_string(self) -> None:
-        data: dict[str, json_projects.Item] = json_projects.load_data()
+        data: dict[str, json_projects.ItemProject] = json_projects.load_data()
         for id_dict in data:
             json_projects.add_valid_characters(id_dict, "")
             data = json_projects.load_data()
@@ -184,7 +184,7 @@ class TestAddValidCharacters(unittest.TestCase):
                              self.base_valid_characters[self.title_id.index(id_dict)])
 
     def test_add_dangerous_char(self) -> None:
-        data: dict[str, json_projects.Item] = json_projects.load_data()
+        data: dict[str, json_projects.ItemProject] = json_projects.load_data()
         for id_dict in data:
             json_projects.add_valid_characters(id_dict, self.dangerous_characters)
             data = json_projects.load_data()
@@ -202,7 +202,7 @@ class TestSetValidCharacters(unittest.TestCase):
 
     def setUp(self) -> None:
         rename_json_during_test()
-        data: dict[str, json_projects.Item] = {
+        data: dict[str, json_projects.ItemProject] = {
             self.title_id[0]: {
                 "language": "fr",
                 "parser": "sheet",
@@ -238,7 +238,7 @@ class TestSetValidCharacters(unittest.TestCase):
         restore_json_after_test()
 
     def test_with_characters_already(self) -> None:
-        data: dict[str, json_projects.Item] = json_projects.load_data()
+        data: dict[str, json_projects.ItemProject] = json_projects.load_data()
         for id_dict in data:
             json_projects.set_valid_characters(id_dict, self.new_valid_characters)
             data = json_projects.load_data()
@@ -246,7 +246,7 @@ class TestSetValidCharacters(unittest.TestCase):
                              self.new_valid_characters)
 
     def test_with_empty_string(self) -> None:
-        data: dict[str, json_projects.Item] = json_projects.load_data()
+        data: dict[str, json_projects.ItemProject] = json_projects.load_data()
         for id_dict in data:
             json_projects.set_valid_characters(id_dict, "")
             data = json_projects.load_data()

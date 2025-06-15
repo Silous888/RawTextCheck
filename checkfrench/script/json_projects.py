@@ -27,7 +27,7 @@ from logging import Logger
 
 from checkfrench.default_parameters import JSON_FILE_PATH
 from checkfrench.logger import get_logger
-from checkfrench.newtype import Item
+from checkfrench.newtype import ItemProject
 
 logger: Logger = get_logger(__name__)
 
@@ -61,16 +61,16 @@ def is_project_name_exist(project_name: str) -> bool:
     Returns:
         bool: True if the id is valid, False otherwise
     """
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     return project_name in data
 
 
-def load_data() -> dict[str, Item]:
+def load_data() -> dict[str, ItemProject]:
     with open(JSON_FILE_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def save_data(data: dict[str, Item]) -> None:
+def save_data(data: dict[str, ItemProject]) -> None:
     with open(JSON_FILE_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
@@ -81,11 +81,11 @@ def get_projects_name() -> list[str]:
     Returns:
         list[str]: List of project names.
     """
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     return list(data.keys())
 
 
-def get_project_data(project_name: str) -> Item | None:
+def get_project_data(project_name: str) -> ItemProject | None:
     """Get the project data for a given project name.
 
     Args:
@@ -97,7 +97,7 @@ def get_project_data(project_name: str) -> Item | None:
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
         return None
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     return data.get(project_name)
 
 
@@ -142,7 +142,7 @@ def create_new_entry(
         logger.error("Language cannot be empty.")
         raise ValueError
 
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
 
     if project_name in data:
         logger.error("Project name already exists: %s", project_name)
@@ -215,7 +215,7 @@ def set_entry(
     return
 
 
-def set_entry_from_item(project_name: str, data: Item) -> None:
+def set_entry_from_item(project_name: str, data: ItemProject) -> None:
     """set the entry in the json with a complete Item
     """
     if not is_project_name_exist(project_name):
@@ -249,7 +249,7 @@ def delete_entry(project_name: str) -> None:
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
         return
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     if project_name not in data:
         return
     del data[project_name]
@@ -271,7 +271,7 @@ def set_new_project_name(project_name: str, new_project_name: str) -> None:
     if new_project_name == "":
         logger.error("project_name cannot be empty.")
         raise ValueError
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     data[new_project_name] = data[project_name]
     del data[project_name]
     save_data(data)
@@ -290,7 +290,7 @@ def set_language(project_name: str, language: str) -> None:
     if language == "":
         logger.error("Language cannot be empty.")
         raise ValueError
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     data[project_name]["language"] = language
     save_data(data)
 
@@ -308,7 +308,7 @@ def set_parser(project_name: str, parser: str) -> None:
     if parser == "":
         logger.error("Parser cannot be empty.")
         raise ValueError
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     data[project_name]["parser"] = parser
     save_data(data)
 
@@ -323,7 +323,7 @@ def set_arg_parser(project_name: str, specific_argument: str) -> None:
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
         raise ValueError
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     data[project_name]["arg_parser"] = specific_argument
     save_data(data)
 
@@ -338,7 +338,7 @@ def set_valid_characters(project_name: str, characters: str) -> None:
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
         return
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     data[project_name]["valid_characters"] = characters
     save_data(data)
 
@@ -353,7 +353,7 @@ def add_valid_characters(project_name: str, characters: str) -> None:
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
         return
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     for character in characters:
         if character not in data[project_name]["valid_characters"]:
             data[project_name]["valid_characters"] += character
@@ -574,7 +574,7 @@ def set_synchronized_path(project_name: str, path: str) -> None:
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
         return
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     data[project_name]["synchronized_path"] = path
     save_data(data)
 
@@ -587,7 +587,7 @@ def _set_to_list_field(project_name: str, field: str, values: list[str]) -> None
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
         return
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     data[project_name][field] = values
     save_data(data)
 
@@ -595,7 +595,7 @@ def _set_to_list_field(project_name: str, field: str, values: list[str]) -> None
 def _add_to_list_field(project_name: str, field: str, value: str) -> None:
     if _log_error_if_id_or_value_invalid(project_name, value):
         return
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     if value not in data[project_name][field]:
         data[project_name][field].append(value)  # type: ignore
         save_data(data)
@@ -604,7 +604,7 @@ def _add_to_list_field(project_name: str, field: str, value: str) -> None:
 def _remove_from_list_field(project_name: str, field: str, value: str) -> None:
     if _log_error_if_id_or_value_invalid(project_name, value):
         return
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     if value in data[project_name][field]:
         data[project_name][field].remove(value)  # type: ignore
         save_data(data)
@@ -615,7 +615,7 @@ def _set_to_dict_list_field(project_name: str, field: str, values: dict[str, lis
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
         return
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     data[project_name][field] = values
     save_data(data)
 
@@ -623,7 +623,7 @@ def _set_to_dict_list_field(project_name: str, field: str, values: dict[str, lis
 def _add_to_dict_list_field(project_name: str, field: str, key: str, value: str) -> None:
     if _log_error_if_id_or_value_invalid(project_name, key, value):
         return
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     if key not in data[project_name][field]:
         data[project_name][field][key] = []
     if value not in data[project_name][field][key]:
@@ -636,7 +636,7 @@ def _remove_from_dict_list_field(
 ) -> None:
     if _log_error_if_id_or_value_invalid(project_name, key, value):
         return
-    data: dict[str, Item] = load_data()
+    data: dict[str, ItemProject] = load_data()
     if key in data[project_name][field]:
         if value in data[project_name][field][key]:
             data[project_name][field][key].remove(value)  # type: ignore

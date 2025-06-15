@@ -3,7 +3,7 @@ from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, Q
 
 # -------------------- Import Lib User -------------------
 from checkfrench.default_parameters import LANGUAGES_LANGUAGETOOL
-from checkfrench.newtype import Item
+from checkfrench.newtype import ItemProject
 from checkfrench.script import json_projects
 from checkfrench.ui.project_manager.project_manager_worker import WorkerProjectManager
 
@@ -34,13 +34,13 @@ class ProjectManagerModel():
         self.codesModel = IgnoredCodesModel()
         self.substringsModel = IgnoredSubstringsModel()
 
-    def get_project_data(self, project_name: str) -> Item | None:
+    def get_project_data(self, project_name: str) -> ItemProject | None:
         """Returns the project data from the JSON file."""
         if not project_name:
             return None
         return json_projects.get_project_data(project_name)
 
-    def save_project_data(self, project_name: str, data: Item) -> None:
+    def save_project_data(self, project_name: str, data: ItemProject) -> None:
         """Saves the project data to the JSON file."""
         if not project_name or not data:
             return
@@ -56,7 +56,7 @@ class ProjectTitleComboBoxModel(QAbstractListModel):
         self._projects = []
         self.load_data()
 
-    def load_data(self):
+    def load_data(self) -> None:
         """Loads and sorts the projects name list from JSON."""
         self.beginResetModel()
         self._projects: list[str] = json_projects.get_projects_name()

@@ -1,7 +1,7 @@
 from typing import TypedDict
 
 
-class Item(TypedDict):
+class ItemProject(TypedDict):
 
     # project_name: str as key
     language: str

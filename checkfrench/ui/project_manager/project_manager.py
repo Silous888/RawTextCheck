@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
-from checkfrench.newtype import Item
+from checkfrench.newtype import ItemProject
 from checkfrench.ui.create_project.create_project import DialogCreateProject
 from checkfrench.ui.delete_project.delete_project import DialogDeleteProject
 from checkfrench.ui.project_manager.Ui_project_manager import Ui_Dialog_projectManager
@@ -98,9 +98,6 @@ class DialogProjectManager(QDialog):
     def lineEdit_projectName_editingFinished(self) -> None:
         pass
 
-    def lineEdit_pathDictionary_editingFinished(self) -> None:
-        pass
-
     def closeEvent(self, a0: QCloseEvent | None) -> None:
         self.m_model.worker_stop()
         if a0 is not None:
@@ -115,7 +112,7 @@ class DialogProjectManager(QDialog):
 
         if project_name is None:
             return
-        data: Item | None = self.m_model.get_project_data(project_name)
+        data: ItemProject | None = self.m_model.get_project_data(project_name)
         if data is None:
             return
 
@@ -135,7 +132,7 @@ class DialogProjectManager(QDialog):
 
     def save_project_data(self, project_name: str) -> None:
         """Save project data to the model."""
-        data: Item = {
+        data: ItemProject = {
             "language": self.m_model.languageComboBoxModel.get_code(self.ui.comboBox_language.currentIndex()),
             "parser": "generic",
             "arg_parser": self.ui.lineEdit_argParser.text(),
