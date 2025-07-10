@@ -1,5 +1,8 @@
 """
-Module for managing project configuration stored in a JSON file.
+File        : json_projects.py
+Author      : Silous
+Created on  : 2025-05-19
+Description : Module for managing project configuration stored in a JSON file.
 
 This module provides functions to load, manipulate, and persist project metadata
 used by the application. Each project is represented by an entry in a JSON file and
@@ -17,9 +20,10 @@ Dependencies:
 - checkfrench.default_parameters.JSON_FILE_PATH: path to the JSON configuration file
 - checkfrench.logger.get_logger: logging utility
 - checkfrench.newtype.Item: type definition for project items
-
 """
 
+
+# == Imports ==================================================================
 
 import json
 from logging import Logger
@@ -29,8 +33,11 @@ from checkfrench.default_parameters import JSON_FILE_PATH
 from checkfrench.logger import get_logger
 from checkfrench.newtype import ItemProject
 
+
 logger: Logger = get_logger(__name__)
 
+
+# == Functions ================================================================
 
 def log_error_id_invalid(project_name: str, stacklevel: int = 2) -> None:
     """log error if the id of the project is invalid

@@ -1,3 +1,14 @@
+"""
+File        : languagetool.py
+Author      : Silous
+Created on  : 2025-02-07
+Description : Module for integrating LanguageTool for grammar and style checking.
+
+This module provides functions to initialize and use LanguageTool for analyzing text.
+"""
+
+
+# == Imports ==================================================================
 
 from logging import Logger
 import language_tool_python  # type: ignore
@@ -5,16 +16,18 @@ import language_tool_python  # type: ignore
 from checkfrench.newtype import ItemResult
 from checkfrench.logger import get_logger
 
-tool: language_tool_python.LanguageTool | None = None
 
+tool: language_tool_python.LanguageTool | None = None
 logger: Logger = get_logger(__name__)
 
+
+# == Functions ================================================================
 
 def initialize_tool(language: str) -> None:
     """Initialize the global LanguageTool for the specified language.
 
     Args:
-        language (str): The language code (default is 'fr' for French).
+        language (str): The language code.
     """
     global tool
     tool = language_tool_python.LanguageTool(language)
@@ -33,15 +46,15 @@ def close_tool() -> None:
 def analyze_text(texts: list[tuple[str, str]], ignored_words: list[str],
                  ignored_rules: list[str]) -> list[ItemResult]:
     """
-    Analyse une liste de textes avec LanguageTool et retourne les erreurs détectées.
+    Analyze a list of texts using LanguageTool and return detected errors.
 
     Args:
-        texts (list[str, str]): Liste des phrases à vérifier.
-        ignored_words (list[str]): Liste de mots à ignorer dans la détection d'erreurs.
-        rules_ignored (list[str]): Liste d'identifiants de règles à ignorer.
+        texts (list[str, str]): tuples of (line number, text) to analyze.
+        ignored_words (list[str]): list of words to ignore in the analysis.
+        rules_ignored (list[str]): list of LanguageTool rule IDs to ignore.
 
     Returns:
-
+        list[ItemResult]: List of detected errors with their details.
     """
     combined_text: str = "\n".join([x[1] for x in texts])
 

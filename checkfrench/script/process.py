@@ -1,66 +1,71 @@
-""""main process of the application"""
+"""
+File        : process.py
+Author      : Silous
+Created on  : 2025-04-18
+Description : important functions of the app, need rework
+"""
 
 # -------------------- Import Lib Standard -------------------
 import re
 
 # -------------------- Import Lib User -------------------
-from checkfrench.api import google_drive_api as gdrive
+# from checkfrench.api import google_drive_api as gdrive
 from checkfrench.script import languagetool as languagetool
-from checkfrench.script import utils
+# from checkfrench.script import utils
 
 
 list_sentences_current_sheet: list[str] = []
 
 
-def get_name_and_type_of_url(url: str) -> tuple[str, str] | int:
-    """call get_file_metadata of google_drive_api and return name and mimeType of the file
-    Args:
-        url (str): url of the file
+# def get_name_and_type_of_url(url: str) -> tuple[str, str] | int:
+#     """call get_file_metadata of google_drive_api and return name and mimeType of the file
+#     Args:
+#         url (str): url of the file
 
-    Returns:
-        tuple[str, str] | int : name and mimeType of the file, error code otherwise
-    """
-    try:
-        output: dict[str, str] | int = gdrive.get_file_metadata(utils.extract_google_drive_id(url))
-        if not isinstance(output, int):
-            return output["name"], output["mimeType"]
-    except Exception:
-        return -1
-    return -2
-
-
-def get_sheet_name_in_folder(url_folder: str) -> list[str] | int:
-    """call get_file_metadata of google_drive_api and return name and mimeType of the file
-    Args:
-        url (str): url of the file
-
-    Returns:
-        tuple[str, str] | int : name and mimeType of the file, error code otherwise
-    """
-    try:
-        output: list[list[str]] | int = gdrive.list_spreadsheet_in_folder(utils.extract_google_drive_id(url_folder))
-        if not isinstance(output, int):
-            return [item[0] for item in output]
-    except Exception:
-        return -1
-    return -2
+#     Returns:
+#         tuple[str, str] | int : name and mimeType of the file, error code otherwise
+#     """
+#     try:
+#         output: dict[str, str] | int = gdrive.get_file_metadata(utils.extract_google_drive_id(url))
+#         if not isinstance(output, int):
+#             return output["name"], output["mimeType"]
+#     except Exception:
+#         return -1
+#     return -2
 
 
-def get_sheet_url_in_folder(url_folder: str) -> list[str] | int:
-    """call get_file_metadata of google_drive_api and return name and mimeType of the file
-    Args:
-        url (str): url of the file
+# def get_sheet_name_in_folder(url_folder: str) -> list[str] | int:
+#     """call get_file_metadata of google_drive_api and return name and mimeType of the file
+#     Args:
+#         url (str): url of the file
 
-    Returns:
-        tuple[str, str] | int : name and mimeType of the file, error code otherwise
-    """
-    try:
-        output: list[list[str]] | int = gdrive.list_spreadsheet_in_folder(utils.extract_google_drive_id(url_folder))
-        if not isinstance(output, int):
-            return [item[1] for item in output]
-    except Exception:
-        return -1
-    return -2
+#     Returns:
+#         tuple[str, str] | int : name and mimeType of the file, error code otherwise
+#     """
+#     try:
+#         output: list[list[str]] | int = gdrive.list_spreadsheet_in_folder(utils.extract_google_drive_id(url_folder))
+#         if not isinstance(output, int):
+#             return [item[0] for item in output]
+#     except Exception:
+#         return -1
+#     return -2
+
+
+# def get_sheet_url_in_folder(url_folder: str) -> list[str] | int:
+#     """call get_file_metadata of google_drive_api and return name and mimeType of the file
+#     Args:
+#         url (str): url of the file
+
+#     Returns:
+#         tuple[str, str] | int : name and mimeType of the file, error code otherwise
+#     """
+#     try:
+#         output: list[list[str]] | int = gdrive.list_spreadsheet_in_folder(utils.extract_google_drive_id(url_folder))
+#         if not isinstance(output, int):
+#             return [item[1] for item in output]
+#     except Exception:
+#         return -1
+#     return -2
 
 
 def remove_ignored_substrings(text: str, ignored_substrings: dict[str, str], insert_space: bool) -> str:
@@ -105,7 +110,7 @@ def remove_ignored_codes(text: str, ignored_codes: list[str], insert_space: bool
 def language_tool_initialize() -> None:
     """call initialize_tool of languagetool
     """
-    languagetool.initialize_tool()
+    languagetool.initialize_tool("en-US")
 
 
 def language_tool_close() -> None:

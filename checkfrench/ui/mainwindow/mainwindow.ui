@@ -30,7 +30,16 @@
      <string>name_file_opened</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_argument"/>
+   <widget class="QLineEdit" name="lineEdit_argument">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>100</y>
+      <width>133</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
    <widget class="QLabel" name="label_argument">
     <property name="geometry">
      <rect>

@@ -1,5 +1,8 @@
 """
-Module for managing results of language check, stored JSON files.
+File        : json_results.py
+Author      : Silous
+Created on  : 2025-04-24
+Description : Module for managing results of language check, stored JSON files.
 
 This module provides functions to load, save, and manipulate JSON files that contain results of language checks.
 The results are stored in a specific folder structure, where each project has its own folder,
@@ -19,21 +22,25 @@ Dependencies:
 - checkfrench.default_parameters.RESULTS_FOLDER_PAH: path to the JSON results folder
 - checkfrench.script.utils.sanitize_folder_name: used for result folder naming
 - checkfrench.newtype.ItemResult: type definition for result items
-
 """
+
+
+# == Imports ==================================================================
 
 import json
 from logging import Logger
 import os
-
 
 from checkfrench.default_parameters import RESULTS_FOLDER_PATH
 from checkfrench.logger import get_logger
 from checkfrench.newtype import ItemResult
 from checkfrench.script.utils import sanitize_folder_name
 
+
 logger: Logger = get_logger(__name__)
 
+
+# == Functions ================================================================
 
 def save_data(project_name: str, name_file: str, data: dict[str, ItemResult]) -> None:
     """save the data in a result json file
