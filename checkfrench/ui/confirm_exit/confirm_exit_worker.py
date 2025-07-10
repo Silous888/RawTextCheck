@@ -1,7 +1,7 @@
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from checkfrench.script import process as process
+# from checkfrench.script import process as process
 
 
 class WorkerWidgetConfirmExit(QObject):
@@ -14,5 +14,5 @@ class WorkerWidgetConfirmExit(QObject):
         super().__init__()
 
     def save_specific_words_thread(self) -> None:
-        process.add_list_specific_word()
+        # process.add_list_specific_word()
         self.signal_save_specific_words_finished.emit()
