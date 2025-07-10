@@ -168,6 +168,12 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
+# flake8
+.flake8
+
+# pyright
+pyrightconfig.json
+
 # Cython debug symbols
 cython_debug/
 .pyc
