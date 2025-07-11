@@ -1,3 +1,18 @@
+"""
+File        : project_manager_model.py
+Author      : Silous
+Created on  : 2025-05-31
+Description : Model for managing project data in the project manager dialog.
+
+This module provides the model for comboboxes and table views in the project manager dialog.
+It includes models for project titles, languages, dictionaries, banwords, ignored codes, rules,
+ignored substrings, and the worker for project management tasks.
+
+"""
+
+
+# == Imports ==================================================================
+
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
 
@@ -8,24 +23,44 @@ from checkfrench.script import json_projects
 from checkfrench.ui.project_manager.project_manager_worker import WorkerProjectManager
 
 
+# == Classes ==================================================================
+
 class ProjectManagerModel():
+    """Model for managing project data in the project manager dialog.
+    This class initializes the models for comboboxes and table views used in the project manager dialog.
+    It also handles the worker thread for project management tasks.
+    Attributes:
+        m_thread (QThread): The thread for running the project management worker.
+        m_worker (WorkerProjectManager): The worker for managing project tasks.
+        titleComboBoxModel (ProjectTitleComboBoxModel): Model for the project title combobox.
+        languageComboBoxModel (LanguagesComboBoxModel): Model for the language combobox.
+        dictionaryModel (ListTableModel): Model for the dictionary table view.
+        banwordsModel (ListTableModel): Model for the banwords table view.
+        rulesModel (ListTableModel): Model for the ignored rules table view.
+        codesModel (IgnoredCodesModel): Model for the ignored codes table view.
+        substringsModel (IgnoredSubstringsModel): Model for the ignored substrings table view.
+    """
 
     def __init__(self) -> None:
+        """Initialize the ProjectManagerModel."""
         self.worker_start()
         self.model_start()
 
     def worker_start(self) -> None:
+        """Start the worker thread for project management tasks."""
         self.m_thread = QThread()
         self.m_thread.start()
         self.m_worker = WorkerProjectManager()
         self.m_worker.moveToThread(self.m_thread)
 
     def worker_stop(self) -> None:
+        """Stop the worker thread."""
         if self.m_thread.isRunning():
             self.m_thread.quit()
             self.m_thread.wait()
 
     def model_start(self) -> None:
+        """Initialize the models for comboboxes and table views."""
         self.titleComboBoxModel = ProjectTitleComboBoxModel()
         self.languageComboBoxModel = LanguagesComboBoxModel(LANGUAGES_LANGUAGETOOL)
         self.dictionaryModel = ListTableModel()
@@ -35,29 +70,45 @@ class ProjectManagerModel():
         self.substringsModel = IgnoredSubstringsModel()
 
     def get_project_data(self, project_name: str) -> ItemProject | None:
-        """Returns the project data from the JSON file."""
+        """Retrieves the project data for the given project name.
+        Args:
+            project_name (str): The name of the project to retrieve data for.
+        Returns:
+            ItemProject | None: The project data if found, otherwise None.
+        """
         if not project_name:
             return None
         return json_projects.get_project_data(project_name)
 
     def save_project_data(self, project_name: str, data: ItemProject) -> None:
-        """Saves the project data to the JSON file."""
+        """Saves the project data for the given project name.
+        Args:
+            project_name (str): The name of the project to save data for.
+            data (ItemProject): The project data to save.
+        """
         if not project_name or not data:
             return
         json_projects.set_entry_from_item(project_name, data)
 
 
 class ProjectTitleComboBoxModel(QAbstractListModel):
-    """Model for the combobox in the project manager dialog.
+    """Model for the project title combobox in the project manager dialog.
+    This model provides a list of project names sorted alphabetically and allows retrieval of project names by index.
+    Attributes:
+        _projects (list[str]): The list of project names.
     """
 
     def __init__(self, parent: QAbstractListModel | None = None) -> None:
+        """Initialize the ProjectTitleComboBoxModel.
+        Args:
+            parent (QAbstractListModel | None): The parent model, if any.
+        """
         super().__init__(parent)
         self._projects = []
         self.load_data()
 
     def load_data(self) -> None:
-        """Loads and sorts the projects name list from JSON."""
+        """Load the project names from the JSON projects file and sort them alphabetically."""
         self.beginResetModel()
         self._projects: list[str] = json_projects.get_projects_name()
         self._projects.sort(key=lambda proj: proj.lower())
@@ -66,9 +117,22 @@ class ProjectTitleComboBoxModel(QAbstractListModel):
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of rows in the model.
+        Args:
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            int: The number of projects in the model.
+        """
         return len(self._projects)
 
     def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
+        """Return the data for the given index and role.
+        Args:
+            index (QModelIndex): The index for which to retrieve data.
+            role (int): The role of the data to retrieve (e.g., DisplayRole).
+        Returns:
+            QVariant | str: The data for the specified index and role.
+        """
         if not index.isValid() or index.row() >= len(self._projects):
             return QVariant()
 
@@ -78,20 +142,50 @@ class ProjectTitleComboBoxModel(QAbstractListModel):
         return QVariant()
 
     def get_value(self, index: int) -> str | None:
+        """Get the project name for the specified index.
+        Args:
+            index (int): The index of the project in the combobox.
+        Returns:
+            str | None: The project name for the specified index, or None if the index is invalid.
+        """
         if 0 <= index < len(self._projects):
             return self._projects[index]
         return None
 
 
 class LanguagesComboBoxModel(QAbstractListModel):
+    """Model for the languages combobox in the project manager dialog.
+    This model provides a list of languages sorted by their labels and allows retrieval of language codes and labels.
+    Attributes:
+        _data (list[tuple[str, str]]): A list of tuples containing language codes and labels.
+    """
+
     def __init__(self, data: list[tuple[str, str]], parent: QAbstractListModel | None = None) -> None:
+        """Initialize the LanguagesComboBoxModel with the provided data.
+        Args:
+            data (list[tuple[str, str]]): A list of tuples containing language codes and labels.
+            parent (QAbstractListModel | None): The parent model, if any.
+        """
         super().__init__(parent)
         self._data: list[tuple[str, str]] = sorted(data, key=lambda x: x[1].lower())
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of rows in the model.
+        Args:
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            int: The number of languages in the model.
+        """
         return len(self._data)
 
     def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
+        """Return the data for the given index and role.
+        Args:
+            index (QModelIndex): The index for which to retrieve data.
+            role (int): The role of the data to retrieve (e.g., DisplayRole, UserRole).
+        Returns:
+            QVariant | str: The data for the specified index and role.
+        """
         if not index.isValid() or not (0 <= index.row() < len(self._data)):
             return QVariant()
 
@@ -104,16 +198,34 @@ class LanguagesComboBoxModel(QAbstractListModel):
         return QVariant()
 
     def get_code(self, row: int) -> str:
+        """Get the language code for the specified row.
+        Args:
+            row (int): The row index for which to retrieve the language code.
+        Returns:
+            str: The language code for the specified row, or an empty string if the row is invalid.
+        """
         if 0 <= row < len(self._data):
             return self._data[row][0]
         return "!!!"
 
     def get_label(self, row: int) -> str:
+        """Get the language label for the specified row.
+        Args:
+            row (int): The row index for which to retrieve the language label.
+        Returns:
+            str: The language label for the specified row, or an empty string if the row is invalid.
+        """
         if 0 <= row < len(self._data):
             return self._data[row][1]
         return "!!!"
 
     def get_index_by_code(self, code: str) -> int:
+        """Get the index of the language with the specified code.
+        Args:
+            code (str): The language code to search for.
+        Returns:
+            int: The index of the language with the specified code, or -1 if not found.
+        """
         for i, (c, _) in enumerate(self._data):
             if c == code:
                 return i
@@ -121,13 +233,27 @@ class LanguagesComboBoxModel(QAbstractListModel):
 
 
 class ListTableModel(QAbstractTableModel):
+    """Model for a list table view in the project manager dialog.
+    This model provides a simple list of strings that can be edited and displayed in a table view.
+    Attributes:
+        _values (list[str]): The list of strings to be displayed in the table view.
+    """
 
     def __init__(self, values: list[str] = []) -> None:
+        """Initialize the ListTableModel with the provided values.
+        Args:
+            values (list[str]): A list of strings to initialize the model with.
+        """
         super().__init__()
         values.append("")
         self._values: list[str] = values
 
     def load_data(self, values: list[str] | None = None) -> None:
+        """Load the data into the model.
+        Args:
+            values (list[str] | None): A list of strings to load into the model.
+                                       If None, the model is cleared.
+        """
         self.beginResetModel()
         if values is not None:
             self._values = list(set(values))
@@ -137,12 +263,31 @@ class ListTableModel(QAbstractTableModel):
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of rows in the model.
+        Args:
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            int: The number of rows in the model, including an empty row at the end.
+        """
         return len(self._values) + 1
 
     def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of columns in the model.
+        Args:
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            int: The number of columns in the model, which is always 1.
+        """
         return 1
 
     def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
+        """Return the data for the given index and role.
+        Args:
+            index (QModelIndex): The index for which to retrieve data.
+            role (int): The role of the data to retrieve (e.g., DisplayRole, EditRole).
+        Returns:
+            QVariant | str: The data for the specified index and role.
+        """
         if not index.isValid() or index.column() != 0:
             return QVariant()
 
@@ -155,6 +300,14 @@ class ListTableModel(QAbstractTableModel):
         return QVariant()
 
     def setData(self, index: QModelIndex, value: str, role: int = Qt.ItemDataRole.EditRole) -> bool:
+        """Set the data for the given index and role.
+        Args:
+            index (QModelIndex): The index for which to set data.
+            value (str): The value to set for the specified index.
+            role (int): The role of the data to set (e.g., EditRole).
+        Returns:
+            bool: True if the data was set successfully, False otherwise.
+        """
         if not index.isValid() or index.column() != 0 or role != Qt.ItemDataRole.EditRole:
             return False
 
@@ -173,11 +326,25 @@ class ListTableModel(QAbstractTableModel):
         return True
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+        """Return the flags for the given index.
+        Args:
+            index (QModelIndex): The index for which to retrieve flags.
+        Returns:
+            Qt.ItemFlags: The flags for the specified index, allowing editing and selection.
+        """
         if not index.isValid():
             return Qt.ItemFlag.NoItemFlags  # type: ignore
         return Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsEditable  # type: ignore
 
     def insertRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
+        """Insert rows into the model at the specified row index.
+        Args:
+            row (int): The row index at which to insert new rows.
+            count (int): The number of rows to insert.
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            bool: Always True, indicating that the rows were inserted successfully.
+        """
         self.beginInsertRows(QModelIndex(), row, row + count - 1)
         for _ in range(count):
             self._values.insert(row, "")
@@ -185,6 +352,14 @@ class ListTableModel(QAbstractTableModel):
         return True
 
     def removeRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
+        """Remove rows from the model at the specified row index.
+        Args:
+            row (int): The row index at which to start removing rows.
+            count (int): The number of rows to remove.
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            bool: Always True, indicating that the rows were removed successfully.
+        """
         self.beginRemoveRows(QModelIndex(), row, row + count - 1)
         for _ in range(count):
             del self._values[row]
@@ -192,16 +367,30 @@ class ListTableModel(QAbstractTableModel):
         return True
 
     def get_data(self) -> list[str]:
-        # Return only non-empty unique values
+        """Get the list of values from the model.
+        Returns:
+            list[str]: A list of non-empty unique values from the model.
+        """
         return [word for word in self._values if word.strip()]
 
 
 class IgnoredCodesModel(QAbstractTableModel):
+    """Model for the ignored codes table in the project manager dialog.
+    This model provides a table view for managing codes that should be ignored in the project.
+    Attributes:
+        checkbox_col (int): The index of the checkbox column.
+        code_col (int): The index of the code column.
+    """
 
     checkbox_col: int = 0
     code_col: int = 1
 
     def __init__(self, space_list: list[str] = [], nospace_list: list[str] = []) -> None:
+        """Initialize the IgnoredCodesModel with the provided space and nospace lists.
+        Args:
+            space_list (list[str]): A list of codes that should be replaced with a space.
+            nospace_list (list[str]): A list of codes that should not be replaced with a space.
+        """
         super().__init__()
         self._data: list[tuple[str, bool]] = (
             [(code, True) for code in space_list] +
@@ -210,6 +399,13 @@ class IgnoredCodesModel(QAbstractTableModel):
 
     def load_data(self, space_list: list[str] | None = None,
                   nospace_list: list[str] | None = None) -> None:
+        """Load the data into the model.
+        Args:
+            space_list (list[str] | None): A list of codes that should be replaced with
+                a space. If None, the model is cleared.
+            nospace_list (list[str] | None): A list of codes that should not be replaced
+                with a space. If None, the model is cleared.
+        """
         self.beginResetModel()
         if space_list is not None:
             self._data = [(code.strip(), True) for code in space_list if code.strip()]
@@ -221,13 +417,32 @@ class IgnoredCodesModel(QAbstractTableModel):
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of rows in the model.
+        Args:
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            int: The number of rows in the model, including an empty row at the end.
+        """
         return len(self._data) + 1
 
     def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of columns in the model.
+        Args:
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            int: The number of columns in the model, which is always 2 (checkbox and code).
+        """
         return 2
 
     def data(self, index: QModelIndex,
              role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | Qt.CheckState | str:
+        """Return the data for the given index and role.
+        Args:
+            index (QModelIndex): The index for which to retrieve data.
+            role (int): The role of the data to retrieve (e.g., DisplayRole, CheckStateRole).
+        Returns:
+            QVariant | Qt.CheckState | str: The data for the specified index and role.
+        """
         if not index.isValid():
             return QVariant()
 
@@ -249,6 +464,14 @@ class IgnoredCodesModel(QAbstractTableModel):
         return QVariant()
 
     def setData(self, index: QModelIndex, value: str, role: int = Qt.ItemDataRole.EditRole) -> bool:
+        """Set the data for the given index and role.
+        Args:
+            index (QModelIndex): The index for which to set data.
+            value (str): The value to set for the specified index.
+            role (int): The role of the data to set (e.g., EditRole, CheckStateRole).
+        Returns:
+            bool: True if the data was set successfully, False otherwise.
+        """
         if not index.isValid():
             return False
 
@@ -279,6 +502,14 @@ class IgnoredCodesModel(QAbstractTableModel):
 
     def headerData(self, section: int, orientation: Qt.Orientation,
                    role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
+        """Return the header data for the given section and orientation.
+        Args:
+            section (int): The section index for which to retrieve header data.
+            orientation (Qt.Orientation): The orientation of the header (horizontal or vertical).
+            role (int): The role of the header data to retrieve (e.g., DisplayRole).
+        Returns:
+            QVariant | str: The header data for the specified section and orientation.
+        """
         if role == Qt.ItemDataRole.DisplayRole:
             if orientation == Qt.Orientation.Horizontal:
                 return "Replace with space" if section == self.checkbox_col else "Code"
@@ -286,6 +517,12 @@ class IgnoredCodesModel(QAbstractTableModel):
         return QVariant()
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+        """Return the flags for the given index.
+        Args:
+            index (QModelIndex): The index for which to retrieve flags.
+        Returns:
+            Qt.ItemFlags: The flags for the specified index, allowing editing and selection.
+        """
         if not index.isValid():
             return Qt.ItemFlag.NoItemFlags  # type: ignore
         if index.column() == self.checkbox_col:
@@ -301,6 +538,14 @@ class IgnoredCodesModel(QAbstractTableModel):
         )
 
     def insertRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
+        """Insert rows into the model at the specified row index.
+        Args:
+            row (int): The row index at which to insert new rows.
+            count (int): The number of rows to insert.
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            bool: Always True, indicating that the rows were inserted successfully.
+        """
         self.beginInsertRows(QModelIndex(), row, row + count - 1)
         for _ in range(count):
             self._data.insert(row, ("", True))
@@ -308,6 +553,14 @@ class IgnoredCodesModel(QAbstractTableModel):
         return True
 
     def removeRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
+        """Remove rows from the model at the specified row index.
+        Args:
+            row (int): The row index at which to start removing rows.
+            count (int): The number of rows to remove.
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            bool: Always True, indicating that the rows were removed successfully.
+        """
         self.beginRemoveRows(QModelIndex(), row, row + count - 1)
         for _ in range(count):
             if row < len(self._data):
@@ -317,19 +570,26 @@ class IgnoredCodesModel(QAbstractTableModel):
 
     def get_data(self) -> tuple[list[str], list[str]]:
         """Returns two lists: one for space codes and one for nospace codes.
+        Removes duplicates and empty values.
 
         Returns:
-            tuple[list[str], list[str]]: A tuple containing two lists:
+            tuple[list[str], list[str]]: A tuple containing two lists.
             - The first list is ignored_space.
             - The second list is ignored_nospace.
         """
-        # Remove duplicates and empty values
         space: list[str] = [code for code, is_space in self._data if is_space and code.strip()]
         nospace: list[str] = [code for code, is_space in self._data if not is_space and code.strip()]
         return space, nospace
 
 
 class IgnoredSubstringsModel(QAbstractTableModel):
+    """Model for the ignored substrings table in the project manager dialog.
+    This model provides a table view for managing substrings that should be ignored in the project.
+    Attributes:
+        check_col (int): The index of the checkbox column.
+        start_col (int): The index of the start substring column.
+        end_col (int): The index of the end substring column.
+    """
 
     check_col = 0
     start_col = 1
@@ -337,11 +597,25 @@ class IgnoredSubstringsModel(QAbstractTableModel):
 
     def __init__(self, space_dict: dict[str, list[str]] | None = None,
                  nospace_dict: dict[str, list[str]] | None = None) -> None:
+        """Initialize the IgnoredSubstringsModel with the provided space and nospace dictionaries.
+        Args:
+            space_dict (dict[str, list[str]] | None): A dictionary where keys are start substrings
+                and values are lists of end substrings that should be replaced with a space.
+            nospace_dict (dict[str, list[str]] | None): A dictionary where keys are
+                start substrings and values are lists of end substrings that should not be replaced with a space.
+        """
         super().__init__()
         self._data: list[tuple[str, str, bool]] = []
         self.load_data(space_dict or {}, nospace_dict or {})
 
     def load_data(self, space_dict: dict[str, list[str]], nospace_dict: dict[str, list[str]]) -> None:
+        """Load the data into the model from the provided dictionaries.
+        Args:
+            space_dict (dict[str, list[str]]): A dictionary where keys are start substrings
+                and values are lists of end substrings that should be replaced with a space.
+            nospace_dict (dict[str, list[str]]): A dictionary where keys are start substrings
+                and values are lists of end substrings that should not be replaced with a space.
+        """
         self.beginResetModel()
         self._data = [
             (start, end, True)
@@ -356,12 +630,31 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of rows in the model.
+        Args:
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            int: The number of rows in the model, including an empty row at the end.
+        """
         return len(self._data) + 1
 
     def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of columns in the model.
+        Args:
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            int: The number of columns in the model, which is always 3 (checkbox, start substring, end substring).
+        """
         return 3
 
     def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str | Qt.CheckState:
+        """Return the data for the given index and role.
+        Args:
+            index (QModelIndex): The index for which to retrieve data.
+            role (int): The role of the data to retrieve (e.g., DisplayRole, EditRole, CheckStateRole).
+        Returns:
+            QVariant | str | Qt.CheckState: The data for the specified index and role.
+        """
         if not index.isValid():
             return QVariant()
 
@@ -385,6 +678,14 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         return QVariant()
 
     def setData(self, index: QModelIndex, value: str, role: int = Qt.ItemDataRole.EditRole) -> bool:
+        """Set the data for the given index and role.
+        Args:
+            index (QModelIndex): The index for which to set data.
+            value (str): The value to set for the specified index.
+            role (int): The role of the data to set (e.g., EditRole, CheckStateRole).
+        Returns:
+            bool: True if the data was set successfully, False otherwise.
+        """
         if not index.isValid():
             return False
 
@@ -415,6 +716,12 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         return True
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+        """Return the flags for the given index.
+        Args:
+            index (QModelIndex): The index for which to retrieve flags.
+        Returns:
+            Qt.ItemFlags: The flags for the specified index, allowing editing and selection.
+        """
         if not index.isValid():
             return Qt.ItemFlag.NoItemFlags  # type: ignore
         if index.column() == self.check_col:
@@ -431,11 +738,27 @@ class IgnoredSubstringsModel(QAbstractTableModel):
 
     def headerData(self, section: int, orientation: Qt.Orientation,
                    role: int = Qt.ItemDataRole.DisplayRole) -> str | QVariant:
+        """Return the header data for the given section and orientation.
+        Args:
+            section (int): The section index for which to retrieve header data.
+            orientation (Qt.Orientation): The orientation of the header (horizontal or vertical).
+            role (int): The role of the header data to retrieve (e.g., DisplayRole).
+        Returns:
+            str | QVariant: The header data for the specified section and orientation.
+        """
         if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Horizontal:
             return ["Replace with space", "Start", "End"][section]
         return QVariant()
 
     def insertRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
+        """Insert rows into the model at the specified row index.
+        Args:
+            row (int): The row index at which to insert new rows.
+            count (int): The number of rows to insert.
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            bool: Always True, indicating that the rows were inserted successfully.
+        """
         self.beginInsertRows(QModelIndex(), row, row + count - 1)
         for _ in range(count):
             self._data.insert(row, ("", "", True))
@@ -443,6 +766,14 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         return True
 
     def removeRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
+        """Remove rows from the model at the specified row index.
+        Args:
+            row (int): The row index at which to start removing rows.
+            count (int): The number of rows to remove.
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            bool: Always True, indicating that the rows were removed successfully.
+        """
         self.beginRemoveRows(QModelIndex(), row, row + count - 1)
         for _ in range(count):
             if row < len(self._data):
@@ -451,6 +782,15 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         return True
 
     def get_data(self) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
+        """Returns two dictionaries: one for space substrings and one for nospace substrings.
+        Removes duplicates and empty values.
+        Returns:
+            tuple[dict[str, list[str]], dict[str, list[str]]]: A tuple containing two dictionaries.
+            - The first dictionary is space_dict, where keys are start substrings
+              and values are lists of end substrings that should be replaced with a space.
+            - The second dictionary is nospace_dict, where keys are start substrings
+                and values are lists of end substrings that should not be replaced with a space.
+        """
         space_dict: dict[str, list[str]] = {}
         nospace_dict: dict[str, list[str]] = {}
         for start, end, is_space in self._data:
