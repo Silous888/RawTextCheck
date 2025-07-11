@@ -1,4 +1,3 @@
-
 """
 File        : delete_project.py
 Author      : Silous

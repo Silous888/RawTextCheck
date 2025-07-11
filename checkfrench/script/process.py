@@ -14,9 +14,6 @@ from checkfrench.script import languagetool as languagetool
 # from checkfrench.script import utils
 
 
-list_sentences_current_sheet: list[str] = []
-
-
 # def get_name_and_type_of_url(url: str) -> tuple[str, str] | int:
 #     """call get_file_metadata of google_drive_api and return name and mimeType of the file
 #     Args:

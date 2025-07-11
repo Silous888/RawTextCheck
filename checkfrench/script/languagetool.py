@@ -17,6 +17,8 @@ from checkfrench.newtype import ItemResult
 from checkfrench.logger import get_logger
 
 
+# == Global Variables =========================================================
+
 tool: language_tool_python.LanguageTool | None = None
 logger: Logger = get_logger(__name__)
 

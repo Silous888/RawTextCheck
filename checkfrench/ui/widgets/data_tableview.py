@@ -1,4 +1,3 @@
-
 """
 File        : data_tableview.py
 Author      : Silous

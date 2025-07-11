@@ -37,6 +37,8 @@ from checkfrench.newtype import ItemResult
 from checkfrench.script.utils import sanitize_folder_name
 
 
+# == Global Variables =========================================================
+
 logger: Logger = get_logger(__name__)
 
 

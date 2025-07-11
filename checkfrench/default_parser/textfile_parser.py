@@ -1,4 +1,3 @@
-
 """
 File        : textfile_parser.py
 Author      : Silous
@@ -9,6 +8,8 @@ This module provides a function to parse a text file and return its non-empty li
 This parser acts as a default parser for text files.
 """
 
+
+# == Functions ================================================================
 
 def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
     """Parse a file and return each non-empty line with its line number.

@@ -34,6 +34,8 @@ from checkfrench.logger import get_logger
 from checkfrench.newtype import ItemProject
 
 
+# == Global Variables =========================================================
+
 logger: Logger = get_logger(__name__)
 
 
