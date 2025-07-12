@@ -12,11 +12,11 @@ combobox model and worker thread for background tasks.
 # == Imports ==================================================================
 
 # -------------------- Import Lib Tier -------------------
-from PyQt5.QtCore import QAbstractListModel, QModelIndex, QThread, QVariant, Qt
+from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
 
 # -------------------- Import Lib User -------------------
-from checkfrench.newtype import ItemProject
-from checkfrench.script import json_projects
+from checkfrench.newtype import ItemProject, ItemResult
+from checkfrench.script import json_projects, json_results
 from checkfrench.ui.mainwindow.mainwindow_worker import WorkerMainWindow
 
 
@@ -30,10 +30,10 @@ class MainWindowModel():
         m_worker (WorkerMainWindow): The worker for handling background tasks.
         titleCombobBoxModel (ProjectTitleComboBoxModel): The model for the project title combobox.
     """
-    def __init__(self) -> None:
+    def __init__(self, project_name: str, filename: str) -> None:
         """Initialize the MainWindowModel."""
         self.worker_start()
-        self.model_start()
+        self.model_start(project_name, filename)
 
     def worker_start(self) -> None:
         """Initialize the worker thread and move the worker to it."""
@@ -48,9 +48,10 @@ class MainWindowModel():
             self.m_thread.quit()
             self.m_thread.wait()
 
-    def model_start(self) -> None:
+    def model_start(self, project_name: str, filename: str) -> None:
         """Initialize the project title combobox model."""
-        self.titleCombobBoxModel = ProjectTitleComboBoxModel()
+        self.titleComboBoxModel = ProjectTitleComboBoxModel()
+        self.resultsTableModel = ResultsTableModel(project_name, filename)
 
     def get_argument_parser(self, index: int) -> str:
         """Get the argument parser for the selected project in the combobox.
@@ -59,7 +60,7 @@ class MainWindowModel():
         Returns:
             str: The argument parser for the selected project, or an empty string if not found.
         """
-        project_name: str | None = self.titleCombobBoxModel.get_value(index)
+        project_name: str | None = self.titleComboBoxModel.get_value(index)
         if project_name is None:
             return ""
         data: ItemProject | None = json_projects.get_project_data(project_name)
@@ -128,3 +129,92 @@ class ProjectTitleComboBoxModel(QAbstractListModel):
         if 0 <= index < len(self._projects):
             return self._projects[index]
         return None
+
+
+class ResultsTableModel(QAbstractTableModel):
+    """Model for displaying ItemResult data in a QTableView.
+    Each row represents an error result entry from a JSON file.
+    Attributes:
+        _keys (list[str]): List of IDs (keys) for the result items.
+        _data (dict[str, ItemResult]): Mapping of ID to result data.
+    """
+
+    HEADERS: list[str] = ["Line Number", "Line", "Error", "Type", "Explanation", "Suggestion"]
+
+    def __init__(self, project_name: str, file_name: str) -> None:
+        """Initialize the ResultsTableModel.
+        Args:
+            project_name (str): The name of the project for which results are displayed.
+            data (dict[str, ItemResult] | None): Initial data to populate the model.
+        """
+        super().__init__()
+        self.project_name: str = project_name
+        self.file_name: str = file_name
+        self._keys: list[str] = []
+        if file_name != "":
+            self.load_data()
+
+    def load_data(self) -> None:
+        """Load the result data into the model from the JSON file.
+        """
+        self.beginResetModel()
+        self._data: dict[str, ItemResult] = json_results.get_file_data(self.project_name, self.file_name + ".json")
+        self._keys = list(self._data.keys())
+        self.endResetModel()
+
+    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of rows in the model."""
+        return len(self._keys)
+
+    def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of columns in the model."""
+        return len(self.HEADERS)
+
+    def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
+        """Return the data at the given index."""
+        if not index.isValid() or role != Qt.ItemDataRole.DisplayRole:
+            return QVariant()
+
+        item_id: str = self._keys[index.row()]
+        item: ItemResult = self._data[item_id]
+
+        match index.column():
+            case 0: return item["line_number"]
+            case 1: return item["line"]
+            case 2: return item["error"]
+            case 3: return item["error_type"]
+            case 4: return item["explanation"]
+            case 5: return item["suggestion"]
+            case _: return QVariant()
+
+    def headerData(self, section: int, orientation: Qt.Orientation,
+                   role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
+        """Return the header data."""
+        if role != Qt.ItemDataRole.DisplayRole:
+            return QVariant()
+        if orientation == Qt.Orientation.Horizontal and 0 <= section < len(self.HEADERS):
+            return self.HEADERS[section]
+        return QVariant()
+
+    def removeRow(self, row: int, parent: QModelIndex = QModelIndex()) -> bool:
+        """Remove rows from the model at the specified row index.
+        Args:
+            row (int): The row index at which to start removing rows.
+            count (int): The number of rows to remove.
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            bool: True if the row was successfully removed, False otherwise.
+        """
+
+        err_nb: int = json_results.delete_entry(self.project_name, self.file_name, self._keys[row])
+        if err_nb != 0:
+            return False
+        self.beginRemoveRows(parent, row, row)
+        del self._data[self._keys[row]]
+        del self._keys[row]
+        self.endRemoveRows()
+        return True
+
+    def get_data(self) -> dict[str, ItemResult]:
+        """Return the full data."""
+        return self._data

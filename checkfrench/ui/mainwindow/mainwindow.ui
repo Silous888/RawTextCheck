@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>name_file_opened</string>
+     <string>test_result</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_argument">
@@ -99,23 +99,17 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTableWidget" name="tableWidget_1">
+   <widget class="DataResultTableView" name="tableView_result">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>300</y>
-      <width>711</width>
-      <height>341</height>
+      <x>50</x>
+      <y>220</y>
+      <width>1081</width>
+      <height>551</height>
      </rect>
     </property>
-    <property name="contextMenuPolicy">
-     <enum>Qt::CustomContextMenu</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOn</enum>
-    </property>
-    <property name="editTriggers">
-     <set>QAbstractItemView::NoEditTriggers</set>
+    <property name="dragDropOverwriteMode">
+     <bool>false</bool>
     </property>
     <property name="selectionMode">
      <enum>QAbstractItemView::SingleSelection</enum>
@@ -123,38 +117,12 @@
     <property name="selectionBehavior">
      <enum>QAbstractItemView::SelectRows</enum>
     </property>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>60</number>
-    </attribute>
     <attribute name="horizontalHeaderStretchLastSection">
      <bool>true</bool>
     </attribute>
     <attribute name="verticalHeaderVisible">
      <bool>false</bool>
     </attribute>
-    <attribute name="verticalHeaderDefaultSectionSize">
-     <number>15</number>
-    </attribute>
-    <row>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </row>
-    <column>
-     <property name="text">
-      <string>fichier</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>ligne</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>faute</string>
-     </property>
-    </column>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -240,14 +208,18 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DataResultTableView</class>
+   <extends>QTableView</extends>
+   <header>checkfrench/ui/widgets/dataresult_tableview.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>comboBox_project</tabstop>
   <tabstop>lineEdit_filepath</tabstop>
   <tabstop>lineEdit_argument</tabstop>
-  <tabstop>tableWidget_1</tabstop>
  </tabstops>
- <resources>
-  <include location="../ressource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

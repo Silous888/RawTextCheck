@@ -37,8 +37,10 @@ class MainWindow(QMainWindow):
 
     def set_up_model(self) -> None:
         """Initialize the model for the main window."""
-        self.m_model = MainWindowModel()
-        self.ui.comboBox_project.setModel(self.m_model.titleCombobBoxModel)
+        self.m_model = MainWindowModel(self.ui.comboBox_project.currentText(),
+                                       self.ui.label_fileOpened.text())
+        self.ui.comboBox_project.setModel(self.m_model.titleComboBoxModel)
+        self.ui.tableView_result.setModel(self.m_model.resultsTableModel)
 
     def set_up_connect(self) -> None:
         """connect slots and signals
@@ -53,6 +55,7 @@ class MainWindow(QMainWindow):
         Opens the project manager dialog."""
         self.dialog_project_manager = DialogProjectManager()
         self.dialog_project_manager.exec()
+        self.m_model.titleComboBoxModel.load_data()
 
     def comboBox_project_currentIndexChanged(self, index: int) -> None:
         """Slot for handling changes in the project combobox.
@@ -61,6 +64,8 @@ class MainWindow(QMainWindow):
             index (int): The index of the selected project in the combobox.
         """
         self.ui.lineEdit_argument.setText(self.m_model.get_argument_parser(index))
+        self.m_model.resultsTableModel.project_name = self.m_model.titleComboBoxModel.get_value(index) or ""
+        self.m_model.resultsTableModel.load_data()
 
     def closeEvent(self, a0: QCloseEvent | None) -> None:
         """Handle the close event of the main window."""

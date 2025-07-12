@@ -45,13 +45,20 @@ def log_error_id_invalid(project_name: str, stacklevel: int = 2) -> None:
     """log error if the id of the project is invalid
 
     Args:
-        project_name (int): id of the project
+        project_name (str): id of the project
+        stacklevel (int): level of the stack to log the error
     """
     logger.error("Project ID %s is not valid.", project_name, stacklevel=stacklevel)
 
 
 def _log_error_if_id_or_value_invalid(project_name: str, *values: str) -> bool:
-    """Internal function to log error and return True if any value is invalid"""
+    """Log an error if the project name is invalid or if any of the values are empty.
+    Args:
+        project_name (str): The name of the project to check.
+        *values (str): Values to check for emptiness.
+    Returns:
+        bool: True if an error was logged, False otherwise.
+    """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name, stacklevel=4)
         return True

@@ -84,40 +84,6 @@
         ],
         "synchronized_path": ""
     },
-    "430 Test Project A": {
-        "language": "en",
-        "parser": "custom",
-        "arg_parser": "ABC",
-        "valid_characters": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        "dictionary": [
-            "Test",
-            "Project",
-            "Alpha"
-        ],
-        "banwords": [
-            "forbidden",
-            "invalid"
-        ],
-        "ignored_codes_into_space": [
-            "<br/>",
-            "[space]"
-        ],
-        "ignored_codes_into_nothing": [
-            "<br>"
-        ],
-        "ignored_substrings_into_space": {
-            "<": [
-                ">",
-                "/>"
-            ]
-        },
-        "ignored_substrings_into_nothing": {},
-        "ignored_rules": [
-            "RULE_A",
-            "RULE_B"
-        ],
-        "synchronized_path": ""
-    },
     "431 Sample Project B": {
         "language": "fr",
         "parser": "generic",
@@ -151,34 +117,9 @@
         ],
         "synchronized_path": ""
     },
-    "432 Debug Example C": {
-        "language": "fr",
-        "parser": "debug",
-        "arg_parser": "DBG",
-        "valid_characters": "abcdeABCDE12345",
-        "dictionary": [
-            "Debug",
-            "Exemple",
-            "C"
-        ],
-        "banwords": [
-            "tmp",
-            "debugme"
-        ],
-        "ignored_codes_into_space": [],
-        "ignored_codes_into_nothing": [
-            "<remove>"
-        ],
-        "ignored_substrings_into_space": {},
-        "ignored_substrings_into_nothing": {},
-        "ignored_rules": [
-            "DEBUG_ONLY"
-        ],
-        "synchronized_path": ""
-    },
-    "project_testrnrua": {
+    "PARANORMASIGHT": {
         "language": "en",
-        "parser": "",
+        "parser": "generic",
         "arg_parser": "",
         "valid_characters": "",
         "dictionary": [],
