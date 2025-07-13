@@ -17,116 +17,87 @@
    <property name="styleSheet">
     <string notr="true"/>
    </property>
-   <widget class="QLabel" name="label_fileOpened">
-    <property name="geometry">
-     <rect>
-      <x>730</x>
-      <y>70</y>
-      <width>111</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>test_result</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_argument">
-    <property name="geometry">
-     <rect>
-      <x>530</x>
-      <y>100</y>
-      <width>133</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_argument">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>100</y>
-      <width>102</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Argument parser</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_filepath">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>70</y>
-      <width>701</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_process">
-    <property name="geometry">
-     <rect>
-      <x>150</x>
-      <y>150</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Process</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_updateResult">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>150</y>
-      <width>81</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>last_update</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboBox_project">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>681</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="DataResultTableView" name="tableView_result">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>220</y>
-      <width>1081</width>
-      <height>551</height>
-     </rect>
-    </property>
-    <property name="dragDropOverwriteMode">
-     <bool>false</bool>
-    </property>
-    <property name="selectionMode">
-     <enum>QAbstractItemView::SingleSelection</enum>
-    </property>
-    <property name="selectionBehavior">
-     <enum>QAbstractItemView::SelectRows</enum>
-    </property>
-    <property name="horizontalScrollMode">
-     <enum>QAbstractItemView::ScrollPerPixel</enum>
-    </property>
-    <attribute name="horizontalHeaderStretchLastSection">
-     <bool>true</bool>
-    </attribute>
-    <attribute name="verticalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QComboBox" name="comboBox_project"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="lineEdit_filepath"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_fileOpened">
+          <property name="text">
+           <string>test_result</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QPushButton" name="pushButton_process">
+            <property name="text">
+             <string>Process</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_updateResult">
+            <property name="text">
+             <string>last_update</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_argument">
+            <property name="text">
+             <string>Argument parser</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_argument"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="DataResultTableView" name="tableView_result">
+        <property name="dragDropOverwriteMode">
+         <bool>false</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="horizontalScrollMode">
+         <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
