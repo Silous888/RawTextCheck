@@ -120,7 +120,7 @@ def get_project_data(project_name: str) -> ItemProject | None:
 def create_new_entry(
         project_name: str,
         language: str,
-        parser: str = "",
+        parser: str,
         arg_parser: str = "",
         valid_characters: str = "",
         dictionary: list[str] | None = None,
@@ -137,7 +137,7 @@ def create_new_entry(
     Args:
         project_name (str): need to be specified and must be unique
         language (str): need to be specified
-        parser (str, optional): Defaults to "".
+        parser (str, optional): need to be specified
         arg_parser (str, optional): Defaults to "".
         valid_characters (str, optional): Defaults to "".
         dictionary (list[str], optional): Defaults to [].
@@ -152,11 +152,13 @@ def create_new_entry(
         int: Id of the entry created
     """
     if not project_name:
-        logger.error("project_name cannot be empty.")
+        logger.error("Project name cannot be empty.")
         raise ValueError
     if not language:
         logger.error("Language cannot be empty.")
         raise ValueError
+    if not parser:
+        logger.error("Parser cannot be empty.")
 
     data: dict[str, ItemProject] = load_data()
 
@@ -239,6 +241,9 @@ def set_entry_from_item(project_name: str, data: ItemProject) -> None:
         raise ValueError
     if "language" not in data or data["language"] == "":
         logger.error("Language cannot be empty.")
+        raise ValueError
+    if "parser" not in data or data["parser"] == "":
+        logger.error("Parser cannot be empty.")
         raise ValueError
     set_entry(
         project_name,
