@@ -11,6 +11,8 @@ combobox model and worker thread for background tasks.
 
 # == Imports ==================================================================
 
+import os
+
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
 
@@ -67,6 +69,24 @@ class MainWindowModel():
         if data is None:
             return ""
         return data["arg_parser"]
+
+    def is_file_exist(self, filepath: str) -> bool:
+        """test if a filepath is correct
+        Args:
+            filepath (str): the path of the file
+        Returns:
+            bool: True if the path is a valid file
+        """
+        return os.path.isfile(filepath)
+
+    def get_filename_from_filepath(self, filepath: str) -> str:
+        """get the name of the file given its path
+        Args:
+            filepath (str): path of the file
+        Returns:
+            str: name of the file
+        """
+        return os.path.basename(filepath)
 
 
 class ProjectTitleComboBoxModel(QAbstractListModel):
@@ -149,7 +169,7 @@ class ResultsTableModel(QAbstractTableModel):
         """
         super().__init__()
         self.project_name: str = project_name
-        self.file_name: str = file_name
+        self.filename: str = file_name
         self._keys: list[str] = []
         if file_name != "":
             self.load_data()
@@ -157,9 +177,17 @@ class ResultsTableModel(QAbstractTableModel):
     def load_data(self) -> None:
         """Load the result data into the model from the JSON file.
         """
+        if not json_results.is_result_exists(self.project_name, self.filename):
+            return
         self.beginResetModel()
-        self._data: dict[str, ItemResult] = json_results.get_file_data(self.project_name, self.file_name + ".json")
+        self._data: dict[str, ItemResult] = json_results.get_file_data(self.project_name, self.filename)
         self._keys = list(self._data.keys())
+        self.endResetModel()
+
+    def clear_data(self) -> None:
+        self.beginResetModel()
+        self._data = {}
+        self._keys = []
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
@@ -206,7 +234,7 @@ class ResultsTableModel(QAbstractTableModel):
             bool: True if the row was successfully removed, False otherwise.
         """
 
-        err_nb: int = json_results.delete_entry(self.project_name, self.file_name, self._keys[row])
+        err_nb: int = json_results.delete_entry(self.project_name, self.filename, self._keys[row])
         if err_nb != 0:
             return False
         self.beginRemoveRows(parent, row, row)

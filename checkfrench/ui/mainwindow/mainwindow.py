@@ -37,8 +37,7 @@ class MainWindow(QMainWindow):
 
     def set_up_model(self) -> None:
         """Initialize the model for the main window."""
-        self.m_model = MainWindowModel(self.ui.comboBox_project.currentText(),
-                                       self.ui.label_fileOpened.text())
+        self.m_model = MainWindowModel(self.ui.comboBox_project.currentText(), "")
         self.ui.comboBox_project.setModel(self.m_model.titleComboBoxModel)
         self.ui.tableView_result.setModel(self.m_model.resultsTableModel)
 
@@ -49,6 +48,8 @@ class MainWindow(QMainWindow):
         self.ui.actionProjects.triggered.connect(self.actionProjects_triggered)
         # comboboxes
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
+        # lineEdit
+        self.ui.lineEdit_filepath.textChanged.connect(self.lineEdit_filepath_textChanged)
 
     def actionProjects_triggered(self) -> None:
         """Slot for handling the Projects menu action.
@@ -66,6 +67,21 @@ class MainWindow(QMainWindow):
         self.ui.lineEdit_argument.setText(self.m_model.get_argument_parser(index))
         self.m_model.resultsTableModel.project_name = self.m_model.titleComboBoxModel.get_value(index) or ""
         self.m_model.resultsTableModel.load_data()
+
+    def lineEdit_filepath_textChanged(self) -> None:
+        """Slot for handling text changes in the filepath lineEdit
+        if the text is a valid filepath, update ui and model
+        if not, clear ui and current data
+        """
+        if self.m_model.is_file_exist(self.ui.lineEdit_filepath.text()):
+            filename: str = self.m_model.get_filename_from_filepath(self.ui.lineEdit_filepath.text())
+            self.m_model.resultsTableModel.filename = filename
+            self.ui.label_fileOpened.setText(filename)
+            self.m_model.resultsTableModel.load_data()
+        else:
+            self.m_model.resultsTableModel.filename = ""
+            self.ui.label_fileOpened.setText("")
+            self.m_model.resultsTableModel.clear_data()
 
     def closeEvent(self, a0: QCloseEvent | None) -> None:
         """Handle the close event of the main window."""

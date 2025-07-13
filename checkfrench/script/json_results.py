@@ -40,28 +40,29 @@ from checkfrench.script.utils import sanitize_folder_name
 # == Global Variables =========================================================
 
 logger: Logger = get_logger(__name__)
+JSON_EXT: str = ".json"
 
 
 # == Functions ================================================================
 
-def save_data(project_name: str, name_file: str, data: dict[str, ItemResult]) -> None:
+def save_data(project_name: str, filename: str, data: dict[str, ItemResult]) -> None:
     """save the data in a result json file
 
     Args:
         project_name (str): id of the project
-        name_file (str): name of the file
+        filename (str): name of the file
         data (dict[str, ItemResult]): data to save
     """
-    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    sanitize_folder_name(project_name))
-    file_path: str = os.path.join(folder_path, name_file)
+    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+                                   sanitize_folder_name(project_name))
+    filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 
     # Create the folder if it doesn't exist
-    os.makedirs(folder_path, exist_ok=True)
+    os.makedirs(folderpath, exist_ok=True)
 
-    with open(file_path, "w", encoding="utf-8") as f:
+    with open(filepath, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
-    logger.info("Result of %s from project %s saved.", name_file, project_name)
+    logger.info("Result of %s from project %s saved.", filename, project_name)
 
 
 def generate_id_errors(result: list[ItemResult]) -> dict[str, ItemResult]:
@@ -90,28 +91,45 @@ def generate_id_errors(result: list[ItemResult]) -> dict[str, ItemResult]:
     return data
 
 
-def get_file_data(project_name: str, name_file: str) -> dict[str, ItemResult]:
+def is_result_exists(project_name: str, filename: str) -> bool:
+    """Test if a result file exists
+
+    Args:
+        project_name (str): id of the project
+        filename (str): name of the file
+
+    Returns:
+        bool: True if the file exists, False otherwise
+    """
+    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+                                   sanitize_folder_name(project_name))
+    filepath: str = os.path.join(folderpath, filename + JSON_EXT)
+
+    return os.path.isfile(filepath)
+
+
+def get_file_data(project_name: str, filename: str) -> dict[str, ItemResult]:
     """get the data from a result json file
 
     Args:
         project_name (str): id of the project
-        name_file (str): name of the file
+        filename (str): name of the file
 
     Returns:
         dict[str, ItemResult]: data from the file
     """
-    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    sanitize_folder_name(project_name))
-    file_path: str = os.path.join(folder_path, name_file)
-
-    if not os.path.exists(file_path):
-        logger.warning("File %s does not exist in project %s.", name_file, project_name)
+    if not is_result_exists(project_name, filename):
+        logger.warning("Result for file %s does not exist in project %s.", filename, project_name)
         return {}
 
-    with open(file_path, "r", encoding="utf-8") as f:
+    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+                                   sanitize_folder_name(project_name))
+    filepath: str = os.path.join(folderpath, filename + JSON_EXT)
+
+    with open(filepath, "r", encoding="utf-8") as f:
         data: dict[str, ItemResult] = json.load(f)
 
-    logger.info("Read result of %s from project %s.", name_file, project_name)
+    logger.info("Read result of %s from project %s.", filename, project_name)
 
     return data
 
@@ -125,9 +143,9 @@ def get_folder_data(project_name: str) -> list[tuple[str, dict[str, ItemResult]]
     Returns:
         list[str, dict[str, ItemResult]]: list of files and their data
     """
-    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    sanitize_folder_name(project_name))
-    files: list[str] = os.listdir(folder_path)
+    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+                                   sanitize_folder_name(project_name))
+    files: list[str] = os.listdir(folderpath)
 
     data: list[tuple[str, dict[str, ItemResult]]] = []
     for file in files:
@@ -136,89 +154,91 @@ def get_folder_data(project_name: str) -> list[tuple[str, dict[str, ItemResult]]
     return data
 
 
-def delete_entry(project_name: str, name_file: str, id_error: str) -> int:
+def delete_entry(project_name: str, filename: str, id_error: str) -> int:
     """delete an entry in a result json file
 
     Args:
         project_name (str): id of the project
-        name_file (str): name of the file
+        filename (str): name of the file
         id_error (str): id of the error to delete
 
     Returns:
         int: 0 if success, 1 if file does not exist, 2 if error not found
     """
-    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    sanitize_folder_name(project_name))
-    file_path: str = os.path.join(folder_path, name_file)
+    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+                                   sanitize_folder_name(project_name))
+    filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 
-    if not os.path.exists(file_path):
-        logger.warning("File %s does not exist in project %s.", name_file, project_name)
+    if not os.path.exists(filepath):
+        logger.warning("Result for file %s does not exist in project %s.", filename, project_name)
         return 1
 
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(filepath, "r", encoding="utf-8") as f:
         data: dict[str, ItemResult] = json.load(f)
 
     if id_error in data:
         del data[id_error]
     else:
-        logger.warning("Error %s not found in %s.", id_error, name_file)
+        logger.warning("Error %s not found in %s.", id_error, filename)
         return 2
 
-    with open(file_path, "w", encoding="utf-8") as f:
+    with open(filepath, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-    logger.info("Deleted error %s from %s.", id_error, name_file)
+    logger.info("Deleted error %s from %s.", id_error, filename)
     return 0
 
 
-def delete_error_type(project_name: str, name_file: str, error_type: str) -> None:
+def delete_error_type(project_name: str, filename: str, error_type: str) -> None:
     """delete all errors of a specific type in a result json file
 
     Args:
         project_name (str): id of the project
-        name_file (str): name of the file
+        filename (str): name of the file
         error_type (str): type of the error to delete
     """
-    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    sanitize_folder_name(project_name))
-    file_path: str = os.path.join(folder_path, name_file)
+    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+                                   sanitize_folder_name(project_name))
+    filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 
-    if not os.path.exists(file_path):
+    if not os.path.exists(filepath):
+        logger.warning("Result for file %s does not exist in project %s.", filename, project_name)
         return
 
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(filepath, "r", encoding="utf-8") as f:
         data: dict[str, ItemResult] = json.load(f)
 
     data = {k: v for k, v in data.items() if v["error_type"] != error_type}
 
-    with open(file_path, "w", encoding="utf-8") as f:
+    with open(filepath, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-    logger.info("Deleted error type %s from %s.", error_type, name_file)
+    logger.info("Deleted error type %s from %s.", error_type, filename)
 
 
-def delete_specific_error_with_type(project_name: str, name_file: str, error_type: str, error: str) -> None:
+def delete_specific_error_with_type(project_name: str, filename: str, error_type: str, error: str) -> None:
     """delete all errors of a specific type and error in a result json file
 
     Args:
         project_name (str): id of the project
-        name_file (str): name of the file
+        filename (str): name of the file
         error_type (str): type of the error to delete
         error (str): error to delete
     """
-    folder_path: str = os.path.join(RESULTS_FOLDER_PATH,
-                                    sanitize_folder_name(project_name))
-    file_path: str = os.path.join(folder_path, name_file)
+    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+                                   sanitize_folder_name(project_name))
+    filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 
-    if not os.path.exists(file_path):
+    if not os.path.exists(filepath):
+        logger.warning("Result for file %s does not exist in project %s.", filename, project_name)
         return
 
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(filepath, "r", encoding="utf-8") as f:
         data: dict[str, ItemResult] = json.load(f)
 
     data = {k: v for k, v in data.items() if v["error_type"] != error_type or v["error"] != error}
 
-    with open(file_path, "w", encoding="utf-8") as f:
+    with open(filepath, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-    logger.info("Deleted error %s of type %s from %s.", error, error_type, name_file)
+    logger.info("Deleted error %s of type %s from %s.", error, error_type, filename)
