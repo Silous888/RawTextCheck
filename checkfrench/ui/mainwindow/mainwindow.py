@@ -46,10 +46,12 @@ class MainWindow(QMainWindow):
         """
         # Menu
         self.ui.actionProjects.triggered.connect(self.actionProjects_triggered)
-        # comboboxes
+        # combobox
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
         # lineEdit
         self.ui.lineEdit_filepath.textChanged.connect(self.lineEdit_filepath_textChanged)
+        # pushbutton
+        self.ui.pushButton_process.clicked.connect(self.pushButton_process_clicked)
 
     def actionProjects_triggered(self) -> None:
         """Slot for handling the Projects menu action.
@@ -83,8 +85,19 @@ class MainWindow(QMainWindow):
             self.ui.label_fileOpened.setText("")
             self.m_model.resultsTableModel.clear_data()
 
+    def pushButton_process_clicked(self) -> None:
+        """Slot when the create project button is clicked.
+        """
+        project_name: str | None = self.m_model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
+        if project_name is None:
+            return
+        self.m_model.generate_result(self.ui.lineEdit_filepath.text(),
+                                     project_name,
+                                     self.ui.lineEdit_argument.text())
+        self.m_model.resultsTableModel.load_data()
+
     def closeEvent(self, a0: QCloseEvent | None) -> None:
         """Handle the close event of the main window."""
-        self.m_model.worker_stop()
+        self.m_model.model_stop()
         if a0 is not None:
             a0.accept()

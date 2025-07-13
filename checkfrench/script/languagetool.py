@@ -85,8 +85,8 @@ def analyze_text(texts: list[tuple[str, str]], ignored_words: list[str],
             ItemResult(line_number=[x[0] for x in texts][line_number],
                        line=[x[1] for x in texts][line_number],
                        error=str(error.matchedText),
-                       error_type=str(error.message),
-                       explanation=str(error.ruleId),
+                       error_type=str(error.ruleId),
+                       explanation=str(error.message),
                        suggestion=str(error.replacements))
         )
     return output

@@ -18,6 +18,7 @@ from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, Q
 
 # -------------------- Import Lib User -------------------
 from checkfrench.default_parameters import LANGUAGES_LANGUAGETOOL
+from checkfrench.default_parser import LIST_DEFAULT_PARSER
 from checkfrench.newtype import ItemProject
 from checkfrench.script import json_projects
 from checkfrench.ui.project_manager.project_manager_worker import WorkerProjectManager
@@ -63,6 +64,7 @@ class ProjectManagerModel():
         """Initialize the models for comboboxes and table views."""
         self.titleComboBoxModel = ProjectTitleComboBoxModel()
         self.languageComboBoxModel = LanguagesComboBoxModel(LANGUAGES_LANGUAGETOOL)
+        self.parserComboBoxModel = ParserComboBoxModel(list(LIST_DEFAULT_PARSER.keys()))
         self.dictionaryModel = ListTableModel()
         self.banwordsModel = ListTableModel()
         self.rulesModel = ListTableModel()
@@ -230,6 +232,58 @@ class LanguagesComboBoxModel(QAbstractListModel):
             if c == code:
                 return i
         return -1
+
+
+class ParserComboBoxModel(QAbstractListModel):
+    """Model
+    Attributes:
+        _data (list[tuple[str, str]]): A list of tuples containing language codes and labels.
+    """
+
+    def __init__(self, data: list[str], parent: QAbstractListModel | None = None) -> None:
+        """Initialize the LanguagesComboBoxModel with the provided data.
+        Args:
+            data (list[tuple[str, str]]): A list of tuples containing language codes and labels.
+            parent (QAbstractListModel | None): The parent model, if any.
+        """
+        super().__init__(parent)
+        self._data: list[str] = data
+
+    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        """Return the number of rows in the model.
+        Args:
+            parent (QModelIndex): The parent index, not used in this model.
+        Returns:
+            int: The number of projects in the model.
+        """
+        return len(self._data)
+
+    def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
+        """Return the data for the given index and role.
+        Args:
+            index (QModelIndex): The index for which to retrieve data.
+            role (int): The role of the data to retrieve (e.g., DisplayRole).
+        Returns:
+            QVariant | str: The data for the specified index and role.
+        """
+        if not index.isValid() or index.row() >= len(self._data):
+            return QVariant()
+
+        if role == Qt.ItemDataRole.DisplayRole:
+            return self._data[index.row()]
+
+        return QVariant()
+
+    def get_value(self, index: int) -> str | None:
+        """Get the project name for the specified index.
+        Args:
+            index (int): The index of the project in the combobox.
+        Returns:
+            str | None: The project name for the specified index, or None if the index is invalid.
+        """
+        if 0 <= index < len(self._data):
+            return self._data[index]
+        return None
 
 
 class ListTableModel(QAbstractTableModel):

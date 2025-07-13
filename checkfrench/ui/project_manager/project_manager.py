@@ -47,6 +47,7 @@ class DialogProjectManager(QDialog):
         self.m_model = ProjectManagerModel()
         self.ui.comboBox_project.setModel(self.m_model.titleComboBoxModel)
         self.ui.comboBox_language.setModel(self.m_model.languageComboBoxModel)
+        self.ui.comboBox_parser.setModel(self.m_model.parserComboBoxModel)
         self.ui.dataTableView_dictionary.setModel(self.m_model.dictionaryModel)
         self.ui.dataTableView_banwords.setModel(self.m_model.banwordsModel)
         self.ui.dataTableView_ignoredCodes.setModel(self.m_model.codesModel)
@@ -178,9 +179,12 @@ class DialogProjectManager(QDialog):
             project_name (str): The name of the project to save.
         """
         # Prepare the data to be saved
+        parser: str | None = self.m_model.parserComboBoxModel.get_value(self.ui.comboBox_parser.currentIndex())
+        if parser is None:
+            parser = "textfile"
         data: ItemProject = {
             "language": self.m_model.languageComboBoxModel.get_code(self.ui.comboBox_language.currentIndex()),
-            "parser": "generic",
+            "parser": parser,
             "arg_parser": self.ui.lineEdit_argParser.text(),
             "valid_characters": self.ui.textEdit_validCharacters.toPlainText(),
             "dictionary": self.m_model.dictionaryModel.get_data(),
