@@ -162,6 +162,7 @@ class DialogProjectManager(QDialog):
         self.ui.lineEdit_projectName.setText(project_name)
         self.ui.comboBox_language.setCurrentIndex(
             self.m_model.languageComboBoxModel.get_index_by_code(data["language"]))
+        self.ui.comboBox_parser.setCurrentText(data["parser"])
         self.ui.lineEdit_argParser.setText(data["arg_parser"])
         self.ui.textEdit_validCharacters.setPlainText(data["valid_characters"])
         self.m_model.dictionaryModel.load_data(data["dictionary"])
