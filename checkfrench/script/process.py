@@ -2,7 +2,7 @@
 File        : process.py
 Author      : Silous
 Created on  : 2025-04-18
-Description : important functions of the app, need rework
+Description : functions to analyse a file and generate errors.
 """
 
 # == Imports ==================================================================
@@ -12,56 +12,7 @@ from checkfrench.newtype import ItemProject, ItemResult
 from checkfrench.script import json_projects, json_results, languagetool
 
 
-# def get_name_and_type_of_url(url: str) -> tuple[str, str] | int:
-#     """call get_file_metadata of google_drive_api and return name and mimeType of the file
-#     Args:
-#         url (str): url of the file
-
-#     Returns:
-#         tuple[str, str] | int : name and mimeType of the file, error code otherwise
-#     """
-#     try:
-#         output: dict[str, str] | int = gdrive.get_file_metadata(utils.extract_google_drive_id(url))
-#         if not isinstance(output, int):
-#             return output["name"], output["mimeType"]
-#     except Exception:
-#         return -1
-#     return -2
-
-
-# def get_sheet_name_in_folder(url_folder: str) -> list[str] | int:
-#     """call get_file_metadata of google_drive_api and return name and mimeType of the file
-#     Args:
-#         url (str): url of the file
-
-#     Returns:
-#         tuple[str, str] | int : name and mimeType of the file, error code otherwise
-#     """
-#     try:
-#         output: list[list[str]] | int = gdrive.list_spreadsheet_in_folder(utils.extract_google_drive_id(url_folder))
-#         if not isinstance(output, int):
-#             return [item[0] for item in output]
-#     except Exception:
-#         return -1
-#     return -2
-
-
-# def get_sheet_url_in_folder(url_folder: str) -> list[str] | int:
-#     """call get_file_metadata of google_drive_api and return name and mimeType of the file
-#     Args:
-#         url (str): url of the file
-
-#     Returns:
-#         tuple[str, str] | int : name and mimeType of the file, error code otherwise
-#     """
-#     try:
-#         output: list[list[str]] | int = gdrive.list_spreadsheet_in_folder(utils.extract_google_drive_id(url_folder))
-#         if not isinstance(output, int):
-#             return [item[1] for item in output]
-#     except Exception:
-#         return -1
-#     return -2
-
+# == Functions ================================================================
 
 def remove_ignored_substrings(text: str, ignored_substrings: dict[str, list[str]], insert_space: bool) -> str:
     """Remove substrings from text that are enclosed by any of the ignored substrings.
@@ -173,8 +124,16 @@ def remove_ignored_elements_in_texts(
     return cleaned_texts
 
 
-def find_invalid_characters(texts: list[tuple[str, str]], valid_characters: str) -> list[ItemResult]:
+def generate_errors_invalid_characters(texts: list[tuple[str, str]], valid_characters: str) -> list[ItemResult]:
+    """create errors for invalid characters in line of texts
 
+    Args:
+        texts (list[tuple[str, str]]): The input text
+        valid_characters (str): valid characters of the text
+
+    Returns:
+        list[ItemResult]: invalid characters errors
+    """
     invalid_characters_found: list[ItemResult] = []
 
     for line_number, line in texts:
@@ -191,8 +150,16 @@ def find_invalid_characters(texts: list[tuple[str, str]], valid_characters: str)
     return invalid_characters_found
 
 
-def find_banwords_in_text(texts: list[tuple[str, str]], banwords: list[str]) -> list[ItemResult]:
+def generate_errors_banwords(texts: list[tuple[str, str]], banwords: list[str]) -> list[ItemResult]:
+    """create errors for banword in line of texts
 
+    Args:
+        texts (list[tuple[str, str]]): The input text
+        banwords (list[str]): banwords of the text
+
+    Returns:
+        list[ItemResult]: banword errors
+    """
     banwords_found_in_text: list[ItemResult] = []
 
     for line_number, line in texts:
@@ -210,6 +177,13 @@ def find_banwords_in_text(texts: list[tuple[str, str]], banwords: list[str]) -> 
 
 
 def process_file(filepath: str, project_name: str, argument_parser: str) -> None:
+    """generate errors of a file
+
+    Args:
+        filepath (str): path of the file
+        project_name (str): project_name, for how to manage process of the file
+        argument_parser (str): argument for the parser
+    """
 
     project_data: ItemProject | None = json_projects.get_project_data(project_name)
     if project_data is None:
@@ -233,9 +207,11 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
                                                                           project_data["dictionary"],
                                                                           project_data["ignored_rules"])
 
-        invalid_characters_result: list[ItemResult] = find_invalid_characters(texts,
-                                                                              project_data["valid_characters"])
-        banwords_result: list[ItemResult] = find_banwords_in_text(texts, project_data["banwords"])
+        invalid_characters_result: list[ItemResult] = generate_errors_invalid_characters(
+            texts,
+            project_data["valid_characters"]
+            )
+        banwords_result: list[ItemResult] = generate_errors_banwords(texts, project_data["banwords"])
 
         line_order: dict[str, int] = {line_number: idx for idx, (line_number, _) in enumerate(texts)}
 
