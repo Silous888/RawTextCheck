@@ -108,15 +108,11 @@ def remove_ignored_elements_in_texts(
     cleaned_texts: list[tuple[str, str]] = []
 
     for line_number, line in texts:
-        # Remove substrings into space
-        line: str = remove_ignored_substrings(line, ignored_substrings_into_space, insert_space=True)
-        # Remove substrings into nothing
-        line = remove_ignored_substrings(line, ignored_substrings_into_nothing, insert_space=False)
-
-        # Remove codes into space
         line = remove_ignored_codes(line, ignored_codes_into_space, insert_space=True)
-        # Remove codes into nothing
         line = remove_ignored_codes(line, ignored_codes_into_nothing, insert_space=False)
+
+        line: str = remove_ignored_substrings(line, ignored_substrings_into_space, insert_space=True)
+        line = remove_ignored_substrings(line, ignored_substrings_into_nothing, insert_space=False)
 
         if line:
             cleaned_texts.append((line_number, line))
