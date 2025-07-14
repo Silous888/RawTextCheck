@@ -32,8 +32,14 @@ def initialize_tool(language: str) -> None:
         language (str): The language code.
     """
     global tool
-    tool = language_tool_python.LanguageTool(language)
-    logger.info("Loaded languagetool with %s language.", language)
+    if tool is None:
+        tool = language_tool_python.LanguageTool(language)
+        logger.info("Loaded languagetool with %s language.", language)
+    elif tool.language == language:
+        logger.info("Languagetool already loaded with %s language", language)
+    else:
+        tool = language_tool_python.LanguageTool(language)
+        logger.info("Reloaded languagetool with %s language.", language)
 
 
 def close_tool() -> None:
