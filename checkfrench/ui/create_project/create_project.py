@@ -39,6 +39,8 @@ class DialogCreateProject(QDialog):
         self.ui.comboBox_language.setCurrentIndex(self.m_model.languageComboBoxModel.get_default_index())
         self.ui.comboBox_parser.setCurrentIndex(self.m_model.parserComboBoxModel.get_default_index())
 
+        self.ui.pushButton_create.setEnabled(False)
+
     def set_up_model(self) -> None:
         """Initialize the model for the dialog."""
         self.m_model = CreateProjectModel()
@@ -50,7 +52,7 @@ class DialogCreateProject(QDialog):
         # buttons
         self.ui.pushButton_create.clicked.connect(self.pushButton_create_clicked)
         # lineEdits
-        self.ui.lineEdit_projectName.editingFinished.connect(self.lineEdit_projectName_editingFinished)
+        self.ui.lineEdit_projectName.textChanged.connect(self.lineEdit_projectName_textChanged)
 
     # -------------------- Slots -------------------
 
@@ -59,9 +61,14 @@ class DialogCreateProject(QDialog):
         self.create_new_project()
         self.close()
 
-    def lineEdit_projectName_editingFinished(self) -> None:
-        """Slot for when the project name line edit finishes editing."""
-        pass
+    def lineEdit_projectName_textChanged(self) -> None:
+        """Slot for when the project name line edit text changed"""
+        if not self.ui.lineEdit_projectName.text().strip():
+            self.ui.pushButton_create.setEnabled(False)
+        elif self.m_model.is_project_name_valid(self.ui.lineEdit_projectName.text()):
+            self.ui.pushButton_create.setEnabled(True)
+        else:
+            self.ui.pushButton_create.setEnabled(False)
 
     # -------------------- Methods -------------------
 
@@ -71,8 +78,6 @@ class DialogCreateProject(QDialog):
         language_code: str = self.m_model.languageComboBoxModel.get_code(self.ui.comboBox_language.currentIndex())
         parser: str | None = self.m_model.parserComboBoxModel.get_value(self.ui.comboBox_parser.currentIndex())
 
-        if not project_name or not language_code:
-            return
         if not parser:
             return
 

@@ -23,21 +23,27 @@ from PyQt5.QtCore import QCoreApplication as QCA
 
 
 JSON_FILE_PATH: Path = Path(__file__).parent / "json_data_projects.json"
-"""path to the JSON file containing projects data"""
+"""Path to the JSON file containing projects data"""
 
 RESULTS_FOLDER_PATH: Path = Path(__file__).parent / "results"
-"""path to the folder containing results"""
+"""Path to the folder containing results"""
 
 DEFAULT_VALID_ALPHANUMERIC: str = "0123456789" \
                                   "abcdefghijklmnopqrstuvwxyz" \
                                   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-"""default valid alphanumeric proposed in a project configuration"""
+"""Default valid alphanumeric proposed in a project configuration"""
 
 DEFAULT_VALID_PUNCTUATION: str = ".,;:!?" \
                                  "()[]<>\"'" \
                                  "-+=" \
                                  " "  # Space
-"""default valid punctuation proposed in a project configuration"""
+"""Default valid punctuation proposed in a project configuration"""
+
+DEFAULT_LANGUAGE = "en"
+"""Default language when creating a project"""
+
+DEFAULT_PARSER = "textfile"
+"""Default parser when creating a project"""
 
 # The list is sorted by language code for easier readability.
 LANGUAGES_LANGUAGETOOL: list[Tuple[str, str]] = [
@@ -123,4 +129,4 @@ LANGUAGES_LANGUAGETOOL: list[Tuple[str, str]] = [
     ("zh", QCA.translate("Language", "Chinese")),
     ("zh-CN", QCA.translate("Language", "Chinese (Simplified)")),
 ]
-"""list of languages supported by LanguageTool with their codes and names"""
+"""List of languages supported by LanguageTool with their codes and names"""

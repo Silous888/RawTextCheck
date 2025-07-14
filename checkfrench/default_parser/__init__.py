@@ -18,3 +18,4 @@ from . import textfile_parser
 LIST_DEFAULT_PARSER: dict[str, typing.Callable[[str, str], list[tuple[str, str]]]] = {
     "textfile": textfile_parser.parse_file
 }
+"""Every default parsers provided by the application"""

@@ -35,6 +35,8 @@ class MainWindow(QMainWindow):
         self.set_up_connect()
         self.set_up_model()
 
+        self.set_enable_file_valid(False)
+
     def set_up_model(self) -> None:
         """Initialize the model for the main window."""
         self.m_model = MainWindowModel(self.ui.comboBox_project.currentText(), "")
@@ -80,10 +82,12 @@ class MainWindow(QMainWindow):
             self.m_model.resultsTableModel.filename = filename
             self.ui.label_fileOpened.setText(filename)
             self.m_model.resultsTableModel.load_data()
+            self.set_enable_file_valid(True)
         else:
             self.m_model.resultsTableModel.filename = ""
             self.ui.label_fileOpened.setText("")
             self.m_model.resultsTableModel.clear_data()
+            self.set_enable_file_valid(False)
 
     def pushButton_process_clicked(self) -> None:
         """Slot when the create project button is clicked.
@@ -101,3 +105,6 @@ class MainWindow(QMainWindow):
         self.m_model.model_stop()
         if a0 is not None:
             a0.accept()
+
+    def set_enable_file_valid(self, is_valid: bool) -> None:
+        self.ui.pushButton_process.setEnabled(is_valid)

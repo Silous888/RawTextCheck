@@ -15,14 +15,9 @@ from PyQt5.QtCore import QAbstractListModel, QModelIndex, QVariant, Qt
 
 # -------------------- Import Lib User -------------------
 from checkfrench.default_parameters import LANGUAGES_LANGUAGETOOL
+from checkfrench.default_parameters import DEFAULT_LANGUAGE, DEFAULT_PARSER
 from checkfrench.default_parser import LIST_DEFAULT_PARSER
 from checkfrench.script import json_projects
-
-
-# == Constants ================================================================
-
-DEFAULT_LANGUAGE = "en"
-DEFAULT_PARSER = "textfile"
 
 
 # == Classes ==================================================================
@@ -49,13 +44,14 @@ class CreateProjectModel():
             project_name (str): The name of the project to create.
             language_code (str): The language code for the project.
             parser (str): The parser for the project
-            Raises:
-                ValueError: If any argument is empty.
         """
         if not project_name or not language_code or not parser:
-            raise ValueError("No argument can be empty.")
+            return
 
         json_projects.create_new_entry(project_name, language_code, parser)
+
+    def is_project_name_valid(self, project_name: str) -> bool:
+        return not json_projects.is_project_name_exist(project_name)
 
 
 class LanguagesComboBoxModel(QAbstractListModel):
