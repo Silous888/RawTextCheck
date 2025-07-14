@@ -17,9 +17,8 @@ import os
 from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
 
 # -------------------- Import Lib User -------------------
-from checkfrench import default_parser
 from checkfrench.newtype import ItemProject, ItemResult
-from checkfrench.script import json_projects, json_results, languagetool
+from checkfrench.script import json_projects, json_results, languagetool, process
 from checkfrench.ui.mainwindow.mainwindow_worker import WorkerMainWindow
 
 
@@ -93,24 +92,9 @@ class MainWindowModel():
         """
         return os.path.basename(filepath)
 
-    def generate_result(self, filepath: str, project_name: str, argument_parser: str):
+    def generate_result(self, filepath: str, project_name: str, argument_parser: str) -> None:
 
-        project_data: ItemProject | None = json_projects.get_project_data(project_name)
-        if project_data is None:
-            return
-
-        if project_data["parser"] in default_parser.LIST_DEFAULT_PARSER:
-            res: list[tuple[str, str]] = (
-                default_parser.LIST_DEFAULT_PARSER[project_data["parser"]](
-                    filepath, argument_parser
-                )
-            )
-            languagetool.initialize_tool(project_data["language"])
-            res_correct: list[ItemResult] = languagetool.analyze_text(res, [], [])
-
-            data: dict[str, ItemResult] = json_results.generate_id_errors(res_correct)
-
-            json_results.save_data(project_name, filepath, data)
+        process.process_file(filepath, project_name, argument_parser)
 
 
 class ProjectTitleComboBoxModel(QAbstractListModel):

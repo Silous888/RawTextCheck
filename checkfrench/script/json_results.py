@@ -86,6 +86,7 @@ def generate_id_errors(result: list[ItemResult]) -> dict[str, ItemResult]:
             i: int = 1
             while id_error in data:
                 id_error = f"{item['line_number']}{chr(97 + i)}"
+                i = i + 1
         data[id_error] = item
 
     return data
