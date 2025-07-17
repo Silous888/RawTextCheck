@@ -9,8 +9,10 @@ Description : Main window of the application.
 # == Imports ==================================================================
 
 # -------------------- Import Lib Tier -------------------
+from typing import List
+from PyQt5.QtCore import QMimeData, QUrl
+from PyQt5.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtGui import QCloseEvent
 
 # -------------------- Import Lib User -------------------
 from checkfrench.ui.mainwindow.Ui_mainwindow import Ui_MainWindow
@@ -54,6 +56,8 @@ class MainWindow(QMainWindow):
         self.ui.lineEdit_filepath.textChanged.connect(self.lineEdit_filepath_textChanged)
         # pushbutton
         self.ui.pushButton_process.clicked.connect(self.pushButton_process_clicked)
+
+# -------------------- Slots --------------------
 
     def actionProjects_triggered(self) -> None:
         """Slot for handling the Projects menu action.
@@ -100,11 +104,54 @@ class MainWindow(QMainWindow):
                                      self.ui.lineEdit_argument.text())
         self.m_model.resultsTableModel.load_data()
 
+# -------------------- Events --------------------
+
+    def dragEnterEvent(self, a0: QDragEnterEvent | None) -> None:
+        """dragEnterEvent override, accept if one file
+
+        Args:
+            a0 (QDragEnterEvent | None): drag event
+        """
+        if a0 is None:
+            return
+        mime_data: QMimeData | None = a0.mimeData()
+        if mime_data is None:
+            return
+        if mime_data.hasUrls() and len(mime_data.urls()) == 1:
+            a0.acceptProposedAction()
+        else:
+            a0.ignore()
+
+    def dropEvent(self, a0: QDropEvent | None) -> None:
+        """dropEvent override, get url of the file and put it
+        in lineEdit_filepath text.
+
+        Args:
+            a0 (QDragEnterEvent | None): drop event
+        """
+        if a0 is None:
+            return
+        mime_data: QMimeData | None = a0.mimeData()
+        if mime_data is None:
+            return
+        if mime_data.hasUrls():
+            urls: List[QUrl] = mime_data.urls()
+            if not urls:
+                return
+
+            self.ui.lineEdit_filepath.setText(urls[0].toLocalFile())
+
     def closeEvent(self, a0: QCloseEvent | None) -> None:
-        """Handle the close event of the main window."""
+        """closeEvent override, stop the model
+
+        Args:
+            a0 (QDragEnterEvent | None): close event
+        """
         self.m_model.model_stop()
         if a0 is not None:
             a0.accept()
+
+# -------------------- Methods --------------------
 
     def set_enable_file_valid(self, is_valid: bool) -> None:
         self.ui.pushButton_process.setEnabled(is_valid)
