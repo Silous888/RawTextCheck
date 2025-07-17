@@ -139,8 +139,9 @@ def generate_errors_invalid_characters(texts: list[tuple[str, str]], valid_chara
                     ItemResult(line_number=line_number,
                                line=line,
                                error=c,
-                               error_type=default_parameters.INVALID_CHARACTER_TEXT_ERROR_TYPE,
-                               explanation=default_parameters.INVALID_CHARACTER_TEXT_ERROR,
+                               error_type=default_parameters.INVALID_CHAR_TEXT_ERROR_TYPE,
+                               error_issue_type=default_parameters.INVALID_CHAR_TEXT_ERROR_TYPE,
+                               explanation=default_parameters.INVALID_CHAR_TEXT_ERROR,
                                suggestion="")
                 )
     return invalid_characters_found
@@ -166,6 +167,7 @@ def generate_errors_banwords(texts: list[tuple[str, str]], banwords: list[str]) 
                                line=line,
                                error=word,
                                error_type=default_parameters.BANWORD_TEXT_ERROR_TYPE,
+                               error_issue_type=default_parameters.BANWORD_TEXT_ERROR_TYPE,
                                explanation=default_parameters.BANWORD_TEXT_ERROR,
                                suggestion="")
                 )

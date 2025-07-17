@@ -9,7 +9,7 @@ Description :
 
 from typing import List
 from PyQt5.QtWidgets import QTableView, QMenu, QAction, QWidget
-from PyQt5.QtCore import QAbstractItemModel, QItemSelectionModel, QModelIndex, Qt, QPoint
+from PyQt5.QtCore import QAbstractItemModel, QItemSelectionModel, QModelIndex, Qt, QPoint, pyqtSignal
 from PyQt5.QtGui import QKeyEvent
 
 
@@ -19,7 +19,12 @@ class DataResultTableView(QTableView):
     """Custom QTableView with context menu and delete functionality.
     This class extends QTableView to provide a context menu for deleting selected rows
     and handles the Delete key press event to remove selected rows.
+    Attributes:
+        custom_context_action_requested (pyqtSignal): signal to add action to contextmenu
     """
+
+    custom_context_actions_requested = pyqtSignal(QMenu)
+
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize the DataTableView.
         Args:
@@ -67,7 +72,10 @@ class DataResultTableView(QTableView):
             menu.addAction(delete_action)  # type: ignore
             menu.addSeparator()
 
-        visibility_menu = QMenu("Visibility", self)
+        # To add external custom actions
+        self.custom_context_actions_requested.emit(menu)
+
+        visibility_menu = QMenu(self.tr("Visibility"), self)
         # Action: Toggle column visibility
         for col in range(model.columnCount()):
             col_name = model.headerData(col, Qt.Orientation.Horizontal, Qt.ItemDataRole.DisplayRole)

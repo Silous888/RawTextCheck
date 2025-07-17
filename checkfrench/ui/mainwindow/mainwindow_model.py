@@ -15,8 +15,14 @@ import os
 
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
+from PyQt5.QtCore import QCoreApplication as QCA
 
 # -------------------- Import Lib User -------------------
+from checkfrench.default_parameters import (
+    INVALID_CHAR_TEXT_ERROR_TYPE,
+    BANWORD_TEXT_ERROR_TYPE,
+    LANGUAGETOOL_SPELLING_CATEGORY,
+)
 from checkfrench.newtype import ItemProject, ItemResult
 from checkfrench.script import json_projects, json_results, languagetool, process
 from checkfrench.ui.mainwindow.mainwindow_worker import WorkerMainWindow
@@ -167,7 +173,12 @@ class ResultsTableModel(QAbstractTableModel):
         _data (dict[str, ItemResult]): Mapping of ID to result data.
     """
 
-    HEADERS: list[str] = ["Line Number", "Line", "Error", "Type", "Explanation", "Suggestion"]
+    HEADERS: list[str] = [QCA.translate("column title", "Line Number"),
+                          QCA.translate("column title", "Line"),
+                          QCA.translate("column title", "Error"),
+                          QCA.translate("column title", "Type"),
+                          QCA.translate("column title", "Explanation"),
+                          QCA.translate("column title", "Suggestion")]
 
     def __init__(self, project_name: str, file_name: str) -> None:
         """Initialize the ResultsTableModel.
@@ -223,6 +234,14 @@ class ResultsTableModel(QAbstractTableModel):
             case 5: return item["suggestion"]
             case _: return QVariant()
 
+    def data_row(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | ItemResult:
+        """Return the data at the given index."""
+        if not index.isValid() or role != Qt.ItemDataRole.DisplayRole:
+            return QVariant()
+
+        item_id: str = self._keys[index.row()]
+        return self._data[item_id]
+
     def headerData(self, section: int, orientation: Qt.Orientation,
                    role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | str:
         """Return the header data."""
@@ -254,3 +273,52 @@ class ResultsTableModel(QAbstractTableModel):
     def get_data(self) -> dict[str, ItemResult]:
         """Return the full data."""
         return self._data
+
+    def add_valid_character(self, character: str) -> None:
+        """Add the character in the project config
+        Delete every error related to this character
+
+        Args:
+            character (str): character to add
+        """
+        json_projects.add_valid_characters(self.project_name, character)
+        json_results.delete_specific_error_with_type(self.project_name, self.filename,
+                                                     INVALID_CHAR_TEXT_ERROR_TYPE, character)
+        self.load_data()
+
+    def remove_banword(self, word: str) -> None:
+        """Remove word from the banword list in the project config
+        Delete every error related to this banword
+
+        Args:
+            word (str): banword to remove
+        """
+        json_projects.remove_banword(self.project_name, word)
+        json_results.delete_specific_error_with_type(self.project_name,
+                                                     self.filename,
+                                                     BANWORD_TEXT_ERROR_TYPE,
+                                                     word)
+        self.load_data()
+
+    def add_word_dictionary(self, word: str) -> None:
+        """Add word to dictionary in the project config
+        Delete every spelling error of this word
+
+        Args:
+            word (str): word to add
+        """
+        json_projects.add_dictionary_word(self.project_name, word)
+        json_results.delete_specific_error_with_category(self.project_name, self.filename,
+                                                         LANGUAGETOOL_SPELLING_CATEGORY, word)
+        self.load_data()
+
+    def add_ignored_rule(self, rule: str) -> None:
+        """Add rule to ignored rules in the project config
+        Delete every error related to this rule
+
+        Args:
+            rule (str): rule to ignore
+        """
+        json_projects.add_ignored_rules(self.project_name, rule)
+        json_results.delete_error_type(self.project_name, self.filename, rule)
+        self.load_data()

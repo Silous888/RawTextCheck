@@ -243,3 +243,32 @@ def delete_specific_error_with_type(project_name: str, filename: str, error_type
         json.dump(data, f, ensure_ascii=False, indent=4)
 
     logger.info("Deleted error %s of type %s from %s.", error, error_type, filename)
+
+
+def delete_specific_error_with_category(project_name: str, filename: str,
+                                        error_issue_category: str, error: str) -> None:
+    """delete all errors of a specific type and error in a result json file
+
+    Args:
+        project_name (str): id of the project
+        filename (str): name of the file
+        error_issue_category (str): category of the error to delete
+        error (str): error to delete
+    """
+    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+                                   sanitize_folder_name(project_name))
+    filepath: str = os.path.join(folderpath, filename + JSON_EXT)
+
+    if not os.path.exists(filepath):
+        logger.warning("Result for file %s does not exist in project %s.", filename, project_name)
+        return
+
+    with open(filepath, "r", encoding="utf-8") as f:
+        data: dict[str, ItemResult] = json.load(f)
+
+    data = {k: v for k, v in data.items() if v["error_issue_type"] != error_issue_category or v["error"] != error}
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+    logger.info("Deleted error %s of type %s from %s.", error, error_issue_category, filename)

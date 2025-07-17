@@ -8,16 +8,23 @@ Description : Main window of the application.
 
 # == Imports ==================================================================
 
-# -------------------- Import Lib Tier -------------------
 from typing import List
-from PyQt5.QtCore import QMimeData, QUrl
+
+# -------------------- Import Lib Tier -------------------
+from PyQt5.QtCore import QMimeData, QModelIndex, QUrl, QItemSelectionModel
 from PyQt5.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QAction, QMenu
 
 # -------------------- Import Lib User -------------------
+from checkfrench.default_parameters import (
+    INVALID_CHAR_TEXT_ERROR_TYPE,
+    BANWORD_TEXT_ERROR_TYPE,
+    LANGUAGETOOL_SPELLING_CATEGORY,
+)
+from checkfrench.newtype import ItemResult
+from checkfrench.ui.mainwindow.mainwindow_model import MainWindowModel
 from checkfrench.ui.mainwindow.Ui_mainwindow import Ui_MainWindow
 from checkfrench.ui.project_manager.project_manager import DialogProjectManager
-from checkfrench.ui.mainwindow.mainwindow_model import MainWindowModel
 
 
 # == Classes ==================================================================
@@ -38,6 +45,8 @@ class MainWindow(QMainWindow):
         self.set_up_model()
 
         self.set_enable_file_valid(False)
+
+        self.ui.tableView_result.custom_context_actions_requested.connect(self.add_custom_actions_to_menu)
 
     def set_up_model(self) -> None:
         """Initialize the model for the main window."""
@@ -155,3 +164,80 @@ class MainWindow(QMainWindow):
 
     def set_enable_file_valid(self, is_valid: bool) -> None:
         self.ui.pushButton_process.setEnabled(is_valid)
+
+    def add_custom_actions_to_menu(self, menu: QMenu) -> None:
+        """Add several actions to contextmenu of table_result
+
+        delete error by word, letter, rule
+        add to dictionnary, to valid character, to rules
+        "add" actions perform delete error too.
+        remove from banlist.
+        comparer au texte pour savoir si faute mot, char.
+
+        Args:
+            menu (QMenu): menu
+        """
+        selection_model: QItemSelectionModel | None = self.ui.tableView_result.selectionModel()
+        if not (selection_model and selection_model.selectedRows()):
+            return
+        selected: List[QModelIndex] = selection_model.selectedRows()
+        if len(selected) != 1:
+            return
+
+        item_result: ItemResult = self.m_model.resultsTableModel.data_row(selected[0])
+
+        if item_result["error_type"] == INVALID_CHAR_TEXT_ERROR_TYPE:
+            action_add_valid_character = QAction(self.tr("Add character to valid characters"), self)
+            action_add_valid_character.triggered.connect(lambda _, value=str(item_result["error"]):  # type: ignore
+                                                         self.action_add_valid_character_triggered(value))
+            menu.addAction(action_add_valid_character)  # type: ignore
+
+        elif item_result["error_type"] == BANWORD_TEXT_ERROR_TYPE:
+            action_remove_banword = QAction(self.tr("Remove word from the banword list"), self)
+            action_remove_banword.triggered.connect(lambda _, value=str(item_result["error"]):  # type: ignore
+                                                    self.action_remove_banword_triggered(value))
+            menu.addAction(action_remove_banword)  # type: ignore
+
+        elif item_result["error_issue_type"] == LANGUAGETOOL_SPELLING_CATEGORY:
+            action_add_word_dictionary = QAction(self.tr("Add this word to dictionary"), self)
+            action_add_word_dictionary.triggered.connect(lambda _, value=str(item_result["error"]):  # type: ignore
+                                                         self.action_action_add_word_dictionary_triggered(value))
+            menu.addAction(action_add_word_dictionary)  # type: ignore
+
+        else:
+            action_add_rules = QAction(self.tr(f"Add {item_result['error_type']} to ignored rules"), self)
+            action_add_rules.triggered.connect(lambda _, value=str(item_result["error_type"]):  # type: ignore
+                                               self.action_add_rules_triggered(value))
+            menu.addAction(action_add_rules)  # type: ignore
+
+    def action_add_valid_character_triggered(self, value: str) -> None:
+        """handle characters added to valid characters
+
+        Args:
+            value (str): _description_
+        """
+        self.m_model.resultsTableModel.add_valid_character(value)
+
+    def action_remove_banword_triggered(self, value: str) -> None:
+        """handle removing word from the banword list
+
+        Args:
+            value (str): word
+        """
+        self.m_model.resultsTableModel.remove_banword(value)
+
+    def action_add_rules_triggered(self, value: str) -> None:
+        """Handle adding a new rule to ignored rules
+
+        Args:
+            value (str): rule type
+        """
+        self.m_model.resultsTableModel.add_ignored_rule(value)
+
+    def action_action_add_word_dictionary_triggered(self, value: str) -> None:
+        """Handle adding a word to the dictionary
+
+        Args:
+            value (str): word to add
+        """
+        self.m_model.resultsTableModel.add_word_dictionary(value)

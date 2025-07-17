@@ -58,6 +58,7 @@ class ItemResult(TypedDict):
         line (str): The text of the line where the error occurs.
         error (str): Description of the error.
         error_type (str): Type of the error.
+        error_issue_type: category of the error, used to find spelling error
         explanation (str): Explanation of the error.
         suggestion (str): Suggested correction for the error.
     """
@@ -66,5 +67,6 @@ class ItemResult(TypedDict):
     line: str
     error: str
     error_type: str
+    error_issue_type: str
     explanation: str
     suggestion: str

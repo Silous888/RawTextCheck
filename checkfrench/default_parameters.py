@@ -45,11 +45,13 @@ DEFAULT_LANGUAGE = "en"
 DEFAULT_PARSER = "textfile"
 """Default parser when creating a project"""
 
-INVALID_CHARACTER_TEXT_ERROR = "This character in not accepted."
-INVALID_CHARACTER_TEXT_ERROR_TYPE = "INVALID CHARACTER"
+INVALID_CHAR_TEXT_ERROR = QCA.translate("error text", "This character in not accepted.")
+INVALID_CHAR_TEXT_ERROR_TYPE = "INVALID CHARACTER"
 
-BANWORD_TEXT_ERROR = "This word is not authorized in this project."
+BANWORD_TEXT_ERROR = QCA.translate("error text", "This word is not authorized in this project.")
 BANWORD_TEXT_ERROR_TYPE = "BANWORD"
+
+LANGUAGETOOL_SPELLING_CATEGORY = "misspelling"
 
 
 # The list is sorted by language code for easier readability.

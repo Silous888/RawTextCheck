@@ -8,6 +8,17 @@ This module provides a function to parse a text file and return its non-empty li
 This parser acts as a default parser for text files.
 """
 
+# == Imports ==================================================================
+
+from logging import Logger
+
+from checkfrench.logger import get_logger
+
+
+# == Global Variables =========================================================
+
+logger: Logger = get_logger(__name__)
+
 
 # == Functions ================================================================
 
@@ -22,11 +33,15 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
         list[tuple[str, str]]: List of tuples (line number as string, line content).
     """
     lines: list[tuple[str, str]] = []
+    try:
 
-    with open(pathfile, "r", encoding="utf-8") as f:
-        for i, line in enumerate(f, start=1):
-            stripped: str = line.strip()
-            if stripped:
-                lines.append((str(i), stripped))
+        with open(pathfile, "r", encoding="utf-8") as f:
+            for i, line in enumerate(f, start=1):
+                stripped: str = line.strip()
+                if stripped:
+                    lines.append((str(i), stripped))
 
-    return lines
+        return lines
+    except UnicodeDecodeError:
+        logger.error("Can't decode %s with this parser.", pathfile)
+        return lines

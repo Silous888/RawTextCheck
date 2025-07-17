@@ -386,7 +386,7 @@ def set_dictionary_words(project_name: str, dictionary_words: list[str]) -> None
 
     Args:
         project_name (str): id of the project
-        dictionary_words (list[str]): dictionary_words to set
+        dictionary_words (list[str]): dictionary words to set
     """
     _set_to_list_field(project_name, "dictionary", dictionary_words)
 
@@ -398,7 +398,7 @@ def add_dictionary_word(project_name: str, dictionary_word: str) -> None:
         project_name (str): id of the project
         dictionary_word (str): word to add
     """
-    _add_to_list_field(project_name, "dictionary_words", dictionary_word)
+    _add_to_list_field(project_name, "dictionary", dictionary_word)
 
 
 def remove_dictionary_word(project_name: str, dictionary_word: str) -> None:

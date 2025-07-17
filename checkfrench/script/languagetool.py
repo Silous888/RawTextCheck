@@ -13,6 +13,7 @@ This module provides functions to initialize and use LanguageTool for analyzing 
 from logging import Logger
 import language_tool_python  # type: ignore
 
+from checkfrench.default_parameters import LANGUAGETOOL_SPELLING_CATEGORY
 from checkfrench.newtype import ItemResult
 from checkfrench.logger import get_logger
 
@@ -80,7 +81,9 @@ def analyze_text(texts: list[tuple[str, str]], ignored_words: list[str],
     errors: list[language_tool_python.Match] = tool.check(combined_text)
 
     for error in errors:
-        if str(error.matchedText) in ignored_words or str(error.ruleId) in ignored_rules:
+        if str(error.matchedText) in ignored_words and str(error.ruleIssueType) == LANGUAGETOOL_SPELLING_CATEGORY:
+            continue
+        if str(error.ruleId) in ignored_rules:
             continue
 
         line_number: int = next(
@@ -92,6 +95,7 @@ def analyze_text(texts: list[tuple[str, str]], ignored_words: list[str],
                        line=[x[1] for x in texts][line_number],
                        error=str(error.matchedText),
                        error_type=str(error.ruleId),
+                       error_issue_type=(error.ruleIssueType),
                        explanation=str(error.message),
                        suggestion=str(error.replacements))
         )
