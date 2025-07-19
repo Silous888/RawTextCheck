@@ -22,6 +22,7 @@ from checkfrench.default_parameters import (
     LANGUAGETOOL_SPELLING_CATEGORY,
 )
 from checkfrench.newtype import ItemResult
+from checkfrench.script import json_config
 from checkfrench.ui.mainwindow.mainwindow_model import MainWindowModel
 from checkfrench.ui.mainwindow.Ui_mainwindow import Ui_MainWindow
 from checkfrench.ui.project_manager.project_manager import DialogProjectManager
@@ -45,6 +46,7 @@ class MainWindow(QMainWindow):
         self.set_up_model()
 
         self.set_enable_file_valid(False)
+        self.ui.comboBox_project.setCurrentText(json_config.load_data()["last_project"])
 
         self.ui.tableView_result.custom_context_actions_requested.connect(self.add_custom_actions_to_menu)
 
@@ -156,6 +158,7 @@ class MainWindow(QMainWindow):
         Args:
             a0 (QDragEnterEvent | None): close event
         """
+        json_config.set_last_project(self.ui.comboBox_project.currentText())
         self.m_model.model_stop()
         if a0 is not None:
             a0.accept()

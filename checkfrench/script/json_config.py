@@ -49,7 +49,7 @@ def save_data(data: ItemConfig) -> None:
 
 def load_data() -> ItemConfig:
     with open(JSON_CONFIG_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)[0]
+        return json.load(f)
 
 
 def set_language(language: str) -> None:
