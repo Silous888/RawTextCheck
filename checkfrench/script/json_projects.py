@@ -69,6 +69,9 @@ def _log_error_if_id_or_value_invalid(project_name: str, *values: str) -> bool:
 
 
 def create_json() -> None:
+    """create json for projects config if the file
+    doesn't exist
+    """
     if os.path.exists(JSON_PROJECT_PATH):
         return
 
@@ -93,11 +96,22 @@ def is_project_name_exist(project_name: str) -> bool:
 
 
 def load_data() -> dict[str, ItemProject]:
+    """get all data
+
+    Returns:
+        dict[str, ItemProject]: data of every projects
+    """
     with open(JSON_PROJECT_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def save_data(data: dict[str, ItemProject]) -> None:
+    """save data in the json, will overwrite everything
+    in the file
+
+    Args:
+        data (dict[str, ItemProject]): data to save
+    """
     with open(JSON_PROJECT_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
