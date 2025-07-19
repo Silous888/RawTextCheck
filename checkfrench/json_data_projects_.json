@@ -1,0 +1,149 @@
+{
+    "428 Shibuya Scramble": {
+        "language": "it",
+        "parser": "textfile",
+        "arg_parser": "Cevns",
+        "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙû",
+        "dictionary": [
+            "Achi",
+            "Kano",
+            "Scramble",
+            "Shibuya"
+        ],
+        "banwords": [
+            "lswjrewj",
+            "nono",
+            "rtnestnue",
+            "tinodnta"
+        ],
+        "ignored_codes_into_space": [
+            "<ii/>",
+            "rnfs",
+            "test"
+        ],
+        "ignored_codes_into_nothing": [
+            "<ii>"
+        ],
+        "ignored_substrings_into_space": {
+            "<": [
+                "/>",
+                ">"
+            ],
+            "nono": [
+                "afpf"
+            ]
+        },
+        "ignored_substrings_into_nothing": {
+            "<": [
+                "!>",
+                "/>"
+            ],
+            "nono": [
+                "cponp"
+            ]
+        },
+        "ignored_rules": [
+            "5pm56m",
+            "ACCORD_COULEUR",
+            "ACCORD_VERBE",
+            "jwnlfrtijr"
+        ],
+        "synchronized_path": ""
+    },
+    "429 Shibuya Scramble 2": {
+        "language": "fr",
+        "parser": "textfile",
+        "arg_parser": "Cevns",
+        "valid_characters": "àÀâÂéÉèÈêÊëËîÎïÏôÔöÖùÙû",
+        "dictionary": [
+            "Achi",
+            "Aoi",
+            "Shibuya"
+        ],
+        "banwords": [
+            "lswjrewj",
+            "nono",
+            "rtnestnue",
+            "tinodnta"
+        ],
+        "ignored_codes_into_space": [
+            "<ii/>",
+            "rnfs",
+            "test"
+        ],
+        "ignored_codes_into_nothing": [
+            "<ii>"
+        ],
+        "ignored_substrings_into_space": {},
+        "ignored_substrings_into_nothing": {},
+        "ignored_rules": [
+            "5pm56m",
+            "ACCORD_COULEUR",
+            "ACCORD_VERBE",
+            "jwnlfrtijr"
+        ],
+        "synchronized_path": ""
+    },
+    "431 Sample Project B": {
+        "language": "fr",
+        "parser": "textfile",
+        "arg_parser": "XYZ",
+        "valid_characters": "あいうえおアイウエオ漢字",
+        "dictionary": [
+            "サンプル",
+            "プロジェクト",
+            "ベータ"
+        ],
+        "banwords": [
+            "エラー",
+            "バッド"
+        ],
+        "ignored_codes_into_space": [
+            "<jp_space>"
+        ],
+        "ignored_codes_into_nothing": [],
+        "ignored_substrings_into_space": {
+            "【": [
+                "neflt"
+            ]
+        },
+        "ignored_substrings_into_nothing": {
+            "【": [
+                "】"
+            ]
+        },
+        "ignored_rules": [
+            "RULE_JP"
+        ],
+        "synchronized_path": ""
+    },
+    "PARANORMASIGHT": {
+        "language": "fr",
+        "parser": "excel",
+        "arg_parser": "E",
+        "valid_characters": "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,;:!?()[]<>\"'-+= ōéèêâàçÉÈÊÇÂÀœŒôÔēùû★永",
+        "dictionary": [
+            "Shōgo",
+            "Yōko",
+            "Honjo"
+        ],
+        "banwords": [],
+        "ignored_codes_into_space": [
+            "[r]"
+        ],
+        "ignored_codes_into_nothing": [],
+        "ignored_substrings_into_space": {},
+        "ignored_substrings_into_nothing": {
+            "<": [
+                ">"
+            ],
+            "[": [
+                "]"
+            ]
+        },
+        "ignored_rules": [
+            "DOUBLES_ESPACES"
+        ],
+        "synchronized_path": ""
+    }
+}

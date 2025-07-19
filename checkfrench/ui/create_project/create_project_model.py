@@ -4,7 +4,8 @@ Author      : Silous
 Created on  : 2025-06-09
 Description : Model for creating a new project in the application.
 
-This module defines the model for creating a new project, including the language selection and project creation logic.
+This module defines the model for creating a new project, including the
+language selection and project creation logic.
 """
 
 
@@ -15,7 +16,13 @@ from PyQt5.QtCore import QAbstractListModel, QModelIndex, QVariant, Qt
 
 # -------------------- Import Lib User -------------------
 from checkfrench.default_parameters import LANGUAGES_LANGUAGETOOL
-from checkfrench.default_parameters import DEFAULT_LANGUAGE, DEFAULT_PARSER
+from checkfrench.default_parameters import (
+    DEFAULT_LANGUAGE,
+    DEFAULT_PARSER,
+    DEFAULT_VALID_ALPHANUMERIC,
+    DEFAULT_VALID_PUNCTUATION,
+    DEFAULT_VALID_SPACE
+)
 from checkfrench.default_parser import LIST_DEFAULT_PARSER
 from checkfrench.script import json_projects
 
@@ -24,9 +31,11 @@ from checkfrench.script import json_projects
 
 class CreateProjectModel():
     """Model for creating a new project.
-    This class handles the initialization of the language combo box model and provides methods to create a new project.
+    This class handles the initialization of the language combo box model and
+    provides methods to create a new project.
     Attributes:
-        languageComboBoxModel (LanguagesComboBoxModel): The model for the language combo box.
+        languageComboBoxModel (LanguagesComboBoxModel): The model for the
+        language combo box.
     """
 
     def __init__(self) -> None:
@@ -50,13 +59,17 @@ class CreateProjectModel():
 
         json_projects.create_new_entry(project_name, language_code, parser)
 
+        json_projects.add_valid_characters(project_name, DEFAULT_VALID_ALPHANUMERIC +
+                                           DEFAULT_VALID_PUNCTUATION + DEFAULT_VALID_SPACE)
+
     def is_project_name_valid(self, project_name: str) -> bool:
         return not json_projects.is_project_name_exist(project_name)
 
 
 class LanguagesComboBoxModel(QAbstractListModel):
     """Model for the language combo box in the project creation dialog.
-    This model provides a list of languages sorted by their labels and allows retrieval of language codes and labels.
+    This model provides a list of languages sorted by their labels and
+    allows retrieval of language codes and labels.
     """
     def __init__(self, data: list[tuple[str, str]], parent: QAbstractListModel | None = None) -> None:
         """Initialize the LanguagesComboBoxModel with the provided data.

@@ -21,23 +21,23 @@ from PyQt5.QtCore import QCoreApplication as QCA
 
 # == Constants ================================================================
 
-
 JSON_FILE_PATH: Path = Path(__file__).parent / "json_data_projects.json"
 """Path to the JSON file containing projects data"""
 
 RESULTS_FOLDER_PATH: Path = Path(__file__).parent / "results"
 """Path to the folder containing results"""
 
-DEFAULT_VALID_ALPHANUMERIC: str = "0123456789" \
-                                  "abcdefghijklmnopqrstuvwxyz" \
-                                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+DEFAULT_VALID_ALPHANUMERIC = "0123456789" \
+                             "abcdefghijklmnopqrstuvwxyz" \
+                             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 """Default valid alphanumeric proposed in a project configuration"""
 
-DEFAULT_VALID_PUNCTUATION: str = ".,;:!?" \
-                                 "()[]<>\"'" \
-                                 "-+=" \
-                                 " "  # Space
+DEFAULT_VALID_PUNCTUATION = ".,;:!?" \
+                            "()[]\"'"
 """Default valid punctuation proposed in a project configuration"""
+
+DEFAULT_VALID_SPACE = " "  # basic Space
+"""Default valid space proposed in a project configuration"""
 
 DEFAULT_LANGUAGE = "en"
 """Default language when creating a project"""
@@ -46,12 +46,20 @@ DEFAULT_PARSER = "textfile"
 """Default parser when creating a project"""
 
 INVALID_CHAR_TEXT_ERROR = QCA.translate("error text", "This character in not accepted.")
+"""Text used in result for invalid character error"""
+
 INVALID_CHAR_TEXT_ERROR_TYPE = "INVALID CHARACTER"
+"""Type used in result for invalid character error"""
+
 
 BANWORD_TEXT_ERROR = QCA.translate("error text", "This word is not authorized in this project.")
+"""Text used in result for banword error"""
+
 BANWORD_TEXT_ERROR_TYPE = "BANWORD"
+"""Type uesd in result for banword error"""
 
 LANGUAGETOOL_SPELLING_CATEGORY = "misspelling"
+"""LanguageTool category used to detect errors as spelling errors"""
 
 
 # The list is sorted by language code for easier readability.

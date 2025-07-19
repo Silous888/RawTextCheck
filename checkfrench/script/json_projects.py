@@ -27,7 +27,7 @@ Dependencies:
 
 import json
 from logging import Logger
-
+import os
 
 from checkfrench.default_parameters import JSON_FILE_PATH
 from checkfrench.logger import get_logger
@@ -66,6 +66,14 @@ def _log_error_if_id_or_value_invalid(project_name: str, *values: str) -> bool:
         logger.error("Value(s) cannot be empty.", stacklevel=3)
         return True
     return False
+
+
+def create_json() -> None:
+    if os.path.exists(JSON_FILE_PATH):
+        return
+    with open(JSON_FILE_PATH, "w", encoding="utf-8") as f:
+        json.dump({}, f, ensure_ascii=False, indent=4)
+    logger.info("Create %s.", JSON_FILE_PATH)
 
 
 def is_project_name_exist(project_name: str) -> bool:

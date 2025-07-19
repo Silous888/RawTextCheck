@@ -14,12 +14,15 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
+from checkfrench.script.json_projects import create_json
 from checkfrench.ui.mainwindow.mainwindow import MainWindow
-
 
 # == Main Application =========================================================
 
 if __name__ == "__main__":
+
+    create_json()
+
     # create qt application
     app = QApplication(sys.argv)
     program = MainWindow()
