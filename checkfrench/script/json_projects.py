@@ -164,10 +164,10 @@ def create_new_entry(
     """
     if not project_name:
         logger.error("Project name cannot be empty.")
-        raise ValueError
+        return
     if not language:
         logger.error("Language cannot be empty.")
-        raise ValueError
+        return
     if not parser:
         logger.error("Parser cannot be empty.")
 
@@ -175,7 +175,7 @@ def create_new_entry(
 
     if project_name in data:
         logger.error("Project name already exists: %s", project_name)
-        raise ValueError
+        return
 
     data[project_name] = {
         "language": language,
@@ -215,7 +215,7 @@ def set_entry(
     """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
-        raise ValueError
+        return
     if language is not None:
         set_language(project_name, language)
     if parser is not None:
@@ -249,13 +249,13 @@ def set_entry_from_item(project_name: str, data: ItemProject) -> None:
     """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
-        raise ValueError
+        return
     if "language" not in data or data["language"] == "":
         logger.error("Language cannot be empty.")
-        raise ValueError
+        return
     if "parser" not in data or data["parser"] == "":
         logger.error("Parser cannot be empty.")
-        raise ValueError
+        return
     set_entry(
         project_name,
         language=data["language"],
@@ -299,10 +299,10 @@ def set_new_project_name(project_name: str, new_project_name: str) -> None:
     """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
-        raise ValueError
+        return
     if new_project_name == "":
         logger.error("project_name cannot be empty.")
-        raise ValueError
+        return
     data: dict[str, ItemProject] = load_data()
     data[new_project_name] = data[project_name]
     del data[project_name]
@@ -318,10 +318,10 @@ def set_language(project_name: str, language: str) -> None:
     """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
-        raise ValueError
+        return
     if language == "":
         logger.error("Language cannot be empty.")
-        raise ValueError
+        return
     data: dict[str, ItemProject] = load_data()
     data[project_name]["language"] = language
     save_data(data)
@@ -339,7 +339,7 @@ def set_parser(project_name: str, parser: str) -> None:
         return
     if parser == "":
         logger.error("Parser cannot be empty.")
-        raise ValueError
+        return
     data: dict[str, ItemProject] = load_data()
     data[project_name]["parser"] = parser
     save_data(data)
@@ -354,7 +354,7 @@ def set_arg_parser(project_name: str, specific_argument: str) -> None:
     """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
-        raise ValueError
+        return
     data: dict[str, ItemProject] = load_data()
     data[project_name]["arg_parser"] = specific_argument
     save_data(data)
