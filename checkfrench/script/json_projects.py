@@ -29,7 +29,7 @@ import json
 from logging import Logger
 import os
 
-from checkfrench.default_parameters import JSON_PROJECT_PATH
+from checkfrench.default_parameters import CONFIG_FOLDER, JSON_PROJECT_PATH
 from checkfrench.logger import get_logger
 from checkfrench.newtype import ItemProject
 
@@ -71,6 +71,9 @@ def _log_error_if_id_or_value_invalid(project_name: str, *values: str) -> bool:
 def create_json() -> None:
     if os.path.exists(JSON_PROJECT_PATH):
         return
+
+    os.makedirs(CONFIG_FOLDER, exist_ok=True)
+
     with open(JSON_PROJECT_PATH, "w", encoding="utf-8") as f:
         json.dump({}, f, ensure_ascii=False, indent=4)
     logger.info("Created %s.", JSON_PROJECT_PATH)

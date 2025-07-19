@@ -21,9 +21,11 @@ from PyQt5.QtCore import QCoreApplication as QCA
 
 # == Constants ================================================================
 
+CONFIG_FOLDER: Path = Path(__file__).parent / "config"
+
 # ------- App Config ----------
 
-JSON_CONFIG_PATH: Path = Path(__file__).parent / "config.json"
+JSON_CONFIG_PATH: Path = CONFIG_FOLDER / "config.json"
 
 LANGUAGES: list[Tuple[str, str]] = [
     ("english", QCA.translate("Language", "English")),
@@ -41,7 +43,7 @@ default value"""
 
 # ------- Project Config ----------
 
-JSON_PROJECT_PATH: Path = Path(__file__).parent / "data_projects.json"
+JSON_PROJECT_PATH: Path = CONFIG_FOLDER / "data_projects.json"
 """Path to the JSON file containing projects data"""
 
 DEFAULT_VALID_ALPHANUMERIC = "0123456789" \

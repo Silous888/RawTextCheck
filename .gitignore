@@ -1,6 +1,5 @@
 # project files
-checkfrench/data_projects.json
-checkfrench/config.json
+checkfrench/config/*
 credentials.py
 checkfrench/results/*
 checkfrench/test.py
