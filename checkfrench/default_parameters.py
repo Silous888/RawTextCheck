@@ -21,13 +21,28 @@ from PyQt5.QtCore import QCoreApplication as QCA
 
 # == Constants ================================================================
 
+# ------- App Config ----------
+
 JSON_CONFIG_PATH: Path = Path(__file__).parent / "config.json"
+
+LANGUAGES: list[Tuple[str, str]] = [
+    ("english", QCA.translate("Language", "English")),
+    ("french", QCA.translate("Language", "French"))
+    ]
+"""Avalaible language for the app interface, first value
+is default value"""
+
+THEMES: list[Tuple[str, str]] = [
+    ("light", QCA.translate("color theme", "Light"))
+    ]
+"""Avalaible theme for the app interface, first value is
+default value"""
+
+
+# ------- Project Config ----------
 
 JSON_PROJECT_PATH: Path = Path(__file__).parent / "data_projects.json"
 """Path to the JSON file containing projects data"""
-
-RESULTS_FOLDER_PATH: Path = Path(__file__).parent / "results"
-"""Path to the folder containing results"""
 
 DEFAULT_VALID_ALPHANUMERIC = "0123456789" \
                              "abcdefghijklmnopqrstuvwxyz" \
@@ -47,27 +62,10 @@ DEFAULT_LANGUAGE = "en"
 DEFAULT_PARSER = "textfile"
 """Default parser when creating a project"""
 
-INVALID_CHAR_TEXT_ERROR = QCA.translate("error text", "This character in not accepted.")
-"""Text used in result for invalid character error"""
-
-INVALID_CHAR_TEXT_ERROR_TYPE = "INVALID CHARACTER"
-"""Type used in result for invalid character error"""
-
-
-BANWORD_TEXT_ERROR = QCA.translate("error text", "This word is not authorized in this project.")
-"""Text used in result for banword error"""
-
-BANWORD_TEXT_ERROR_TYPE = "BANWORD"
-"""Type uesd in result for banword error"""
-
-LANGUAGETOOL_SPELLING_CATEGORY = "misspelling"
-"""LanguageTool category used to detect errors as spelling errors"""
-
-
 # The list is sorted by language code for easier readability.
 LANGUAGES_LANGUAGETOOL: list[Tuple[str, str]] = [
     ("ar", QCA.translate("Language", "Arabic")),
-    ("ast", QCA.translate("Languages", "Asturian")),
+    ("ast", QCA.translate("Language", "Asturian")),
     ("ast-ES", QCA.translate("Language", "Asturian (Spain)")),
     ("auto", QCA.translate("Language", "Auto-detect")),
     ("be", QCA.translate("Language", "Belarusian")),
@@ -149,3 +147,25 @@ LANGUAGES_LANGUAGETOOL: list[Tuple[str, str]] = [
     ("zh-CN", QCA.translate("Language", "Chinese (Simplified)")),
 ]
 """List of languages supported by LanguageTool with their codes and names"""
+
+
+# ------- Result Config ----------
+
+RESULTS_FOLDER_PATH: Path = Path(__file__).parent / "results"
+"""Path to the folder containing results"""
+
+INVALID_CHAR_TEXT_ERROR: str = QCA.translate("error text", "This character in not accepted.")
+"""Text used in result for invalid character error"""
+
+INVALID_CHAR_TEXT_ERROR_TYPE = "INVALID CHARACTER"
+"""Type used in result for invalid character error"""
+
+
+BANWORD_TEXT_ERROR: str = QCA.translate("error text", "This word is not authorized in this project.")
+"""Text used in result for banword error"""
+
+BANWORD_TEXT_ERROR_TYPE = "BANWORD"
+"""Type uesd in result for banword error"""
+
+LANGUAGETOOL_SPELLING_CATEGORY = "misspelling"
+"""LanguageTool category used to detect errors as spelling errors"""
