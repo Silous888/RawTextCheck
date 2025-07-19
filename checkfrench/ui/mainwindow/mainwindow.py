@@ -42,6 +42,8 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)  # type: ignore
 
+        self.ui.tableView_result.set_columns_hidden_by_default(json_config.load_data()["hidden_column"])
+
         self.set_up_connect()
         self.set_up_model()
 
@@ -159,6 +161,7 @@ class MainWindow(QMainWindow):
             a0 (QDragEnterEvent | None): close event
         """
         json_config.set_last_project(self.ui.comboBox_project.currentText())
+        json_config.set_hidden_column(self.ui.tableView_result.get_hidden_columns_labels())
         self.m_model.model_stop()
         if a0 is not None:
             a0.accept()

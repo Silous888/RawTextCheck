@@ -25,6 +25,8 @@ class DataResultTableView(QTableView):
 
     custom_context_actions_requested = pyqtSignal(QMenu)
 
+    _columns_to_hide_by_default: list[str] = []
+
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize the DataTableView.
         Args:
@@ -39,6 +41,22 @@ class DataResultTableView(QTableView):
         if horizontal_header is not None:
             horizontal_header.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             horizontal_header.customContextMenuRequested.connect(self.show_context_menu)
+
+    def setModel(self, model: QAbstractItemModel | None) -> None:
+        """override setModel to hide by default some column
+
+        Args:
+            model (QAbstractItemModel | None): model
+        """
+        super().setModel(model)
+
+        if model is None:
+            return
+        # Apply default hiding logic once model is set
+        for col in range(model.columnCount()):
+            header = model.headerData(col, Qt.Orientation.Horizontal, Qt.ItemDataRole.DisplayRole)
+            if header in self._columns_to_hide_by_default:
+                self.setColumnHidden(col, True)
 
     def keyPressEvent(self, e: QKeyEvent | None) -> None:
         """Handle key press events.
@@ -100,6 +118,25 @@ class DataResultTableView(QTableView):
         """Toggle visibility of a given column."""
         self.setColumnHidden(column, not visible)
         self._column_visibility[column] = visible
+
+    def set_columns_hidden_by_default(self, column_names: list[str]) -> None:
+        """Set columns (by header name) to hide once the model is set."""
+        self._columns_to_hide_by_default = column_names
+
+    def get_hidden_columns_labels(self) -> list[str]:
+        """Return the list of column labels that are currently hidden."""
+        labels: list[str] = []
+        model: QAbstractItemModel | None = self.model()
+        if model is None:
+            return labels
+
+        for col in range(model.columnCount()):
+            if self.isColumnHidden(col):
+                header_data = model.headerData(col, Qt.Orientation.Horizontal, Qt.ItemDataRole.DisplayRole)
+                label: str = str(header_data) if header_data is not None else f"Column {col}"
+                labels.append(label)
+
+        return labels
 
     def delete_selected_row(self) -> None:
         """Delete the selected rows from the model.

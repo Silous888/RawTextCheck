@@ -62,6 +62,7 @@ class Ui_MainWindow(object):
         self.tableView_result.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.tableView_result.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         self.tableView_result.setObjectName("tableView_result")
+        self.tableView_result.horizontalHeader().setSortIndicatorShown(True)
         self.tableView_result.horizontalHeader().setStretchLastSection(True)
         self.tableView_result.verticalHeader().setVisible(False)
         self.verticalLayout.addWidget(self.tableView_result)
