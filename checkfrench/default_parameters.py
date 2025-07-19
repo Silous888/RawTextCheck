@@ -21,7 +21,9 @@ from PyQt5.QtCore import QCoreApplication as QCA
 
 # == Constants ================================================================
 
-JSON_FILE_PATH: Path = Path(__file__).parent / "json_data_projects.json"
+JSON_CONFIG_PATH: Path = Path(__file__).parent / "config.json"
+
+JSON_PROJECT_PATH: Path = Path(__file__).parent / "data_projects.json"
 """Path to the JSON file containing projects data"""
 
 RESULTS_FOLDER_PATH: Path = Path(__file__).parent / "results"

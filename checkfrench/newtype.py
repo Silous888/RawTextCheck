@@ -70,3 +70,18 @@ class ItemResult(TypedDict):
     error_issue_type: str
     explanation: str
     suggestion: str
+
+
+class ItemConfig(TypedDict):
+    """TypedDict for config file
+    This class defines the structure of the config file
+    Attributes:
+        language (str): language of the app interface
+        theme (str): theme for the apparence
+        hidden_column (list[str]): last config for visibility of column of result table
+        last_project (str): name of the last project, to reload it at launch
+        """
+    language: str
+    theme: str
+    hidden_column: list[str]
+    last_project: str

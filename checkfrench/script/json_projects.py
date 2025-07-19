@@ -29,7 +29,7 @@ import json
 from logging import Logger
 import os
 
-from checkfrench.default_parameters import JSON_FILE_PATH
+from checkfrench.default_parameters import JSON_PROJECT_PATH
 from checkfrench.logger import get_logger
 from checkfrench.newtype import ItemProject
 
@@ -69,11 +69,11 @@ def _log_error_if_id_or_value_invalid(project_name: str, *values: str) -> bool:
 
 
 def create_json() -> None:
-    if os.path.exists(JSON_FILE_PATH):
+    if os.path.exists(JSON_PROJECT_PATH):
         return
-    with open(JSON_FILE_PATH, "w", encoding="utf-8") as f:
+    with open(JSON_PROJECT_PATH, "w", encoding="utf-8") as f:
         json.dump({}, f, ensure_ascii=False, indent=4)
-    logger.info("Create %s.", JSON_FILE_PATH)
+    logger.info("Created %s.", JSON_PROJECT_PATH)
 
 
 def is_project_name_exist(project_name: str) -> bool:
@@ -90,12 +90,12 @@ def is_project_name_exist(project_name: str) -> bool:
 
 
 def load_data() -> dict[str, ItemProject]:
-    with open(JSON_FILE_PATH, "r", encoding="utf-8") as f:
+    with open(JSON_PROJECT_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def save_data(data: dict[str, ItemProject]) -> None:
-    with open(JSON_FILE_PATH, "w", encoding="utf-8") as f:
+    with open(JSON_PROJECT_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 

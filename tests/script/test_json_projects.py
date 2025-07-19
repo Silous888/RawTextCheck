@@ -3,25 +3,25 @@ import os
 import unittest
 
 from checkfrench.script import json_projects
-from checkfrench.default_parameters import JSON_FILE_PATH
+from checkfrench.default_parameters import JSON_PROJECT_PATH
 
 
 def rename_json_during_test() -> None:
     """Safely rename the real json to backup and create a new empty one for testing."""
-    if os.path.exists(JSON_FILE_PATH):
-        os.rename(JSON_FILE_PATH, str(JSON_FILE_PATH) + ".bak")
+    if os.path.exists(JSON_PROJECT_PATH):
+        os.rename(JSON_PROJECT_PATH, str(JSON_PROJECT_PATH) + ".bak")
     # Always create an empty JSON file for test
-    with open(JSON_FILE_PATH, "w", encoding="utf-8") as f:
+    with open(JSON_PROJECT_PATH, "w", encoding="utf-8") as f:
         json.dump({}, f, ensure_ascii=False, indent=4)
 
 
 def restore_json_after_test() -> None:
     """Restore the original json after the test, if backup exists"""
-    if os.path.exists(JSON_FILE_PATH):
-        os.remove(JSON_FILE_PATH)
-    backup_path = str(JSON_FILE_PATH) + ".bak"
+    if os.path.exists(JSON_PROJECT_PATH):
+        os.remove(JSON_PROJECT_PATH)
+    backup_path = str(JSON_PROJECT_PATH) + ".bak"
     if os.path.exists(backup_path):
-        os.rename(backup_path, JSON_FILE_PATH)
+        os.rename(backup_path, JSON_PROJECT_PATH)
     # Do not raise if backup does not exist; make test teardown safe
 
 
