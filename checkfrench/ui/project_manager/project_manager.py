@@ -15,6 +15,7 @@ from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QDialog
 
 # -------------------- Import Lib User -------------------
+from checkfrench.default_parameters import NOBREAK_SPACE, NARROW_NOBREAK_SPACE
 from checkfrench.newtype import ItemProject
 from checkfrench.ui.create_project.create_project import DialogCreateProject
 from checkfrench.ui.delete_project.delete_project import DialogDeleteProject
@@ -160,7 +161,20 @@ class DialogProjectManager(QDialog):
             self.m_model.languageComboBoxModel.get_index_by_code(data["language"]))
         self.ui.comboBox_parser.setCurrentText(data["parser"])
         self.ui.lineEdit_argParser.setText(data["arg_parser"])
-        self.ui.textEdit_validCharacters.setPlainText(data["valid_characters"])
+
+        # space in checkboxes
+        validCharacters: str = data["valid_characters"]
+
+        self.ui.checkBox_space.setChecked(" " in validCharacters)
+        self.ui.checkBox_narrowNobreakSpace.setChecked(NARROW_NOBREAK_SPACE in validCharacters)
+        self.ui.checkBox_nobreakSpace.setChecked(NOBREAK_SPACE in validCharacters)
+
+        validCharacters = validCharacters.replace(" ", "")
+        validCharacters = validCharacters.replace(NARROW_NOBREAK_SPACE, "")
+        validCharacters = validCharacters.replace(NOBREAK_SPACE, "")
+
+        self.ui.textEdit_validCharacters.setPlainText(validCharacters)
+
         self.m_model.dictionaryModel.load_data(data["dictionary"])
         self.m_model.banwordsModel.load_data(data["banwords"])
         self.m_model.codesModel.load_data(data["ignored_codes_into_space"],
@@ -178,11 +192,20 @@ class DialogProjectManager(QDialog):
         parser: str | None = self.m_model.parserComboBoxModel.get_value(self.ui.comboBox_parser.currentIndex())
         if parser is None:
             parser = "textfile"
+
+        validcharacters: str = self.ui.textEdit_validCharacters.toPlainText()
+        if self.ui.checkBox_space.isChecked():
+            validcharacters = validcharacters + " "
+        if self.ui.checkBox_narrowNobreakSpace.isChecked():
+            validcharacters = validcharacters + NARROW_NOBREAK_SPACE
+        if self.ui.checkBox_nobreakSpace.isChecked():
+            validcharacters = validcharacters + NOBREAK_SPACE
+
         data: ItemProject = {
             "language": self.m_model.languageComboBoxModel.get_code(self.ui.comboBox_language.currentIndex()),
             "parser": parser,
             "arg_parser": self.ui.lineEdit_argParser.text(),
-            "valid_characters": self.ui.textEdit_validCharacters.toPlainText(),
+            "valid_characters": validcharacters,
             "dictionary": self.m_model.dictionaryModel.get_data(),
             "banwords": self.m_model.banwordsModel.get_data(),
             "ignored_codes_into_space": self.m_model.codesModel.get_data()[0],

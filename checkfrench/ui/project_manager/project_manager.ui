@@ -569,7 +569,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="checkBox_nobreakSpacePunct">
+                    <widget class="QCheckBox" name="checkBox_narrowNobreakSpace">
                      <property name="text">
                       <string>narrow no-break space</string>
                      </property>

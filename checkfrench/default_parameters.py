@@ -58,6 +58,10 @@ DEFAULT_VALID_PUNCTUATION = ".,;:!?" \
 DEFAULT_VALID_SPACE = " "  # basic Space
 """Default valid space proposed in a project configuration"""
 
+NARROW_NOBREAK_SPACE = " "
+NOBREAK_SPACE = " "
+
+
 DEFAULT_LANGUAGE = "en"
 """Default language when creating a project"""
 
