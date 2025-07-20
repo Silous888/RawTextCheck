@@ -11,8 +11,8 @@ This module provides a dialog for managing projects, including creating, deletin
 # == Imports ==================================================================
 
 # -------------------- Import Lib Tier -------------------
-from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtWidgets import QDialog
 
 # -------------------- Import Lib User -------------------
 from checkfrench.newtype import ItemProject
@@ -64,8 +64,6 @@ class DialogProjectManager(QDialog):
         self.ui.pushButton_restore.clicked.connect(self.pushButton_restore_clicked)
         self.ui.pushButton_save.clicked.connect(self.pushButton_save_clicked)
         self.ui.pushButton_saveAndQuit.clicked.connect(self.pushButton_saveAndQuit_clicked)
-        self.ui.pushButton_validCharacters.clicked.connect(self.pushButton_validCharacters_clicked)
-
         # comboboxes
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
 
@@ -116,10 +114,6 @@ class DialogProjectManager(QDialog):
         if project_name is not None:
             self.save_project_data(project_name)
         self.close()
-
-    def pushButton_validCharacters_clicked(self) -> None:
-        """Slot when the valid characters button is clicked."""
-        pass
 
     def comboBox_project_currentIndexChanged(self, index: int) -> None:
         """Slot when the project combobox index is changed.
@@ -174,7 +168,6 @@ class DialogProjectManager(QDialog):
         self.m_model.substringsModel.load_data(data["ignored_substrings_into_space"],
                                                data["ignored_substrings_into_nothing"])
         self.m_model.rulesModel.load_data(data["ignored_rules"])
-        self.ui.lineEdit_synchronizedPath.setText(data["synchronized_path"])
 
     def save_project_data(self, project_name: str) -> None:
         """Saves the current project data to the model.
@@ -197,7 +190,7 @@ class DialogProjectManager(QDialog):
             "ignored_substrings_into_space": self.m_model.substringsModel.get_data()[0],
             "ignored_substrings_into_nothing": self.m_model.substringsModel.get_data()[1],
             "ignored_rules": self.m_model.rulesModel.get_data(),
-            "synchronized_path": self.ui.lineEdit_synchronizedPath.text()
+            "synchronized_path": ""
         }
         # Save the project data using the model
         self.m_model.save_project_data(project_name, data)
