@@ -31,7 +31,7 @@ class DialogProjectManager(QDialog):
         m_model (ProjectManagerModel): The model for managing project data and logic.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, current_project: str) -> None:
         """Initialize the DialogProjectManager."""
         super(QDialog, self).__init__()
         self.ui = Ui_Dialog_projectManager()
@@ -41,6 +41,8 @@ class DialogProjectManager(QDialog):
         self.set_up_model()
 
         self.load_project_data(self.ui.comboBox_project.currentIndex())
+
+        self.ui.comboBox_project.setCurrentText(current_project)
 
     def set_up_model(self) -> None:
         """Initialize the model for managing project data."""

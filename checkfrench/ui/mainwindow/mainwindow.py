@@ -75,9 +75,11 @@ class MainWindow(QMainWindow):
     def actionProjects_triggered(self) -> None:
         """Slot for handling the Projects menu action.
         Opens the project manager dialog."""
-        self.dialog_project_manager = DialogProjectManager()
+        current_project: str = self.ui.comboBox_project.currentText()
+        self.dialog_project_manager = DialogProjectManager(current_project)
         self.dialog_project_manager.exec()
         self.m_model.titleComboBoxModel.load_data()
+        self.ui.comboBox_project.setCurrentText(current_project)
 
     def comboBox_project_currentIndexChanged(self, index: int) -> None:
         """Slot for handling changes in the project combobox.
