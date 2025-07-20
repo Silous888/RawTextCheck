@@ -1,7 +1,7 @@
 """
 File        : textfile_parser.py
 Author      : Silous
-Created on  : 2025-06-15
+Created on  : 2025-07-19
 Description : Parser for plain text files.
 
 This module provides a function to parse a text file and return its non-empty lines.

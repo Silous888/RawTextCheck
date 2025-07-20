@@ -1,11 +1,11 @@
 """
-File        : textfile_parser.py
+File        : excel_parser.py
 Author      : Silous
-Created on  : 2025-06-15
-Description : Parser for plain text files.
+Created on  : 2025-07-19
+Description : Parser for excel files.
 
-This module provides a function to parse a text file and return its non-empty lines.
-This parser acts as a default parser for text files.
+This module provides a function to parse a excel file and return its non-empty lines.
+This parser acts as a default parser for excel files.
 """
 
 
