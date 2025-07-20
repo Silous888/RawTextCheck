@@ -197,6 +197,7 @@ class ResultsTableModel(QAbstractTableModel):
         """Load the result data into the model from the JSON file.
         """
         if not json_results.is_result_exists(self.project_name, self.filename):
+            self.clear_data()
             return
         self.beginResetModel()
         self._data: dict[str, ItemResult] = json_results.get_file_data(self.project_name, self.filename)
