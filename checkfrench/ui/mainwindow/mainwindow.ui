@@ -114,26 +114,6 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <addaction name="actionOpen_Result"/>
-    <addaction name="actionOpen_Recent_Result"/>
-   </widget>
-   <widget class="QMenu" name="menuView">
-    <property name="title">
-     <string>View</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuPreferences">
-    <property name="title">
-     <string>Preferences</string>
-    </property>
-    <addaction name="actionKeybinding"/>
-    <addaction name="actionTheme"/>
-    <addaction name="actionCheck_for_Update"/>
-   </widget>
    <widget class="QMenu" name="menuManage">
     <property name="title">
      <string>Manage</string>
@@ -143,12 +123,8 @@
     <addaction name="actionImport_projects_configuration"/>
     <addaction name="separator"/>
     <addaction name="actionParsers"/>
-    <addaction name="actionResults"/>
    </widget>
-   <addaction name="menuFile"/>
    <addaction name="menuManage"/>
-   <addaction name="menuView"/>
-   <addaction name="menuPreferences"/>
   </widget>
   <action name="actionOpen_Recent_Result">
    <property name="text">
