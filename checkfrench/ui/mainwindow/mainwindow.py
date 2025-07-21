@@ -177,7 +177,7 @@ class MainWindow(QMainWindow):
 
     def set_enable_file_valid(self, is_valid: bool) -> None:
         self.ui.pushButton_process.setEnabled(is_valid)
-    
+
     def set_enable_project_has_project(self, has_project: bool) -> None:
         self.ui.tableView_result.setEnabled(has_project)
         self.ui.lineEdit_argument.setEnabled(has_project)

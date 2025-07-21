@@ -564,9 +564,11 @@ class IgnoredCodesModel(QAbstractTableModel):
         Returns:
             QVariant | str: The header data for the specified section and orientation.
         """
+        labelReplaceWithSpace: str = self.tr("Replace with space")
+        labelCode: str = self.tr("Code")
         if role == Qt.ItemDataRole.DisplayRole:
             if orientation == Qt.Orientation.Horizontal:
-                return "Replace with space" if section == self.checkbox_col else "Code"
+                return labelReplaceWithSpace if section == self.checkbox_col else labelCode
             return str(section + 1)
         return QVariant()
 
@@ -800,8 +802,11 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         Returns:
             str | QVariant: The header data for the specified section and orientation.
         """
+        labelReplaceWithSpace: str = self.tr("Replace with space")
+        labelStart: str = self.tr("Start")
+        labelEnd: str = self.tr("End")
         if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Horizontal:
-            return ["Replace with space", "Start", "End"][section]
+            return [labelReplaceWithSpace, labelStart, labelEnd][section]
         return QVariant()
 
     def insertRows(self, row: int, count: int = 1, parent: QModelIndex = QModelIndex()) -> bool:
