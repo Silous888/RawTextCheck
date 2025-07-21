@@ -139,6 +139,9 @@
      <string>Manage</string>
     </property>
     <addaction name="actionProjects"/>
+    <addaction name="actionExport_projects_configuration"/>
+    <addaction name="actionImport_projects_configuration"/>
+    <addaction name="separator"/>
     <addaction name="actionParsers"/>
     <addaction name="actionResults"/>
    </widget>
@@ -159,7 +162,7 @@
   </action>
   <action name="actionProjects">
    <property name="text">
-    <string>Projects</string>
+    <string>Configure projects</string>
    </property>
   </action>
   <action name="actionParsers">
@@ -185,6 +188,16 @@
   <action name="actionCheck_for_Update">
    <property name="text">
     <string>Check for Updates</string>
+   </property>
+  </action>
+  <action name="actionExport_projects_configuration">
+   <property name="text">
+    <string>Export all projects configuration</string>
+   </property>
+  </action>
+  <action name="actionImport_projects_configuration">
+   <property name="text">
+    <string>Import all projects configuration</string>
    </property>
   </action>
  </widget>
