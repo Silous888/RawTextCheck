@@ -48,6 +48,7 @@ class MainWindow(QMainWindow):
         self.set_up_model()
 
         self.set_enable_file_valid(False)
+        self.set_enable_project_has_project(False)
         self.ui.comboBox_project.setCurrentText(json_config.load_data()["last_project"])
 
         self.ui.tableView_result.custom_context_actions_requested.connect(self.add_custom_actions_to_menu)
@@ -90,6 +91,10 @@ class MainWindow(QMainWindow):
         self.ui.lineEdit_argument.setText(self.m_model.get_argument_parser(index))
         self.m_model.resultsTableModel.project_name = self.m_model.titleComboBoxModel.get_value(index) or ""
         self.m_model.resultsTableModel.load_data()
+        if self.ui.comboBox_project.currentText():
+            self.set_enable_project_has_project(True)
+        else:
+            self.set_enable_project_has_project(False)
 
     def lineEdit_filepath_textChanged(self) -> None:
         """Slot for handling text changes in the filepath lineEdit
@@ -172,6 +177,10 @@ class MainWindow(QMainWindow):
 
     def set_enable_file_valid(self, is_valid: bool) -> None:
         self.ui.pushButton_process.setEnabled(is_valid)
+    
+    def set_enable_project_has_project(self, has_project: bool) -> None:
+        self.ui.tableView_result.setEnabled(has_project)
+        self.ui.lineEdit_argument.setEnabled(has_project)
 
     def add_custom_actions_to_menu(self, menu: QMenu) -> None:
         """Add several actions to contextmenu of table_result
