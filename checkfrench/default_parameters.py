@@ -28,8 +28,8 @@ CONFIG_FOLDER: Path = Path(__file__).parent / "config"
 JSON_CONFIG_PATH: Path = CONFIG_FOLDER / "config.json"
 
 LANGUAGES: list[Tuple[str, str]] = [
-    ("english", QCA.translate("Language", "English")),
-    ("french", QCA.translate("Language", "French"))
+    ("english", "English"),
+    ("french", "French")
     ]
 """Avalaible language for the app interface, first value
 is default value"""

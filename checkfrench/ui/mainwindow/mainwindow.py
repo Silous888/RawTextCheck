@@ -13,13 +13,14 @@ from typing import List
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtCore import QMimeData, QModelIndex, QUrl, QItemSelectionModel
 from PyQt5.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent
-from PyQt5.QtWidgets import QMainWindow, QAction, QMenu
+from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QActionGroup
 
 # -------------------- Import Lib User -------------------
 from checkfrench.default_parameters import (
     INVALID_CHAR_TEXT_ERROR_TYPE,
     BANWORD_TEXT_ERROR_TYPE,
     LANGUAGETOOL_SPELLING_CATEGORY,
+    LANGUAGES
 )
 from checkfrench.newtype import ItemResult
 from checkfrench.script import json_config
@@ -43,7 +44,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)  # type: ignore
 
         self.ui.tableView_result.set_columns_hidden_by_default(json_config.load_data()["hidden_column"])
-
+        self.set_up_language_menu()
         self.set_up_connect()
         self.set_up_model()
 
@@ -52,6 +53,28 @@ class MainWindow(QMainWindow):
         self.ui.comboBox_project.setCurrentText(json_config.load_data()["last_project"])
 
         self.ui.tableView_result.custom_context_actions_requested.connect(self.add_custom_actions_to_menu)
+
+    def set_up_language_menu(self) -> None:
+        self.action_language = QAction(self.tr("Language"), self)
+        language_menu = QMenu(self.tr("Language"), self)
+
+        self.language_group = QActionGroup(self)
+        self.language_group.setExclusive(True)
+
+        default_language_code: str = json_config.load_data()["language"]
+
+        for code, name in LANGUAGES:
+            action = QAction(name, self)
+            action.setCheckable(True)
+            action.setData(code)
+            language_menu.addAction(action)  # type: ignore
+            self.language_group.addAction(action)
+
+            if code == default_language_code:
+                action.setChecked(True)
+
+        self.action_language.setMenu(language_menu)
+        self.ui.menuPreference.addAction(self.action_language)  # type: ignore
 
     def set_up_model(self) -> None:
         """Initialize the model for the main window."""
@@ -64,6 +87,7 @@ class MainWindow(QMainWindow):
         """
         # Menu
         self.ui.actionProjects.triggered.connect(self.actionProjects_triggered)
+        self.language_group.triggered.connect(self.language_selected)
         # combobox
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
         # lineEdit
@@ -181,6 +205,10 @@ class MainWindow(QMainWindow):
     def set_enable_project_has_project(self, has_project: bool) -> None:
         self.ui.tableView_result.setEnabled(has_project)
         self.ui.lineEdit_argument.setEnabled(has_project)
+
+    def language_selected(self, action: QAction) -> None:
+        selected_code = action.data()
+        json_config.set_language(selected_code)
 
     def add_custom_actions_to_menu(self, menu: QMenu) -> None:
         """Add several actions to contextmenu of table_result

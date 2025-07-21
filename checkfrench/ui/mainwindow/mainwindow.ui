@@ -124,7 +124,13 @@
     <addaction name="separator"/>
     <addaction name="actionParsers"/>
    </widget>
+   <widget class="QMenu" name="menuPreference">
+    <property name="title">
+     <string>Preference</string>
+    </property>
+   </widget>
    <addaction name="menuManage"/>
+   <addaction name="menuPreference"/>
   </widget>
   <action name="actionOpen_Recent_Result">
    <property name="text">
@@ -174,6 +180,11 @@
   <action name="actionImport_projects_configuration">
    <property name="text">
     <string>Import all projects configuration</string>
+   </property>
+  </action>
+  <action name="actionLanguage">
+   <property name="text">
+    <string>Language</string>
    </property>
   </action>
  </widget>

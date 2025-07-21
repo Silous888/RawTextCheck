@@ -15,6 +15,6 @@ FORMS = \
     ../checkfrench/ui/mainwindow/mainwindow.ui \
     ../checkfrench/ui/project_manager/project_manager.ui
 
-TRANSLATIONS = fr.ts
+TRANSLATIONS = french.ts
 
 CODECFORTR = UTF-8
