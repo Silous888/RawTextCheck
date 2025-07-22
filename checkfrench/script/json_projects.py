@@ -156,6 +156,26 @@ def export_project_data(project_name: str, filepath: str) -> None:
         json.dump(project_data, f, ensure_ascii=False, indent=4)
     logger.info("Project %s exported to %s.", project_name, filepath)
 
+
+def load_imported_project_data(filepath: str) -> ItemProject | None:
+    """Load project data from an imported JSON file.
+    Args:
+        filepath (str): The file path from which to load the project data.
+    Returns:
+        ItemProject | None: The loaded project data if successful, otherwise None.
+    """
+    if not os.path.exists(filepath):
+        logger.error("File %s does not exist.", filepath)
+        return None
+    with open(filepath, "r", encoding="utf-8") as f:
+        try:
+            data: ItemProject = json.load(f)
+            return data
+        except json.JSONDecodeError as e:
+            logger.error("Error decoding JSON from %s: %s", filepath, e)
+            return None
+
+
 def create_new_entry(
         project_name: str,
         language: str,

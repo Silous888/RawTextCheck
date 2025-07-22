@@ -100,6 +100,16 @@ class ProjectManagerModel():
         """
         json_projects.export_project_data(project_name, filepath)
 
+    def import_project_data(self, project_name: str, filepath: str) -> None:
+        """Imports project data from the specified file path.
+        Args:
+            project_name (str): The name of the project to import data into.
+            filepath (str): The file path from which to import project data.
+        """
+        data: ItemProject | None = json_projects.load_imported_project_data(filepath)
+        if data:
+            self.save_project_data(project_name, data)
+
 
 class ProjectTitleComboBoxModel(QAbstractListModel):
     """Model for the project title combobox in the project manager dialog.

@@ -119,8 +119,9 @@ class DialogProjectManager(QDialog):
         self.close()
 
     def pushButton_import_clicked(self) -> None:
-        """Slot when the import button is clicked."""
-        pass
+        """Slot when the import button is clicked.
+        Opens a file dialog to choose a project file to import."""
+        self.import_process(self.ui.comboBox_project.currentText())
 
     def pushButton_export_clicked(self) -> None:
         """Slot when the export button is clicked.
@@ -230,6 +231,10 @@ class DialogProjectManager(QDialog):
         self.m_model.save_project_data(project_name, data)
 
     def export_process(self, project_name: str) -> None:
+        """Exports the project data to a JSON file.
+        Args:
+            project_name (str): The name of the project to export.
+        """
         filepath, _ = QFileDialog.getSaveFileName(
             self,
             self.tr("Export Project"),
@@ -241,3 +246,20 @@ class DialogProjectManager(QDialog):
             return  # User cancelled
 
         self.m_model.export_project_data(project_name, filepath)
+
+    def import_process(self, project_name: str) -> None:
+        """Imports project data from a JSON file.
+        Args:
+            project_name (str): The name of the project to import data into.
+        """
+        filepath, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Import Project"),
+            "",
+            self.tr("JSON Files (*.json);;All Files (*)")
+        )
+
+        if not filepath:
+            return
+        self.m_model.import_project_data(project_name, filepath)
+        self.load_project_data(self.ui.comboBox_project.currentIndex())
