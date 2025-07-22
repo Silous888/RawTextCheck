@@ -172,9 +172,6 @@ def create_new_entry(
         ignored_substrings_into_space (dict[str, list[str]], optional): Defaults to {}.
         ignored_substrings_into_nothing (dict[str, list[str]], optional): Defaults to {}.
         ignored_rules (list[str], optional): Defaults to [].
-
-    Returns:
-        int: Id of the entry created
     """
     if not project_name:
         logger.error("Project name cannot be empty.")
@@ -226,6 +223,20 @@ def set_entry(
     synchronized_path: str | None = None
 ) -> None:
     """set the entry in the json, if arg not specified, it will not be changed
+    Args:
+        project_name (str): id of the project
+        language (str | None): language of the project
+        parser (str | None): parser of the project
+        arg_parser (str | None): specific argument of the project
+        valid_characters (str | None): valid characters of the project
+        dictionary (list[str] | None): dictionary words of the project
+        banwords (list[str] | None): banwords of the project
+        ignored_codes_into_space (list[str] | None): ignored codes into space of the project
+        ignored_codes_into_nothing (list[str] | None): ignored codes into nothing of the
+        ignored_substrings_into_space (dict[str, list[str]] | None): ignored substrings into space of the project
+        ignored_substrings_into_nothing (dict[str, list[str]] | None): ignored substrings into nothing of the project
+        ignored_rules (list[str] | None): ignored rules of the project
+        synchronized_path (str | None): path for synchronizing the project
     """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
@@ -260,6 +271,9 @@ def set_entry(
 
 def set_entry_from_item(project_name: str, data: ItemProject) -> None:
     """set the entry in the json with a complete Item
+    Args:
+        project_name (str): id of the project
+        data (ItemProject): ItemProject to set
     """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
@@ -629,7 +643,12 @@ def set_synchronized_path(project_name: str, path: str) -> None:
 
 
 def _set_to_list_field(project_name: str, field: str, values: list[str]) -> None:
-    """Set the field to a new list of values"""
+    """Set the field to a new list of values
+    Args:
+        project_name (str): id of the project
+        field (str): field to set
+        values (list[str]): list of values to set
+    """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
         return
@@ -639,6 +658,12 @@ def _set_to_list_field(project_name: str, field: str, values: list[str]) -> None
 
 
 def _add_to_list_field(project_name: str, field: str, value: str) -> None:
+    """Add a value to a list field in the project
+    Args:
+        project_name (str): id of the project
+        field (str): field to add the value to
+        value (str): value to add
+    """
     if _log_error_if_id_or_value_invalid(project_name, value):
         return
     data: dict[str, ItemProject] = load_data()
@@ -648,6 +673,12 @@ def _add_to_list_field(project_name: str, field: str, value: str) -> None:
 
 
 def _remove_from_list_field(project_name: str, field: str, value: str) -> None:
+    """Remove a value from a list field in the project
+    Args:
+        project_name (str): id of the project
+        field (str): field to remove the value from
+        value (str): value to remove
+    """
     if _log_error_if_id_or_value_invalid(project_name, value):
         return
     data: dict[str, ItemProject] = load_data()
@@ -657,7 +688,12 @@ def _remove_from_list_field(project_name: str, field: str, value: str) -> None:
 
 
 def _set_to_dict_list_field(project_name: str, field: str, values: dict[str, list[str]]) -> None:
-    """Set the field to a new dictionary of lists"""
+    """Set the field to a new dictionary of lists
+    Args:
+        project_name (str): id of the project
+        field (str): field to set
+        values (dict[str, list[str]]): dictionary of lists to set
+    """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
         return
@@ -667,6 +703,13 @@ def _set_to_dict_list_field(project_name: str, field: str, values: dict[str, lis
 
 
 def _add_to_dict_list_field(project_name: str, field: str, key: str, value: str) -> None:
+    """Add a value to a list in a dictionary field of the project
+    Args:
+        project_name (str): id of the project
+        field (str): field to add the value to
+        key (str): key in the dictionary
+        value (str): value to add
+    """
     if _log_error_if_id_or_value_invalid(project_name, key, value):
         return
     data: dict[str, ItemProject] = load_data()
@@ -680,6 +723,13 @@ def _add_to_dict_list_field(project_name: str, field: str, key: str, value: str)
 def _remove_from_dict_list_field(
     project_name: str, field: str, key: str, value: str
 ) -> None:
+    """Remove a value from a list in a dictionary field of the project
+    Args:
+        project_name (str): id of the project
+        field (str): field to remove the value from
+        key (str): key in the dictionary
+        value (str): value to remove
+    """
     if _log_error_if_id_or_value_invalid(project_name, key, value):
         return
     data: dict[str, ItemProject] = load_data()
