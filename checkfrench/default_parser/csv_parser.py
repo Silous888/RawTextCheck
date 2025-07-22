@@ -11,6 +11,14 @@ from the specified column. The first column starts at 1.
 # == Imports ==================================================================
 
 import csv
+from logging import Logger
+
+from checkfrench.logger import get_logger
+
+
+# == Global Variables =========================================================
+
+logger: Logger = get_logger(__name__)
 
 
 # == Functions ================================================================
@@ -30,6 +38,7 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
         if col_index < 1:
             return []
     except ValueError:
+        logger.error("%s is not a valid argument for the csv parser.", argument)
         return []
 
     results: list[tuple[str, str]] = []
@@ -40,10 +49,10 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
             for i, row in enumerate(reader, start=1):
                 if len(row) < col_index:
                     continue
-                value = row[col_index - 1]
+                value: str = row[col_index - 1]
                 if value.strip():
                     results.append((str(i), value.strip()))
-    except Exception:
-        return []
+    except Exception as e:
+        logger.error("Error when parsing the csv %s : %s", pathfile, e)
 
     return results
