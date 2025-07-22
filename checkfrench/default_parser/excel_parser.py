@@ -11,8 +11,16 @@ This parser acts as a default parser for excel files.
 
 # == Imports ==================================================================
 
+from logging import Logger
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import column_index_from_string
+
+from checkfrench.logger import get_logger
+
+
+# == Global Variables =========================================================
+
+logger: Logger = get_logger(__name__)
 
 
 # == Functions ================================================================
@@ -39,6 +47,7 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
     try:
         col_index: int = column_index_from_string(argument.upper())
     except ValueError:
+        logger.error("%s is not a valid argument for the excel parser.", argument)
         return []
 
     try:
@@ -57,5 +66,6 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
 
         return results
 
-    except Exception:
+    except Exception as e:
+        logger.error("Error when parsing the excel %s : %s", pathfile, e)
         return []
