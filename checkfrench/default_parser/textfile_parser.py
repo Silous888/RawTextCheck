@@ -42,6 +42,6 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
                     lines.append((str(i), stripped))
 
         return lines
-    except UnicodeDecodeError:
-        logger.error("Can't decode %s with this parser.", pathfile)
+    except UnicodeDecodeError as e:
+        logger.error("Error when parsing the textfile %s : %s", pathfile, e)
         return lines
