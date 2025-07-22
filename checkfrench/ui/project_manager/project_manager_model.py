@@ -92,6 +92,14 @@ class ProjectManagerModel():
             return
         json_projects.set_entry_from_item(project_name, data)
 
+    def export_project_data(self, project_name: str, filepath: str) -> None:
+        """Exports the project data for the given project name to the specified file path.
+        Args:
+            project_name (str): The name of the project to export.
+            filepath (str): The file path where the project data should be exported.
+        """
+        json_projects.export_project_data(project_name, filepath)
+
 
 class ProjectTitleComboBoxModel(QAbstractListModel):
     """Model for the project title combobox in the project manager dialog.

@@ -142,6 +142,20 @@ def get_project_data(project_name: str) -> ItemProject | None:
     return data.get(project_name)
 
 
+def export_project_data(project_name: str, filepath: str) -> None:
+    """Export the project data for a given project name.
+    Args:
+        project_name (str): The name of the project to export.
+        filepath (str): The file path where the project data will be exported.
+    """
+    project_data: ItemProject | None = get_project_data(project_name)
+    if project_data is None:
+        logger.error("Project %s does not exist.", project_name)
+        return
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(project_data, f, ensure_ascii=False, indent=4)
+    logger.info("Project %s exported to %s.", project_name, filepath)
+
 def create_new_entry(
         project_name: str,
         language: str,

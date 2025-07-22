@@ -12,7 +12,7 @@ This module provides a dialog for managing projects, including creating, deletin
 
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QFileDialog
 
 # -------------------- Import Lib User -------------------
 from checkfrench.default_parameters import NOBREAK_SPACE, NARROW_NOBREAK_SPACE
@@ -65,6 +65,8 @@ class DialogProjectManager(QDialog):
         self.ui.pushButton_restore.clicked.connect(self.pushButton_restore_clicked)
         self.ui.pushButton_save.clicked.connect(self.pushButton_save_clicked)
         self.ui.pushButton_saveAndQuit.clicked.connect(self.pushButton_saveAndQuit_clicked)
+        self.ui.pushButton_import.clicked.connect(self.pushButton_import_clicked)
+        self.ui.pushButton_export.clicked.connect(self.pushButton_export_clicked)
         # comboboxes
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
 
@@ -115,6 +117,15 @@ class DialogProjectManager(QDialog):
         if project_name is not None:
             self.save_project_data(project_name)
         self.close()
+
+    def pushButton_import_clicked(self) -> None:
+        """Slot when the import button is clicked."""
+        pass
+
+    def pushButton_export_clicked(self) -> None:
+        """Slot when the export button is clicked.
+        Open a window to choose where to save the project export and export it."""
+        self.export_process(self.ui.comboBox_project.currentText())
 
     def comboBox_project_currentIndexChanged(self, index: int) -> None:
         """Slot when the project combobox index is changed.
@@ -217,3 +228,16 @@ class DialogProjectManager(QDialog):
         }
         # Save the project data using the model
         self.m_model.save_project_data(project_name, data)
+
+    def export_process(self, project_name: str) -> None:
+        filepath, _ = QFileDialog.getSaveFileName(
+            self,
+            self.tr("Export Project"),
+            f"{project_name}.json",
+            self.tr("JSON Files (*.json);;All Files (*)")
+        )
+
+        if not filepath:
+            return  # User cancelled
+
+        self.m_model.export_project_data(project_name, filepath)
