@@ -48,8 +48,8 @@ class MainWindow(QMainWindow):
         self.set_up_model()
         self.set_up_connect()
 
-        self.set_enable_file_valid(False)
-        self.set_enable_project_has_project(False)
+        self.set_enabled_file_valid(False)
+        self.set_enabled_project_has_project(False)
         self.ui.comboBox_project.setCurrentText(json_config.load_data()["last_project"])
 
         self.ui.tableView_result.custom_context_actions_requested.connect(self.add_custom_actions_to_menu)
@@ -119,9 +119,9 @@ class MainWindow(QMainWindow):
         self.model.resultsTableModel.project_name = self.model.titleComboBoxModel.get_value(index) or ""
         self.model.resultsTableModel.load_data()
         if self.ui.comboBox_project.currentText():
-            self.set_enable_project_has_project(True)
+            self.set_enabled_project_has_project(True)
         else:
-            self.set_enable_project_has_project(False)
+            self.set_enabled_project_has_project(False)
 
     def lineEdit_filepath_textChanged(self) -> None:
         """Slot for handling text changes in the filepath lineEdit
@@ -133,12 +133,12 @@ class MainWindow(QMainWindow):
             self.model.resultsTableModel.filename = filename
             self.ui.label_fileOpened.setText(filename)
             self.model.resultsTableModel.load_data()
-            self.set_enable_file_valid(True)
+            self.set_enabled_file_valid(True)
         else:
             self.model.resultsTableModel.filename = ""
             self.ui.label_fileOpened.setText("")
             self.model.resultsTableModel.clear_data()
-            self.set_enable_file_valid(False)
+            self.set_enabled_file_valid(False)
 
     def pushButton_process_clicked(self) -> None:
         """Slot when the create project button is clicked.
@@ -146,21 +146,19 @@ class MainWindow(QMainWindow):
         project_name: str | None = self.model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
         if project_name is None:
             return
+        self.set_enabled_during_process(False)
         self.model.worker.signal_run_process_start.emit(
             self.ui.lineEdit_filepath.text(),
             project_name,
             self.ui.lineEdit_argument.text()
             )
-        self.model.resultsTableModel.load_data()
 
     def run_process_finished(self) -> None:
         """Slot when the worker process is finished.
         Updates the model and UI after processing is complete.
         """
-        print("run_process_finished")
+        self.set_enabled_during_process(True)
         self.model.resultsTableModel.load_data()
-        self.ui.tableView_result.scrollToTop()
-        self.ui.tableView_result.setFocus()
 
 # -------------------- Events --------------------
 
@@ -213,12 +211,33 @@ class MainWindow(QMainWindow):
 
 # -------------------- Methods --------------------
 
-    def set_enable_file_valid(self, is_valid: bool) -> None:
+    def set_enabled_file_valid(self, is_valid: bool) -> None:
+        """Enable or disable UI elements based on file validity.
+        Args:
+            is_valid (bool): True if the file is valid, False otherwise.
+        """
         self.ui.pushButton_process.setEnabled(is_valid)
 
-    def set_enable_project_has_project(self, has_project: bool) -> None:
+    def set_enabled_project_has_project(self, has_project: bool) -> None:
+        """Enable or disable UI elements based on whether a project is selected.
+        Args:
+            has_project (bool): True if a project is selected, False otherwise.
+        """
         self.ui.tableView_result.setEnabled(has_project)
         self.ui.lineEdit_argument.setEnabled(has_project)
+
+    def set_enabled_during_process(self, is_enabled: bool) -> None:
+        """Enable or disable UI elements during processing.
+        Args:
+            is_enabled (bool): True to enable, False to disable.
+        """
+        self.ui.lineEdit_argument.setEnabled(is_enabled)
+        self.ui.comboBox_project.setEnabled(is_enabled)
+        self.ui.lineEdit_filepath.setEnabled(is_enabled)
+        self.ui.pushButton_process.setEnabled(is_enabled)
+        self.ui.tableView_result.setEnabled(is_enabled)
+        self.ui.menuManage.setEnabled(is_enabled)
+        self.ui.menuPreference.setEnabled(is_enabled)
 
     def language_selected(self, action: QAction) -> None:
         selected_code = action.data()
