@@ -1,7 +1,7 @@
 # project files
-checkfrench/config/*
+config/*
 credentials.py
-checkfrench/results/*
+results/*
 checkfrench/test.py
 test_parse.txt
 

@@ -13,7 +13,6 @@ maintenance.
 
 # == Imports ==================================================================
 
-from pathlib import Path
 from typing import Tuple
 
 from PyQt5.QtCore import QCoreApplication as QCA
@@ -21,11 +20,11 @@ from PyQt5.QtCore import QCoreApplication as QCA
 
 # == Constants ================================================================
 
-CONFIG_FOLDER: Path = Path(__file__).parent / "config"
+CONFIG_FOLDER = "config"
 
 # ------- App Config ----------
 
-JSON_CONFIG_PATH: Path = CONFIG_FOLDER / "config.json"
+JSON_CONFIG_PATH = CONFIG_FOLDER + "/config.json"
 
 LANGUAGES: list[Tuple[str, str]] = [
     ("english", "English"),
@@ -43,7 +42,7 @@ default value"""
 
 # ------- Project Config ----------
 
-JSON_PROJECT_PATH: Path = CONFIG_FOLDER / "data_projects.json"
+JSON_PROJECT_PATH = CONFIG_FOLDER + "/data_projects.json"
 """Path to the JSON file containing projects data"""
 
 DEFAULT_VALID_ALPHANUMERIC = "0123456789" \
@@ -157,7 +156,7 @@ LANGUAGES_LANGUAGETOOL: list[Tuple[str, str]] = [
 
 # ------- Result Config ----------
 
-RESULTS_FOLDER_PATH: Path = Path(__file__).parent / "results"
+RESULTS_FOLDER_PATH = "results"
 """Path to the folder containing results"""
 
 INVALID_CHAR_TEXT_ERROR: str = QCA.translate("error text", "This character in not accepted.")
