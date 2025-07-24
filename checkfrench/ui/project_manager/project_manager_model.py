@@ -14,14 +14,13 @@ ignored substrings, and the worker for project management tasks.
 # == Imports ==================================================================
 
 # -------------------- Import Lib Tier -------------------
-from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
+from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QVariant, Qt
 
 # -------------------- Import Lib User -------------------
 from checkfrench.default_parameters import LANGUAGES_LANGUAGETOOL
 from checkfrench.default_parser import LIST_DEFAULT_PARSER
 from checkfrench.newtype import ItemProject
 from checkfrench.script import json_projects
-from checkfrench.ui.project_manager.project_manager_worker import WorkerProjectManager
 
 
 # == Classes ==================================================================
@@ -44,21 +43,7 @@ class ProjectManagerModel():
 
     def __init__(self) -> None:
         """Initialize the ProjectManagerModel."""
-        self.worker_start()
         self.model_start()
-
-    def worker_start(self) -> None:
-        """Start the worker thread for project management tasks."""
-        self.m_thread = QThread()
-        self.m_thread.start()
-        self.m_worker = WorkerProjectManager()
-        self.m_worker.moveToThread(self.m_thread)
-
-    def worker_stop(self) -> None:
-        """Stop the worker thread."""
-        if self.m_thread.isRunning():
-            self.m_thread.quit()
-            self.m_thread.wait()
 
     def model_start(self) -> None:
         """Initialize the models for comboboxes and table views."""

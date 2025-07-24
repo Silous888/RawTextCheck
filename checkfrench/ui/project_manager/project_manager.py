@@ -11,7 +11,6 @@ This module provides a dialog for managing projects, including creating, deletin
 # == Imports ==================================================================
 
 # -------------------- Import Lib Tier -------------------
-from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QDialog, QFileDialog
 
 # -------------------- Import Lib User -------------------
@@ -141,15 +140,6 @@ class DialogProjectManager(QDialog):
     def lineEdit_projectName_editingFinished(self) -> None:
         """Slot when the project name line edit editing is finished."""
         pass
-
-    def closeEvent(self, a0: QCloseEvent | None) -> None:
-        """Handles the close event of the dialog.
-        Args:
-            a0 (QCloseEvent | None): The close event, if any.
-        """
-        self.m_model.worker_stop()
-        if a0 is not None:
-            a0.accept()
 
     # -------------------- Methods -------------------
 
