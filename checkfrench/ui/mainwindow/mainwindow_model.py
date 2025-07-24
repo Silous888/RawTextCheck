@@ -24,7 +24,7 @@ from checkfrench.default_parameters import (
     LANGUAGETOOL_SPELLING_CATEGORY,
 )
 from checkfrench.newtype import ItemProject, ItemResult
-from checkfrench.script import json_projects, json_results, languagetool, process
+from checkfrench.script import json_projects, json_results, languagetool
 from checkfrench.ui.mainwindow.mainwindow_worker import WorkerMainWindow
 
 
@@ -45,16 +45,16 @@ class MainWindowModel():
 
     def worker_start(self) -> None:
         """Initialize the worker thread and move the worker to it."""
-        self.m_thread = QThread()
-        self.m_thread.start()
-        self.m_worker = WorkerMainWindow()
-        self.m_worker.moveToThread(self.m_thread)
+        self.thread = QThread()
+        self.thread.start()
+        self.worker = WorkerMainWindow()
+        self.worker.moveToThread(self.thread)
 
     def worker_stop(self) -> None:
         """Stop the worker thread if it is running."""
-        if self.m_thread.isRunning():
-            self.m_thread.quit()
-            self.m_thread.wait()
+        if self.thread.isRunning():
+            self.thread.quit()
+            self.thread.wait()
 
     def model_start(self, project_name: str, filename: str) -> None:
         """Initialize the project title combobox model."""
@@ -100,7 +100,7 @@ class MainWindowModel():
 
     def generate_result(self, filepath: str, project_name: str, argument_parser: str) -> None:
 
-        process.process_file(filepath, project_name, argument_parser)
+        self.worker.run_process(filepath, project_name, argument_parser)
 
 
 class ProjectTitleComboBoxModel(QAbstractListModel):

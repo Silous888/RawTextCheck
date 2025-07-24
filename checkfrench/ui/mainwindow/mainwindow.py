@@ -45,8 +45,8 @@ class MainWindow(QMainWindow):
 
         self.ui.tableView_result.set_columns_hidden_by_default(json_config.load_data()["hidden_column"])
         self.set_up_language_menu()
-        self.set_up_connect()
         self.set_up_model()
+        self.set_up_connect()
 
         self.set_enable_file_valid(False)
         self.set_enable_project_has_project(False)
@@ -78,9 +78,9 @@ class MainWindow(QMainWindow):
 
     def set_up_model(self) -> None:
         """Initialize the model for the main window."""
-        self.m_model = MainWindowModel(self.ui.comboBox_project.currentText(), "")
-        self.ui.comboBox_project.setModel(self.m_model.titleComboBoxModel)
-        self.ui.tableView_result.setModel(self.m_model.resultsTableModel)
+        self.model = MainWindowModel(self.ui.comboBox_project.currentText(), "")
+        self.ui.comboBox_project.setModel(self.model.titleComboBoxModel)
+        self.ui.tableView_result.setModel(self.model.resultsTableModel)
 
     def set_up_connect(self) -> None:
         """connect slots and signals
@@ -94,6 +94,9 @@ class MainWindow(QMainWindow):
         self.ui.lineEdit_filepath.textChanged.connect(self.lineEdit_filepath_textChanged)
         # pushbutton
         self.ui.pushButton_process.clicked.connect(self.pushButton_process_clicked)
+        # worker
+        self.model.worker.signal_run_process_start.connect(self.model.worker.run_process)
+        self.model.worker.signal_run_process_finished.connect(self.run_process_finished)
 
 # -------------------- Slots --------------------
 
@@ -103,7 +106,7 @@ class MainWindow(QMainWindow):
         current_project: str = self.ui.comboBox_project.currentText()
         self.dialog_project_manager = DialogProjectManager(current_project)
         self.dialog_project_manager.exec()
-        self.m_model.titleComboBoxModel.load_data()
+        self.model.titleComboBoxModel.load_data()
         self.ui.comboBox_project.setCurrentText(current_project)
 
     def comboBox_project_currentIndexChanged(self, index: int) -> None:
@@ -112,9 +115,9 @@ class MainWindow(QMainWindow):
         Args:
             index (int): The index of the selected project in the combobox.
         """
-        self.ui.lineEdit_argument.setText(self.m_model.get_argument_parser(index))
-        self.m_model.resultsTableModel.project_name = self.m_model.titleComboBoxModel.get_value(index) or ""
-        self.m_model.resultsTableModel.load_data()
+        self.ui.lineEdit_argument.setText(self.model.get_argument_parser(index))
+        self.model.resultsTableModel.project_name = self.model.titleComboBoxModel.get_value(index) or ""
+        self.model.resultsTableModel.load_data()
         if self.ui.comboBox_project.currentText():
             self.set_enable_project_has_project(True)
         else:
@@ -125,28 +128,39 @@ class MainWindow(QMainWindow):
         if the text is a valid filepath, update ui and model
         if not, clear ui and current data
         """
-        if self.m_model.is_file_exist(self.ui.lineEdit_filepath.text()):
-            filename: str = self.m_model.get_filename_from_filepath(self.ui.lineEdit_filepath.text())
-            self.m_model.resultsTableModel.filename = filename
+        if self.model.is_file_exist(self.ui.lineEdit_filepath.text()):
+            filename: str = self.model.get_filename_from_filepath(self.ui.lineEdit_filepath.text())
+            self.model.resultsTableModel.filename = filename
             self.ui.label_fileOpened.setText(filename)
-            self.m_model.resultsTableModel.load_data()
+            self.model.resultsTableModel.load_data()
             self.set_enable_file_valid(True)
         else:
-            self.m_model.resultsTableModel.filename = ""
+            self.model.resultsTableModel.filename = ""
             self.ui.label_fileOpened.setText("")
-            self.m_model.resultsTableModel.clear_data()
+            self.model.resultsTableModel.clear_data()
             self.set_enable_file_valid(False)
 
     def pushButton_process_clicked(self) -> None:
         """Slot when the create project button is clicked.
         """
-        project_name: str | None = self.m_model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
+        project_name: str | None = self.model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
         if project_name is None:
             return
-        self.m_model.generate_result(self.ui.lineEdit_filepath.text(),
-                                     project_name,
-                                     self.ui.lineEdit_argument.text())
-        self.m_model.resultsTableModel.load_data()
+        self.model.worker.signal_run_process_start.emit(
+            self.ui.lineEdit_filepath.text(),
+            project_name,
+            self.ui.lineEdit_argument.text()
+            )
+        self.model.resultsTableModel.load_data()
+
+    def run_process_finished(self) -> None:
+        """Slot when the worker process is finished.
+        Updates the model and UI after processing is complete.
+        """
+        print("run_process_finished")
+        self.model.resultsTableModel.load_data()
+        self.ui.tableView_result.scrollToTop()
+        self.ui.tableView_result.setFocus()
 
 # -------------------- Events --------------------
 
@@ -193,7 +207,7 @@ class MainWindow(QMainWindow):
         """
         json_config.set_last_project(self.ui.comboBox_project.currentText())
         json_config.set_hidden_column(self.ui.tableView_result.get_hidden_columns_labels())
-        self.m_model.model_stop()
+        self.model.model_stop()
         if a0 is not None:
             a0.accept()
 
@@ -229,7 +243,7 @@ class MainWindow(QMainWindow):
         if len(selected) != 1:
             return
 
-        item_result: ItemResult = self.m_model.resultsTableModel.data_row(selected[0])
+        item_result: ItemResult = self.model.resultsTableModel.data_row(selected[0])
 
         if item_result["error_type"] == INVALID_CHAR_TEXT_ERROR_TYPE:
             action_add_valid_character = QAction(self.tr("Add character to valid characters"), self)
@@ -261,7 +275,7 @@ class MainWindow(QMainWindow):
         Args:
             value (str): _description_
         """
-        self.m_model.resultsTableModel.add_valid_character(value)
+        self.model.resultsTableModel.add_valid_character(value)
 
     def action_remove_banword_triggered(self, value: str) -> None:
         """handle removing word from the banword list
@@ -269,7 +283,7 @@ class MainWindow(QMainWindow):
         Args:
             value (str): word
         """
-        self.m_model.resultsTableModel.remove_banword(value)
+        self.model.resultsTableModel.remove_banword(value)
 
     def action_add_rules_triggered(self, value: str) -> None:
         """Handle adding a new rule to ignored rules
@@ -277,7 +291,7 @@ class MainWindow(QMainWindow):
         Args:
             value (str): rule type
         """
-        self.m_model.resultsTableModel.add_ignored_rule(value)
+        self.model.resultsTableModel.add_ignored_rule(value)
 
     def action_action_add_word_dictionary_triggered(self, value: str) -> None:
         """Handle adding a word to the dictionary
@@ -285,4 +299,4 @@ class MainWindow(QMainWindow):
         Args:
             value (str): word to add
         """
-        self.m_model.resultsTableModel.add_word_dictionary(value)
+        self.model.resultsTableModel.add_word_dictionary(value)

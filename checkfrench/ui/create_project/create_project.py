@@ -36,16 +36,16 @@ class DialogCreateProject(QDialog):
         self.set_up_connect()
         self.set_up_model()
 
-        self.ui.comboBox_language.setCurrentIndex(self.m_model.languageComboBoxModel.get_default_index())
-        self.ui.comboBox_parser.setCurrentIndex(self.m_model.parserComboBoxModel.get_default_index())
+        self.ui.comboBox_language.setCurrentIndex(self.model.languageComboBoxModel.get_default_index())
+        self.ui.comboBox_parser.setCurrentIndex(self.model.parserComboBoxModel.get_default_index())
 
         self.ui.pushButton_create.setEnabled(False)
 
     def set_up_model(self) -> None:
         """Initialize the model for the dialog."""
-        self.m_model = CreateProjectModel()
-        self.ui.comboBox_language.setModel(self.m_model.languageComboBoxModel)
-        self.ui.comboBox_parser.setModel(self.m_model.parserComboBoxModel)
+        self.model = CreateProjectModel()
+        self.ui.comboBox_language.setModel(self.model.languageComboBoxModel)
+        self.ui.comboBox_parser.setModel(self.model.parserComboBoxModel)
 
     def set_up_connect(self) -> None:
         """Connect slots and signals."""
@@ -65,7 +65,7 @@ class DialogCreateProject(QDialog):
         """Slot for when the project name line edit text changed"""
         if not self.ui.lineEdit_projectName.text().strip():
             self.ui.pushButton_create.setEnabled(False)
-        elif self.m_model.is_project_name_valid(self.ui.lineEdit_projectName.text()):
+        elif self.model.is_project_name_valid(self.ui.lineEdit_projectName.text()):
             self.ui.pushButton_create.setEnabled(True)
         else:
             self.ui.pushButton_create.setEnabled(False)
@@ -75,10 +75,10 @@ class DialogCreateProject(QDialog):
     def create_new_project(self) -> None:
         """Create a new project with the specified name and language."""
         project_name: str = self.ui.lineEdit_projectName.text().strip()
-        language_code: str = self.m_model.languageComboBoxModel.get_code(self.ui.comboBox_language.currentIndex())
-        parser: str | None = self.m_model.parserComboBoxModel.get_value(self.ui.comboBox_parser.currentIndex())
+        language_code: str = self.model.languageComboBoxModel.get_code(self.ui.comboBox_language.currentIndex())
+        parser: str | None = self.model.parserComboBoxModel.get_value(self.ui.comboBox_parser.currentIndex())
 
         if not parser:
             return
 
-        self.m_model.create_project(project_name, language_code, parser)
+        self.model.create_project(project_name, language_code, parser)

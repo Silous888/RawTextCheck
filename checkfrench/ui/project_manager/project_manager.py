@@ -46,15 +46,15 @@ class DialogProjectManager(QDialog):
 
     def set_up_model(self) -> None:
         """Initialize the model for managing project data."""
-        self.m_model = ProjectManagerModel()
-        self.ui.comboBox_project.setModel(self.m_model.titleComboBoxModel)
-        self.ui.comboBox_language.setModel(self.m_model.languageComboBoxModel)
-        self.ui.comboBox_parser.setModel(self.m_model.parserComboBoxModel)
-        self.ui.dataTableView_dictionary.setModel(self.m_model.dictionaryModel)
-        self.ui.dataTableView_banwords.setModel(self.m_model.banwordsModel)
-        self.ui.dataTableView_ignoredCodes.setModel(self.m_model.codesModel)
-        self.ui.dataTableView_rules.setModel(self.m_model.rulesModel)
-        self.ui.dataTableView_ignoredSubstrings.setModel(self.m_model.substringsModel)
+        self.model = ProjectManagerModel()
+        self.ui.comboBox_project.setModel(self.model.titleComboBoxModel)
+        self.ui.comboBox_language.setModel(self.model.languageComboBoxModel)
+        self.ui.comboBox_parser.setModel(self.model.parserComboBoxModel)
+        self.ui.dataTableView_dictionary.setModel(self.model.dictionaryModel)
+        self.ui.dataTableView_banwords.setModel(self.model.banwordsModel)
+        self.ui.dataTableView_ignoredCodes.setModel(self.model.codesModel)
+        self.ui.dataTableView_rules.setModel(self.model.rulesModel)
+        self.ui.dataTableView_ignoredSubstrings.setModel(self.model.substringsModel)
 
     def set_up_connect(self) -> None:
         """connect slots and signals"""
@@ -79,19 +79,19 @@ class DialogProjectManager(QDialog):
         Opens a dialog to create a new project."""
         dialog: DialogCreateProject = DialogCreateProject()
         dialog.exec_()
-        self.m_model.titleComboBoxModel.load_data()
+        self.model.titleComboBoxModel.load_data()
 
     def pushButton_deleteProject_clicked(self) -> None:
         """Slot when the delete project button is clicked.
         Opens a dialog to confirm deletion of the selected project."""
         index: int = self.ui.comboBox_project.currentIndex()
-        project_name: str | None = self.m_model.titleComboBoxModel.get_value(index)
+        project_name: str | None = self.model.titleComboBoxModel.get_value(index)
 
         if project_name is None:
             return
         dialog: DialogDeleteProject = DialogDeleteProject(project_name)
         dialog.exec_()
-        self.m_model.titleComboBoxModel.load_data()
+        self.model.titleComboBoxModel.load_data()
         self.ui.comboBox_project.setCurrentText(project_name)
         self.load_project_data(self.ui.comboBox_project.currentIndex())
 
@@ -105,14 +105,14 @@ class DialogProjectManager(QDialog):
     def pushButton_save_clicked(self) -> None:
         """Slot when the save button is clicked.
         Saves the current project data."""
-        project_name: str | None = self.m_model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
+        project_name: str | None = self.model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
         if project_name is not None:
             self.save_project_data(project_name)
 
     def pushButton_saveAndQuit_clicked(self) -> None:
         """Slot when the save and quit button is clicked.
         Saves the current project data and closes the dialog."""
-        project_name: str | None = self.m_model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
+        project_name: str | None = self.model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
         if project_name is not None:
             self.save_project_data(project_name)
         self.close()
@@ -149,18 +149,18 @@ class DialogProjectManager(QDialog):
             index (int): The index of the selected project in the combobox.
         """
         # Get the project name from the combobox model
-        project_name: str | None = self.m_model.titleComboBoxModel.get_value(index)
+        project_name: str | None = self.model.titleComboBoxModel.get_value(index)
 
         if project_name is None:
             return
-        data: ItemProject | None = self.m_model.get_project_data(project_name)
+        data: ItemProject | None = self.model.get_project_data(project_name)
         if data is None:
             return
 
         # Set the UI elements with the loaded project data
         self.ui.lineEdit_projectName.setText(project_name)
         self.ui.comboBox_language.setCurrentIndex(
-            self.m_model.languageComboBoxModel.get_index_by_code(data["language"]))
+            self.model.languageComboBoxModel.get_index_by_code(data["language"]))
         self.ui.comboBox_parser.setCurrentText(data["parser"])
         self.ui.lineEdit_argParser.setText(data["arg_parser"])
 
@@ -177,13 +177,13 @@ class DialogProjectManager(QDialog):
 
         self.ui.textEdit_validCharacters.setPlainText(validCharacters)
 
-        self.m_model.dictionaryModel.load_data(data["dictionary"])
-        self.m_model.banwordsModel.load_data(data["banwords"])
-        self.m_model.codesModel.load_data(data["ignored_codes_into_space"],
-                                          data["ignored_codes_into_nothing"])
-        self.m_model.substringsModel.load_data(data["ignored_substrings_into_space"],
-                                               data["ignored_substrings_into_nothing"])
-        self.m_model.rulesModel.load_data(data["ignored_rules"])
+        self.model.dictionaryModel.load_data(data["dictionary"])
+        self.model.banwordsModel.load_data(data["banwords"])
+        self.model.codesModel.load_data(data["ignored_codes_into_space"],
+                                        data["ignored_codes_into_nothing"])
+        self.model.substringsModel.load_data(data["ignored_substrings_into_space"],
+                                             data["ignored_substrings_into_nothing"])
+        self.model.rulesModel.load_data(data["ignored_rules"])
 
     def save_project_data(self, project_name: str) -> None:
         """Saves the current project data to the model.
@@ -191,7 +191,7 @@ class DialogProjectManager(QDialog):
             project_name (str): The name of the project to save.
         """
         # Prepare the data to be saved
-        parser: str | None = self.m_model.parserComboBoxModel.get_value(self.ui.comboBox_parser.currentIndex())
+        parser: str | None = self.model.parserComboBoxModel.get_value(self.ui.comboBox_parser.currentIndex())
         if parser is None:
             parser = "textfile"
 
@@ -204,21 +204,21 @@ class DialogProjectManager(QDialog):
             validcharacters = validcharacters + NOBREAK_SPACE
 
         data: ItemProject = {
-            "language": self.m_model.languageComboBoxModel.get_code(self.ui.comboBox_language.currentIndex()),
+            "language": self.model.languageComboBoxModel.get_code(self.ui.comboBox_language.currentIndex()),
             "parser": parser,
             "arg_parser": self.ui.lineEdit_argParser.text(),
             "valid_characters": validcharacters,
-            "dictionary": self.m_model.dictionaryModel.get_data(),
-            "banwords": self.m_model.banwordsModel.get_data(),
-            "ignored_codes_into_space": self.m_model.codesModel.get_data()[0],
-            "ignored_codes_into_nothing": self.m_model.codesModel.get_data()[1],
-            "ignored_substrings_into_space": self.m_model.substringsModel.get_data()[0],
-            "ignored_substrings_into_nothing": self.m_model.substringsModel.get_data()[1],
-            "ignored_rules": self.m_model.rulesModel.get_data(),
+            "dictionary": self.model.dictionaryModel.get_data(),
+            "banwords": self.model.banwordsModel.get_data(),
+            "ignored_codes_into_space": self.model.codesModel.get_data()[0],
+            "ignored_codes_into_nothing": self.model.codesModel.get_data()[1],
+            "ignored_substrings_into_space": self.model.substringsModel.get_data()[0],
+            "ignored_substrings_into_nothing": self.model.substringsModel.get_data()[1],
+            "ignored_rules": self.model.rulesModel.get_data(),
             "synchronized_path": ""
         }
         # Save the project data using the model
-        self.m_model.save_project_data(project_name, data)
+        self.model.save_project_data(project_name, data)
 
     def export_process(self, project_name: str) -> None:
         """Exports the project data to a JSON file.
@@ -235,7 +235,7 @@ class DialogProjectManager(QDialog):
         if not filepath:
             return  # User cancelled
 
-        self.m_model.export_project_data(project_name, filepath)
+        self.model.export_project_data(project_name, filepath)
 
     def import_process(self, project_name: str) -> None:
         """Imports project data from a JSON file.
@@ -251,5 +251,5 @@ class DialogProjectManager(QDialog):
 
         if not filepath:
             return
-        self.m_model.import_project_data(project_name, filepath)
+        self.model.import_project_data(project_name, filepath)
         self.load_project_data(self.ui.comboBox_project.currentIndex())

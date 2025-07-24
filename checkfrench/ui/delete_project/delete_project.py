@@ -36,7 +36,7 @@ class DialogDeleteProject(QDialog):
         self.ui = Ui_Dialog_deleteProject()
 
         self.ui.setupUi(self)  # type: ignore
-        self.m_project_name: str = project_name
+        self.project_name: str = project_name
         self.ui.label_projectName.setText(project_name)
 
         self.set_up_connect()
@@ -62,4 +62,4 @@ class DialogDeleteProject(QDialog):
 
     def delete_project(self) -> None:
         """Delete the project with the specified name."""
-        json_projects.delete_entry(self.m_project_name)
+        json_projects.delete_entry(self.project_name)
