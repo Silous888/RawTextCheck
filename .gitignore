@@ -1,7 +1,8 @@
 # project files
 config/*
-credentials.py
+parsers/*
 results/*
+credentials.py
 checkfrench/test.py
 test_parse.txt
 

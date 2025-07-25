@@ -67,6 +67,8 @@ DEFAULT_LANGUAGE = "en"
 DEFAULT_PARSER = "textfile"
 """Default parser when creating a project"""
 
+PLUGIN_PARSER_DIRECTORY = "parsers"
+
 # The list is sorted by language code for easier readability.
 LANGUAGES_LANGUAGETOOL: list[Tuple[str, str]] = [
     ("ar", QCA.translate("Language", "Arabic")),

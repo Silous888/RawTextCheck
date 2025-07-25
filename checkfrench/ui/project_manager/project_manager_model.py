@@ -20,7 +20,7 @@ from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, Q
 from checkfrench.default_parameters import LANGUAGES_LANGUAGETOOL
 from checkfrench.default_parser import LIST_DEFAULT_PARSER
 from checkfrench.newtype import ItemProject
-from checkfrench.script import json_projects
+from checkfrench.script import json_projects, parser_loader
 
 
 # == Classes ==================================================================
@@ -49,7 +49,8 @@ class ProjectManagerModel():
         """Initialize the models for comboboxes and table views."""
         self.titleComboBoxModel = ProjectTitleComboBoxModel()
         self.languageComboBoxModel = LanguagesComboBoxModel(LANGUAGES_LANGUAGETOOL)
-        self.parserComboBoxModel = ParserComboBoxModel(list(LIST_DEFAULT_PARSER.keys()))
+        self.parserComboBoxModel = ParserComboBoxModel(list(LIST_DEFAULT_PARSER.keys()) +
+                                                       list(parser_loader.get_all_parsers().keys()))
         self.dictionaryModel = ListTableModel()
         self.banwordsModel = ListTableModel()
         self.rulesModel = ListTableModel()

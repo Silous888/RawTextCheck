@@ -7,9 +7,11 @@ Description : functions to analyse a file and generate errors.
 
 # == Imports ==================================================================
 
+from typing import Callable
+
 from checkfrench import default_parser, default_parameters
 from checkfrench.newtype import ItemProject, ItemResult
-from checkfrench.script import json_projects, json_results, languagetool
+from checkfrench.script import json_projects, json_results, languagetool, parser_loader
 
 
 # == Functions ================================================================
@@ -187,37 +189,43 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
     if project_data is None:
         return
 
-    if project_data["parser"] in default_parser.LIST_DEFAULT_PARSER:
-        texts: list[tuple[str, str]] = (
-            default_parser.LIST_DEFAULT_PARSER[project_data["parser"]](
-                filepath, argument_parser
-            )
+    # Merge default and dynamic parsers
+    all_parsers: dict[str, Callable[[str, str], list[tuple[str, str]]]] = {
+        **default_parser.LIST_DEFAULT_PARSER,
+        **parser_loader.get_all_parsers()
+    }
+
+    parser_name: str = project_data["parser"]
+    if parser_name not in all_parsers:
+        return
+
+    # Parse the file using the selected parser
+    texts: list[tuple[str, str]] = all_parsers[parser_name](filepath, argument_parser)
+
+    texts = remove_ignored_elements_in_texts(
+        texts,
+        project_data["ignored_codes_into_space"], project_data["ignored_codes_into_nothing"],
+        project_data["ignored_substrings_into_space"], project_data["ignored_substrings_into_nothing"]
+    )
+
+    languagetool.initialize_tool(project_data["language"])
+    languagetool_result: list[ItemResult] = languagetool.analyze_text(texts,
+                                                                      project_data["dictionary"],
+                                                                      project_data["ignored_rules"])
+
+    invalid_characters_result: list[ItemResult] = generate_errors_invalid_characters(
+        texts,
+        project_data["valid_characters"]
         )
+    banwords_result: list[ItemResult] = generate_errors_banwords(texts, project_data["banwords"])
 
-        texts = remove_ignored_elements_in_texts(
-            texts,
-            project_data["ignored_codes_into_space"], project_data["ignored_codes_into_nothing"],
-            project_data["ignored_substrings_into_space"], project_data["ignored_substrings_into_nothing"]
-        )
+    line_order: dict[str, int] = {line_number: idx for idx, (line_number, _) in enumerate(texts)}
 
-        languagetool.initialize_tool(project_data["language"])
-        languagetool_result: list[ItemResult] = languagetool.analyze_text(texts,
-                                                                          project_data["dictionary"],
-                                                                          project_data["ignored_rules"])
+    all_result: list[ItemResult] = sorted(
+        languagetool_result + invalid_characters_result + banwords_result,
+        key=lambda item: (line_order.get(item["line_number"], float('inf')))
+    )
 
-        invalid_characters_result: list[ItemResult] = generate_errors_invalid_characters(
-            texts,
-            project_data["valid_characters"]
-            )
-        banwords_result: list[ItemResult] = generate_errors_banwords(texts, project_data["banwords"])
+    data: dict[str, ItemResult] = json_results.generate_id_errors(all_result)
 
-        line_order: dict[str, int] = {line_number: idx for idx, (line_number, _) in enumerate(texts)}
-
-        all_result: list[ItemResult] = sorted(
-            languagetool_result + invalid_characters_result + banwords_result,
-            key=lambda item: (line_order.get(item["line_number"], float('inf')))
-        )
-
-        data: dict[str, ItemResult] = json_results.generate_id_errors(all_result)
-
-        json_results.save_data(project_name, filepath, data)
+    json_results.save_data(project_name, filepath, data)
