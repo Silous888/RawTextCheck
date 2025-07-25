@@ -3,6 +3,11 @@ File        : process.py
 Author      : Silous
 Created on  : 2025-04-18
 Description : functions to analyse a file and generate errors.
+
+This module provides functions to process a file, analyze its content,
+and generate errors based on specific criteria such as invalid characters,
+banwords, and ignored substrings. It integrates with a parser and a language
+tool to perform the analysis and returns structured results.
 """
 
 # == Imports ==================================================================
@@ -96,6 +101,7 @@ def remove_ignored_elements_in_texts(
         ignored_substrings_into_space: dict[str, list[str]], ignored_substrings_into_nothing: dict[str, list[str]]
         ) -> list[tuple[str, str]]:
     """call remove_ignored_substrings and remove_ignored_codes on every line
+    ignored codes will be processed first, then ignored substrings
 
     Args:
         texts (list[tuple[str, str]]): list of every [line number, line text]
@@ -217,6 +223,7 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
         texts,
         project_data["valid_characters"]
         )
+
     banwords_result: list[ItemResult] = generate_errors_banwords(texts, project_data["banwords"])
 
     line_order: dict[str, int] = {line_number: idx for idx, (line_number, _) in enumerate(texts)}

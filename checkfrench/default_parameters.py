@@ -13,7 +13,7 @@ maintenance.
 
 # == Imports ==================================================================
 
-from typing import Tuple
+from typing import Tuple, Callable
 
 from PyQt5.QtCore import QCoreApplication as QCA
 
@@ -68,6 +68,11 @@ DEFAULT_PARSER = "textfile"
 """Default parser when creating a project"""
 
 PLUGIN_PARSER_DIRECTORY = "parsers"
+"""Directory where plugin parsers are stored"""
+
+PARSERFUNCTIONTYPE = Callable[[str, str], list[tuple[str, str]]]
+"""Type alias for a parser function: it takes (pathfile, argument)
+and returns a list of (str, str) tuples"""
 
 # The list is sorted by language code for easier readability.
 LANGUAGES_LANGUAGETOOL: list[Tuple[str, str]] = [

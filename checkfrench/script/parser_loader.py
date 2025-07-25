@@ -1,13 +1,33 @@
+"""
+Package     : parser_loader
+Author      : Silous
+Created on  : 2025-07-25
+Description : Dynamically load parsers from a specified directory.
+
+This module provides functionality to dynamically load parser functions
+from Python files located in a specified directory. It is useful for
+extending the application with custom parsers without modifying the core code.
+"""
+
+
+# == Imports ==================================================================
+
 import os
+from logging import Logger
 import importlib.util
-from typing import Callable
 
-from checkfrench.default_parameters import PLUGIN_PARSER_DIRECTORY
-# Define a type alias for a parser function: it takes (pathfile, argument) and returns a list of (str, str) tuples
-ParserFunction = Callable[[str, str], list[tuple[str, str]]]
+from checkfrench.default_parameters import PLUGIN_PARSER_DIRECTORY, PARSERFUNCTIONTYPE
+from checkfrench.logger import get_logger
 
 
-def get_all_parsers() -> dict[str, ParserFunction]:
+# == Global Variables =========================================================
+
+logger: Logger = get_logger(__name__)
+
+
+# == Functions ================================================================
+
+def get_all_parsers() -> dict[str, PARSERFUNCTIONTYPE]:
     """
     Dynamically load all .py plugin files from a given directory,
     and extract their 'parse_file' function.
@@ -15,15 +35,15 @@ def get_all_parsers() -> dict[str, ParserFunction]:
     Returns:
         dict[str, ParserFunction]: A mapping of module names to their parse_file functions.
     """
-    parsers: dict[str, ParserFunction] = {}
+    parsers: dict[str, PARSERFUNCTIONTYPE] = {}
 
     os.makedirs(PLUGIN_PARSER_DIRECTORY, exist_ok=True)
 
     # Iterate over all .py files in the plugin directory
     for filename in os.listdir(PLUGIN_PARSER_DIRECTORY):
-        if filename.endswith(".py") and not filename.startswith("__"):
-            module_name = filename[:-3]  # remove .py extension
-            filepath = os.path.join(PLUGIN_PARSER_DIRECTORY, filename)
+        if filename.endswith(".py"):
+            module_name: str = filename[:-3]  # remove .py extension
+            filepath: str = os.path.join(PLUGIN_PARSER_DIRECTORY, filename)
 
             # Load the module from the given file path
             spec = importlib.util.spec_from_file_location(module_name, filepath)
@@ -39,7 +59,6 @@ def get_all_parsers() -> dict[str, ParserFunction]:
                         parsers[module_name] = getattr(module, "parse_file")
 
                 except Exception as e:
-                    # If any error occurs while loading the module, print it
-                    print(f"[Plugin Load Error] {module_name}: {e}")
+                    logger.error("Error loading parser %s: %s", module_name, e)
 
     return parsers
