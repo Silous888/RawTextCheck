@@ -185,3 +185,6 @@ BANWORD_TEXT_ERROR_TYPE = "BANWORD"
 
 LANGUAGETOOL_SPELLING_CATEGORY = "misspelling"
 """LanguageTool category used to detect errors as spelling errors"""
+
+LANGUAGETOOL_MAX_LINES_PER_BATCH = 1000
+"""Maximum number of lines to process in a single batch with LanguageTool"""
