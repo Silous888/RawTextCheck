@@ -31,7 +31,7 @@ import json
 from logging import Logger
 import os
 
-from checkfrench.default_parameters import RESULTS_FOLDER_PATH
+from checkfrench.default_parameters import RESULTS_FOLDER
 from checkfrench.logger import get_logger
 from checkfrench.newtype import ItemResult
 from checkfrench.script.utils import sanitize_folder_name
@@ -53,7 +53,7 @@ def save_data(project_name: str, filename: str, data: dict[str, ItemResult]) -> 
         filename (str): name of the file
         data (dict[str, ItemResult]): data to save
     """
-    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+    folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, os.path.basename(filename) + JSON_EXT)
 
@@ -102,7 +102,7 @@ def is_result_exists(project_name: str, filename: str) -> bool:
     Returns:
         bool: True if the file exists, False otherwise
     """
-    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+    folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 
@@ -123,7 +123,7 @@ def get_file_data(project_name: str, filename: str) -> dict[str, ItemResult]:
         logger.warning("Result for file %s does not exist in project %s.", filename, project_name)
         return {}
 
-    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+    folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 
@@ -144,7 +144,7 @@ def get_folder_data(project_name: str) -> list[tuple[str, dict[str, ItemResult]]
     Returns:
         list[str, dict[str, ItemResult]]: list of files and their data
     """
-    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+    folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     files: list[str] = os.listdir(folderpath)
 
@@ -166,7 +166,7 @@ def delete_entry(project_name: str, filename: str, id_error: str) -> int:
     Returns:
         int: 0 if success, 1 if file does not exist, 2 if error not found
     """
-    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+    folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 
@@ -198,7 +198,7 @@ def delete_error_type(project_name: str, filename: str, error_type: str) -> None
         filename (str): name of the file
         error_type (str): type of the error to delete
     """
-    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+    folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 
@@ -226,7 +226,7 @@ def delete_specific_error_with_type(project_name: str, filename: str, error_type
         error_type (str): type of the error to delete
         error (str): error to delete
     """
-    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+    folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 
@@ -255,7 +255,7 @@ def delete_specific_error_with_category(project_name: str, filename: str,
         error_issue_category (str): category of the error to delete
         error (str): error to delete
     """
-    folderpath: str = os.path.join(RESULTS_FOLDER_PATH,
+    folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 

@@ -16,7 +16,7 @@ import os
 from logging import Logger
 import importlib.util
 
-from checkfrench.default_parameters import PLUGIN_PARSER_DIRECTORY, PARSERFUNCTIONTYPE
+from checkfrench.default_parameters import PLUGIN_PARSER_FOLDER, PARSERFUNCTIONTYPE
 from checkfrench.logger import get_logger
 
 
@@ -37,13 +37,13 @@ def get_all_parsers() -> dict[str, PARSERFUNCTIONTYPE]:
     """
     parsers: dict[str, PARSERFUNCTIONTYPE] = {}
 
-    os.makedirs(PLUGIN_PARSER_DIRECTORY, exist_ok=True)
+    os.makedirs(PLUGIN_PARSER_FOLDER, exist_ok=True)
 
     # Iterate over all .py files in the plugin directory
-    for filename in os.listdir(PLUGIN_PARSER_DIRECTORY):
+    for filename in os.listdir(PLUGIN_PARSER_FOLDER):
         if filename.endswith(".py"):
             module_name: str = filename[:-3]  # remove .py extension
-            filepath: str = os.path.join(PLUGIN_PARSER_DIRECTORY, filename)
+            filepath: str = os.path.join(PLUGIN_PARSER_FOLDER, filename)
 
             # Load the module from the given file path
             spec = importlib.util.spec_from_file_location(module_name, filepath)

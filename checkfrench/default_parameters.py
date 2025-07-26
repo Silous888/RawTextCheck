@@ -71,7 +71,7 @@ DEFAULT_LANGUAGE = "en"
 DEFAULT_PARSER = "textfile"
 """Default parser when creating a project"""
 
-PLUGIN_PARSER_DIRECTORY = "parsers"
+PLUGIN_PARSER_FOLDER = "parsers"
 """Directory where plugin parsers are stored"""
 
 PARSERFUNCTIONTYPE = Callable[[str, str], list[tuple[str, str]]]
@@ -167,7 +167,7 @@ LANGUAGES_LANGUAGETOOL: list[Tuple[str, str]] = [
 
 # ------- Result Config ----------
 
-RESULTS_FOLDER_PATH = "results"
+RESULTS_FOLDER = "results"
 """Path to the folder containing results"""
 
 INVALID_CHAR_TEXT_ERROR: str = QCA.translate("error text", "This character in not accepted.")

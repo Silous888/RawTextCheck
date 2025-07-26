@@ -8,7 +8,7 @@ class TestJsonResults(unittest.TestCase):
     def setUp(self) -> None:
         # create a temporary directory for RESULTS_FOLDER_PATH
         self.test_dir = tempfile.TemporaryDirectory()
-        json_results.RESULTS_FOLDER_PATH = self.test_dir.name
+        json_results.RESULTS_FOLDER = self.test_dir.name
 
         self.project_title = "TestProject"
         self.file_name = "results.json"
