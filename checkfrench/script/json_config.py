@@ -40,7 +40,8 @@ def create_json() -> None:
     data: ItemConfig = ItemConfig(language=LANGUAGES[0][0],
                                   theme=THEMES[0][0],
                                   hidden_column=[],
-                                  last_project="")
+                                  last_project="",
+                                  credentials_google={})
     save_data(data)
     logger.info("Created %s.", JSON_CONFIG_PATH)
 
@@ -113,3 +114,14 @@ def set_last_project(last_project: str) -> None:
     data["last_project"] = last_project
     save_data(data)
     logger.info("App configuration last project set to %s", data["last_project"])
+
+
+def set_credentials_google(credentials: dict[str, str]) -> None:
+    """Update credentials for Google API
+    Args:
+        credentials (dict[str, str]): credentials for Google API
+    """
+    data: ItemConfig = load_data()
+    data["credentials_google"] = credentials
+    save_data(data)
+    logger.info("App configuration Google credentials updated.")

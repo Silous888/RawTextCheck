@@ -85,3 +85,4 @@ class ItemConfig(TypedDict):
     theme: str
     hidden_column: list[str]
     last_project: str
+    credentials_google: dict[str, str]

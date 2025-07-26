@@ -21,10 +21,12 @@ from PyQt5.QtCore import QCoreApplication as QCA
 # == Constants ================================================================
 
 CONFIG_FOLDER = "config"
+"""Folder where config files are stored"""
 
 # ------- App Config ----------
 
 JSON_CONFIG_PATH = CONFIG_FOLDER + "/config.json"
+"""Path to the JSON file containing app configuration"""
 
 LANGUAGES: list[Tuple[str, str]] = [
     ("english", "English"),
@@ -58,8 +60,10 @@ DEFAULT_VALID_SPACE = " "  # basic Space
 """Default valid space proposed in a project configuration"""
 
 NARROW_NOBREAK_SPACE = " "
-NOBREAK_SPACE = " "
+"""Narrow No-Break Space, used as a space before punctuation in French"""
 
+NOBREAK_SPACE = " "
+"""No-Break Space, used as a space before punctuation"""
 
 DEFAULT_LANGUAGE = "en"
 """Default language when creating a project"""
