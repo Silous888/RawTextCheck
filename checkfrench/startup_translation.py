@@ -39,6 +39,14 @@ JSON_CONFIG_PATH = CONFIG_FOLDER + '/config.json'
 """Path to the JSON file containing app configuration,
 same as in default_parameters.py"""
 
+DEFAULT_LANGUAGE = 'english'
+"""Default language for the application,
+same as in default_parameters.py"""
+
+DEFAULT_THEME = 'light'
+"""Default theme for the application,
+same as in default_parameters.py"""
+
 
 # == Functions ================================================================
 
@@ -48,6 +56,10 @@ def load_data_config() -> ItemConfig:
     Returns:
         ItemConfig: every attribute of the configuration in an object
     """
+    if not os.path.exists(JSON_CONFIG_PATH):
+        logger.warning("Configuration file does not exist yet: %s", JSON_CONFIG_PATH)
+        return ItemConfig(language=DEFAULT_LANGUAGE, theme=DEFAULT_THEME,
+                          hidden_column=[], last_project="", credentials_google={})
     with open(JSON_CONFIG_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
     logger.info("Loaded app configuration data")
