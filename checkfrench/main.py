@@ -15,7 +15,7 @@ import sys
 from PyQt5.QtCore import QTranslator
 from PyQt5.QtWidgets import QApplication
 
-from checkfrench import startup
+from checkfrench import startup_translation
 
 
 # == Main Application =========================================================
@@ -24,17 +24,17 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    startup.create_folders()
-    startup.create_json_config()
-
-    translator: QTranslator | None = startup.init_translator()
+    translator: QTranslator | None = startup_translation.init_translator()
     if translator is not None:
         app.installTranslator(translator)
 
-    startup.create_json_projects()
-
     # Imports where translator neeed to be initialized before
+    from checkfrench import startup
     from checkfrench.ui.mainwindow.mainwindow import MainWindow
+
+    startup.create_folders()
+    startup.create_json_config()
+    startup.create_json_projects()
 
     program = MainWindow()
 

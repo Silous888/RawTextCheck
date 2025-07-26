@@ -14,7 +14,14 @@ tool to perform the analysis and returns structured results.
 
 from typing import Callable
 
-from checkfrench import default_parser, default_parameters
+from checkfrench import default_parser
+from checkfrench.default_parameters import (
+    INVALID_CHAR_TEXT_ERROR_TYPE,
+    INVALID_CHAR_TEXT_ERROR,
+    BANWORD_TEXT_ERROR_TYPE,
+    BANWORD_TEXT_ERROR
+    )
+
 from checkfrench.newtype import ItemProject, ItemResult
 from checkfrench.script import json_projects, json_results, languagetool, parser_loader
 
@@ -147,9 +154,9 @@ def generate_errors_invalid_characters(texts: list[tuple[str, str]], valid_chara
                     ItemResult(line_number=line_number,
                                line=line,
                                error=c,
-                               error_type=default_parameters.INVALID_CHAR_TEXT_ERROR_TYPE,
-                               error_issue_type=default_parameters.INVALID_CHAR_TEXT_ERROR_TYPE,
-                               explanation=default_parameters.INVALID_CHAR_TEXT_ERROR,
+                               error_type=INVALID_CHAR_TEXT_ERROR_TYPE,
+                               error_issue_type=INVALID_CHAR_TEXT_ERROR_TYPE,
+                               explanation=INVALID_CHAR_TEXT_ERROR,
                                suggestion="")
                 )
     return invalid_characters_found
@@ -174,9 +181,9 @@ def generate_errors_banwords(texts: list[tuple[str, str]], banwords: list[str]) 
                     ItemResult(line_number=line_number,
                                line=line,
                                error=word,
-                               error_type=default_parameters.BANWORD_TEXT_ERROR_TYPE,
-                               error_issue_type=default_parameters.BANWORD_TEXT_ERROR_TYPE,
-                               explanation=default_parameters.BANWORD_TEXT_ERROR,
+                               error_type=BANWORD_TEXT_ERROR_TYPE,
+                               error_issue_type=BANWORD_TEXT_ERROR_TYPE,
+                               explanation=BANWORD_TEXT_ERROR,
                                suggestion="")
                 )
     return banwords_found_in_text

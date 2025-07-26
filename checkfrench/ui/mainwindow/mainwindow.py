@@ -49,8 +49,10 @@ class MainWindow(QMainWindow):
         self.set_up_connect()
 
         self.set_enabled_file_valid(False)
-        self.set_enabled_project_has_project(False)
+        self.set_enabled_project_has_project(self.ui.comboBox_project.count() > 0)
         self.ui.comboBox_project.setCurrentText(json_config.load_data()["last_project"])
+        self.model.resultsTableModel.project_name = self.ui.comboBox_project.currentText()
+        self.ui.lineEdit_argument.setText(self.model.get_argument_parser(self.ui.comboBox_project.currentIndex()))
 
         self.ui.label_fileOpened.setText("")
         self.ui.label_updateResult.hide()
@@ -121,10 +123,7 @@ class MainWindow(QMainWindow):
         self.ui.lineEdit_argument.setText(self.model.get_argument_parser(index))
         self.model.resultsTableModel.project_name = self.model.titleComboBoxModel.get_value(index) or ""
         self.model.resultsTableModel.load_data()
-        if self.ui.comboBox_project.currentText():
-            self.set_enabled_project_has_project(True)
-        else:
-            self.set_enabled_project_has_project(False)
+        self.set_enabled_project_has_project(self.ui.comboBox_project.count() > 0)
 
     def lineEdit_filepath_textChanged(self) -> None:
         """Slot for handling text changes in the filepath lineEdit

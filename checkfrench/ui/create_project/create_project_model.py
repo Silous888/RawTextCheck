@@ -15,13 +15,14 @@ language selection and project creation logic.
 from PyQt5.QtCore import QAbstractListModel, QModelIndex, QVariant, Qt
 
 # -------------------- Import Lib User -------------------
-from checkfrench.default_parameters import LANGUAGES_LANGUAGETOOL
+
 from checkfrench.default_parameters import (
     DEFAULT_LANGUAGE,
     DEFAULT_PARSER,
     DEFAULT_VALID_ALPHANUMERIC,
     DEFAULT_VALID_PUNCTUATION,
-    DEFAULT_VALID_SPACE
+    DEFAULT_VALID_SPACE,
+    LANGUAGES_LANGUAGETOOL
 )
 from checkfrench.default_parser import LIST_DEFAULT_PARSER
 from checkfrench.script import json_projects
