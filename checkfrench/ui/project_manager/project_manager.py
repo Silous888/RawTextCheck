@@ -43,6 +43,7 @@ class DialogProjectManager(QDialog):
         self.load_project_data(self.ui.comboBox_project.currentIndex())
 
         self.ui.comboBox_project.setCurrentText(current_project)
+        self.set_enabled_has_project(self.ui.comboBox_project.count() > 0)
 
     def set_up_model(self) -> None:
         """Initialize the model for managing project data."""
@@ -94,6 +95,7 @@ class DialogProjectManager(QDialog):
         self.model.titleComboBoxModel.load_data()
         self.ui.comboBox_project.setCurrentText(project_name)
         self.load_project_data(self.ui.comboBox_project.currentIndex())
+        self.set_enabled_has_project(self.ui.comboBox_project.count() > 0)
 
     def pushButton_restore_clicked(self) -> None:
         """Slot when the restore button is clicked.
@@ -136,12 +138,35 @@ class DialogProjectManager(QDialog):
         if index < 0:
             return
         self.load_project_data(index)
+        self.set_enabled_has_project(self.ui.comboBox_project.count() > 0)
 
     def lineEdit_projectName_editingFinished(self) -> None:
         """Slot when the project name line edit editing is finished."""
         pass
 
     # -------------------- Methods -------------------
+
+    def set_enabled_has_project(self, has_project: bool) -> None:
+        """Sets the enabled state of UI elements based on whether a project exists.
+        Args:
+            has_project (bool): True if a project exists, False otherwise.
+        """
+        self.ui.comboBox_project.setEnabled(has_project)
+        self.ui.pushButton_export.setEnabled(has_project)
+        self.ui.pushButton_import.setEnabled(has_project)
+        self.ui.pushButton_save.setEnabled(has_project)
+        self.ui.pushButton_saveAndQuit.setEnabled(has_project)
+        self.ui.pushButton_restore.setEnabled(has_project)
+        self.ui.comboBox_language.setEnabled(has_project)
+        self.ui.comboBox_parser.setEnabled(has_project)
+        self.ui.lineEdit_argParser.setEnabled(has_project)
+        self.ui.lineEdit_projectName.setEnabled(has_project)
+        self.ui.textEdit_validCharacters.setEnabled(has_project)
+        self.ui.checkBox_space.setEnabled(has_project)
+        self.ui.checkBox_narrowNobreakSpace.setEnabled(has_project)
+        self.ui.checkBox_nobreakSpace.setEnabled(has_project)
+        self.ui.tabWidget_editArea.setEnabled(has_project)
+        self.ui.pushButton_deleteProject.setEnabled(has_project)
 
     def load_project_data(self, index: int) -> None:
         """Loads the project data for the selected project index.

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1193</width>
-    <height>858</height>
+    <height>860</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -119,10 +119,6 @@
      <string>Manage</string>
     </property>
     <addaction name="actionProjects"/>
-    <addaction name="actionExport_projects_configuration"/>
-    <addaction name="actionImport_projects_configuration"/>
-    <addaction name="separator"/>
-    <addaction name="actionParsers"/>
    </widget>
    <widget class="QMenu" name="menuPreference">
     <property name="title">

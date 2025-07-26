@@ -52,6 +52,9 @@ class MainWindow(QMainWindow):
         self.set_enabled_project_has_project(False)
         self.ui.comboBox_project.setCurrentText(json_config.load_data()["last_project"])
 
+        self.ui.label_fileOpened.setText("")
+        self.ui.label_updateResult.hide()
+
         self.ui.tableView_result.custom_context_actions_requested.connect(self.add_custom_actions_to_menu)
 
     def set_up_language_menu(self) -> None:
@@ -223,8 +226,11 @@ class MainWindow(QMainWindow):
         Args:
             has_project (bool): True if a project is selected, False otherwise.
         """
-        self.ui.tableView_result.setEnabled(has_project)
+        self.ui.comboBox_project.setEnabled(has_project)
+        self.ui.pushButton_process.setEnabled(has_project)
         self.ui.lineEdit_argument.setEnabled(has_project)
+        self.ui.lineEdit_filepath.setEnabled(has_project)
+        self.ui.tableView_result.setEnabled(has_project)
 
     def set_enabled_during_process(self, is_enabled: bool) -> None:
         """Enable or disable UI elements during processing.

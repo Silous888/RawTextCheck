@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1193, 858)
+        MainWindow.resize(1193, 860)
         MainWindow.setAcceptDrops(True)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("")
@@ -99,10 +99,6 @@ class Ui_MainWindow(object):
         self.actionLanguage = QtWidgets.QAction(MainWindow)
         self.actionLanguage.setObjectName("actionLanguage")
         self.menuManage.addAction(self.actionProjects)
-        self.menuManage.addAction(self.actionExport_projects_configuration)
-        self.menuManage.addAction(self.actionImport_projects_configuration)
-        self.menuManage.addSeparator()
-        self.menuManage.addAction(self.actionParsers)
         self.menuBar.addAction(self.menuManage.menuAction())
         self.menuBar.addAction(self.menuPreference.menuAction())
 
