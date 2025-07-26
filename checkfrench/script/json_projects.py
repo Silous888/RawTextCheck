@@ -188,8 +188,7 @@ def create_new_entry(
         ignored_codes_into_nothing: list[str] | None = None,
         ignored_substrings_into_space: dict[str, list[str]] | None = None,
         ignored_substrings_into_nothing: dict[str, list[str]] | None = None,
-        ignored_rules: list[str] | None = None,
-        synchronized_path: str = ""
+        ignored_rules: list[str] | None = None
         ) -> None:
     """Add a new entry in the json
 
@@ -233,8 +232,7 @@ def create_new_entry(
         "ignored_codes_into_nothing": ignored_codes_into_nothing or [],
         "ignored_substrings_into_space": ignored_substrings_into_space or {},
         "ignored_substrings_into_nothing": ignored_substrings_into_nothing or {},
-        "ignored_rules": ignored_rules or [],
-        "synchronized_path": synchronized_path
+        "ignored_rules": ignored_rules or []
     }
 
     save_data(data)
@@ -253,8 +251,7 @@ def set_entry(
     ignored_codes_into_nothing: list[str] | None = None,
     ignored_substrings_into_space: dict[str, list[str]] | None = None,
     ignored_substrings_into_nothing: dict[str, list[str]] | None = None,
-    ignored_rules: list[str] | None = None,
-    synchronized_path: str | None = None
+    ignored_rules: list[str] | None = None
 ) -> None:
     """set the entry in the json, if arg not specified, it will not be changed
     Args:
@@ -270,7 +267,6 @@ def set_entry(
         ignored_substrings_into_space (dict[str, list[str]] | None): ignored substrings into space of the project
         ignored_substrings_into_nothing (dict[str, list[str]] | None): ignored substrings into nothing of the project
         ignored_rules (list[str] | None): ignored rules of the project
-        synchronized_path (str | None): path for synchronizing the project
     """
     if not is_project_name_exist(project_name):
         log_error_id_invalid(project_name)
@@ -297,8 +293,6 @@ def set_entry(
         set_ignored_substrings_into_nothing(project_name, ignored_substrings_into_nothing)
     if ignored_rules is not None:
         set_ignored_rules(project_name, ignored_rules)
-    if synchronized_path is not None:
-        set_synchronized_path(project_name, synchronized_path)
     logger.info("Entry %s updated.", project_name)
     return
 
@@ -330,8 +324,7 @@ def set_entry_from_item(project_name: str, data: ItemProject) -> None:
         ignored_codes_into_nothing=data["ignored_codes_into_nothing"],
         ignored_substrings_into_space=data["ignored_substrings_into_space"],
         ignored_substrings_into_nothing=data["ignored_substrings_into_nothing"],
-        ignored_rules=data["ignored_rules"],
-        synchronized_path=data["synchronized_path"]
+        ignored_rules=data["ignored_rules"]
     )
 
 
@@ -656,22 +649,6 @@ def remove_ignored_rules(project_name: str, rule: str) -> None:
         rule (str): rule to remove
     """
     _remove_from_list_field(project_name, "ignored_rules", rule)
-
-
-def set_synchronized_path(project_name: str, path: str) -> None:
-    """set the synchronized path of the project
-
-    Args:
-        project_name (str): id of the project
-        path (str): path for synchronizing the project
-    """
-    if not is_project_name_exist(project_name):
-        log_error_id_invalid(project_name)
-        return
-    data: dict[str, ItemProject] = load_data()
-    data[project_name]["synchronized_path"] = path
-    save_data(data)
-
 
 # ------------------------------Internal utility functions---------------------
 

@@ -32,7 +32,6 @@ class ItemProject(TypedDict):
         ignored_substrings_into_space (dict[str, list[str]]): Substrings to ignore, replacing with space.
         ignored_substrings_into_nothing (dict[str, list[str]]): Substrings to ignore, replacing with nothing.
         ignored_rules (list[str]): List of LanguageTool rules to ignore.
-        synchronized_path (str): Path to synchronize the project data.
     """
 
     # project_name: str as key
@@ -47,7 +46,6 @@ class ItemProject(TypedDict):
     ignored_substrings_into_space: dict[str, list[str]]
     ignored_substrings_into_nothing: dict[str, list[str]]
     ignored_rules: list[str]
-    synchronized_path: str
 
 
 class ItemResult(TypedDict):

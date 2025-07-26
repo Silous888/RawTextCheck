@@ -239,8 +239,7 @@ class DialogProjectManager(QDialog):
             "ignored_codes_into_nothing": self.model.codesModel.get_data()[1],
             "ignored_substrings_into_space": self.model.substringsModel.get_data()[0],
             "ignored_substrings_into_nothing": self.model.substringsModel.get_data()[1],
-            "ignored_rules": self.model.rulesModel.get_data(),
-            "synchronized_path": ""
+            "ignored_rules": self.model.rulesModel.get_data()
         }
         # Save the project data using the model
         self.model.save_project_data(project_name, data)

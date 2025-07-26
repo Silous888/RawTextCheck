@@ -52,7 +52,6 @@ class TestCreateNewEntry(unittest.TestCase):
         self.assertEqual(entry["ignored_substrings_into_space"], {})
         self.assertEqual(entry["ignored_substrings_into_nothing"], {})
         self.assertEqual(entry["ignored_rules"], [])
-        self.assertEqual(entry["synchronized_path"], "")
 
     def test_create_multiple_entries(self) -> None:
         titles: list[str] = ["P1", "P2", "P3"]
@@ -74,7 +73,6 @@ class TestCreateNewEntry(unittest.TestCase):
             self.assertEqual(entry["ignored_substrings_into_space"], {})
             self.assertEqual(entry["ignored_substrings_into_nothing"], {})
             self.assertEqual(entry["ignored_rules"], [])
-            self.assertEqual(entry["synchronized_path"], "")
 
     def test_create_entry_with_empty_title_should_fail(self) -> None:
         with self.assertRaises(ValueError):
@@ -112,8 +110,7 @@ class TestAddValidCharacters(unittest.TestCase):
                 "ignored_codes_into_nothing": [],
                 "ignored_substrings_into_space": {},
                 "ignored_substrings_into_nothing": {},
-                "ignored_rules": [],
-                "synchronized_path": ""
+                "ignored_rules": []
             },
             self.title_id[1]: {
                 "language": "fr",
@@ -126,8 +123,7 @@ class TestAddValidCharacters(unittest.TestCase):
                 "ignored_codes_into_nothing": [],
                 "ignored_substrings_into_space": {},
                 "ignored_substrings_into_nothing": {},
-                "ignored_rules": [],
-                "synchronized_path": ""
+                "ignored_rules": []
             }
         }
         json_projects.save_data(data)
@@ -214,8 +210,7 @@ class TestSetValidCharacters(unittest.TestCase):
                 "ignored_codes_into_nothing": [],
                 "ignored_substrings_into_space": {},
                 "ignored_substrings_into_nothing": {},
-                "ignored_rules": [],
-                "synchronized_path": ""
+                "ignored_rules": []
             },
             self.title_id[1]: {
                 "language": "fr",
@@ -228,8 +223,7 @@ class TestSetValidCharacters(unittest.TestCase):
                 "ignored_codes_into_nothing": [],
                 "ignored_substrings_into_space": {},
                 "ignored_substrings_into_nothing": {},
-                "ignored_rules": [],
-                "synchronized_path": ""
+                "ignored_rules": []
             }
         }
         json_projects.save_data(data)
