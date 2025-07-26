@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\rawtextcheck\ui\delete_project\delete_project.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\RawTextCheck\rawtextcheck\ui\delete_project\delete_project.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.11
 #

@@ -216,6 +216,13 @@ class DialogProjectManager(QDialog):
             project_name (str): The name of the project to save.
         """
         # Prepare the data to be saved
+        if self.ui.lineEdit_projectName.text() != project_name:
+            project_name_new: str = self.ui.lineEdit_projectName.text()
+            self.model.rename_project(project_name, project_name_new)
+            self.model.titleComboBoxModel.load_data()
+            self.ui.comboBox_project.setCurrentText(project_name_new)
+            project_name = project_name_new
+
         parser: str | None = self.model.parserComboBoxModel.get_value(self.ui.comboBox_parser.currentIndex())
         if parser is None:
             parser = "textfile"

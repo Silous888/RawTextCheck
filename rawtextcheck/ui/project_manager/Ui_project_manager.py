@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\rawtextcheck\ui\project_manager\project_manager.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\RawTextCheck\rawtextcheck\ui\project_manager\project_manager.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.11
 #

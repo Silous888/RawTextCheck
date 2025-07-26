@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\checkFrench\rawtextcheck\ui\mainwindow\mainwindow.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\RawTextCheck\rawtextcheck\ui\mainwindow\mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.11
 #
@@ -109,7 +109,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "CheckFrench"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "RawTextCheck"))
         self.label_fileOpened.setText(_translate("MainWindow", "test_result"))
         self.pushButton_process.setText(_translate("MainWindow", "Process"))
         self.label_updateResult.setText(_translate("MainWindow", "last_update"))

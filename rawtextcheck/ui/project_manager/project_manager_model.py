@@ -68,6 +68,15 @@ class ProjectManagerModel():
             return None
         return json_projects.get_project_data(project_name)
 
+    def rename_project(self, old_name: str, new_name: str) -> None:
+        """Renames a project from old_name to new_name.
+        Args:
+            old_name (str): The current name of the project.
+            new_name (str): The new name for the project.
+        """
+        if new_name not in json_projects.get_projects_name():
+            json_projects.set_new_project_name(old_name, new_name)
+
     def save_project_data(self, project_name: str, data: ItemProject) -> None:
         """Saves the project data for the given project name.
         Args:
