@@ -39,8 +39,25 @@ RawTextCheck provides a flexible and extensible environment for proofreading str
 - **Process button**: Start the analysis of the selected file. Processing may take some time, please be patient. If LanguageTool is not yet initialized, analyzing a 500-line file may take 1–2 minutes.
 - **Table**: Displays the analysis results. If a file has been analyzed previously, the most recent results will be loaded
 
-### Interact with result
+### Interact with results
 
+There are 6 columns:
+- **Line Number**: The line in the file where the error was found, or the line's ID.
+- **Line**: The text content of the line.
+- **Error**: The word(s) where the error was detected.
+- **Type**: The LanguageTool error type.
+- **Explanation**: A description of the error.
+- **Suggestion**: Suggested correction(s) for the error.
+
+Each column can be hidden by right-clicking and deselecting it in the Visibility menu. Hidden columns will be remembered.
+
+For each line, several actions are available by right-clicking on it:
+
+- **Delete**: Delete the line. The delete key can also be used.
+- **Add character to valid characters**: Only for invalid character errors. Adds the character to the project's valid characters and removes all errors related to this character.
+- **Add this word to dictionary**: Only for spelling errors. Adds the word to the dictionary and removes all spelling errors for this word.
+- **Remove word from the banword list**: Only for banword errors. Removes the word from the banword list and deletes all related banword errors.
+- **Add {rule name} to ignored rules**: For all other errors. Adds the LanguageTool rule to the ignored rules and removes all errors associated.
 
 ### Manage Project Window
 
