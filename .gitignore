@@ -3,7 +3,7 @@ config/*
 parsers/*
 results/*
 credentials.py
-checkfrench/test.py
+rawtextcheck/test.py
 test_parse.txt
 
 

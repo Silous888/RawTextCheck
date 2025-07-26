@@ -2,10 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run checkfrench",
+            "name": "Run rawtextcheck",
             "type": "debugpy",
             "request": "launch",
-            "module": "checkfrench.main",
+            "module": "rawtextcheck.main",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "justMyCode": true
@@ -14,7 +14,7 @@
             "name": "Run debug test",
             "type": "debugpy",
             "request": "launch",
-            "module": "checkfrench.test",
+            "module": "rawtextcheck.test",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "justMyCode": true

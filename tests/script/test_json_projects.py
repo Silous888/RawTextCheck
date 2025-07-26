@@ -2,8 +2,8 @@ import json
 import os
 import unittest
 
-from checkfrench.script import json_projects
-from checkfrench.default_parameters import JSON_PROJECT_PATH
+from rawtextcheck.script import json_projects
+from rawtextcheck.default_parameters import JSON_PROJECT_PATH
 
 
 def rename_json_during_test() -> None:

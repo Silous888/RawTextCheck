@@ -1,7 +1,7 @@
 import tempfile
 import unittest
 
-from checkfrench.script import json_results
+from rawtextcheck.script import json_results
 
 
 class TestJsonResults(unittest.TestCase):
