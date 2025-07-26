@@ -24,8 +24,24 @@ Each file is analyzed within the context of a project, which defines parameters 
 
 RawTextCheck provides a flexible and extensible environment for proofreading structured text embedded in various formats, ensuring cleaner and more accurate translations or content validation.
 
+## Documentation
 
-
+### Main Window
 ![main window](resources/readme_app_1.png)
+
+- **Manage menu**:
+    - **Configure project**: Opens the project management window. Use this to create your first project. ([Project configuration](#manage-project-window))
+- **Preference menu**:
+    - **Language**: Select the application language. The app must be restarted for changes to take effect. Note: This setting does not affect the language used for text analysis.
+- **Project selection combo box**: Select which project to use for file analysis.
+- **File path input**: Enter the path of the file to analyze. You can also drag and drop a file onto the app to fill this field automatically.
+- **Argument parser**: Specify arguments for the parser. By default, the arguments defined in the project are used, but you can modify them for specific files if needed.
+- **Process button**: Start the analysis of the selected file. Processing may take some time, please be patient. If LanguageTool is not yet initialized, analyzing a 500-line file may take 1–2 minutes.
+- **Table**: Displays the analysis results. If a file has been analyzed previously, the most recent results will be loaded
+
+### Interact with result
+
+
+### Manage Project Window
 
 ![project config window](resources/readme_app_2.png)
