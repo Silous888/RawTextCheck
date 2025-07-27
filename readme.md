@@ -65,7 +65,7 @@ For each line, several actions are available by right-clicking on it:
 
 ***Top Part***
 
-- **Create New Project**: You need to specify a unique name, a language for analysis, and a parser. All settings can be changed at any time.
+- **Create New Project**: You need to specify a unique name, a language for analysis, and a parser. All settings can be changed later.
 - **Project selection combo box**: Select a project to load and edit its parameters in the window.
 - **Delete button**: Delete the currently selected project.
 - **Import button**: Import a project configuration. This will overwrite the current project's settings except for its name.
@@ -104,3 +104,17 @@ For each line, several actions are available by right-clicking on it:
     ```
 
 - **Ignored grammar rules**: LanguageTool rules to ignore. You can manually add rules, and also delete them either by right-clicking or with the delete key.
+
+***Right Part***
+
+- **Project name**: Change the name of the project.
+- **Language**: Change the language used for LanguageTool analysis.
+- **Parser**: Select which parser to use for files. Some parsers are included by default; additional parsers can be added. See [Parser](#parsers) for more information.
+- **Argument for parser**: Arguments for the parser. See [Parser](#parsers) for more information.
+- **Valid characters**: Authorized characters for the project. Checkboxes are available for the three common space characters.
+- **Restore button**: Revert unsaved changes.
+- **Save button**: Save the current configuration.
+- **Save and Quit button**: Save the current configuration and close the window.
+
+### Parsers
+
