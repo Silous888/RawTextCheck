@@ -118,3 +118,27 @@ For each line, several actions are available by right-clicking on it:
 
 ### Parsers
 
+There are 3 built-in parsers:
+
+- **textfile**
+- **excel**
+- **csv**
+
+The **textfile** parser is the default parser for all text-based files. It returns every non-empty line in the file. This is useful if Ignored codes and Ignored substrings are sufficient to extract the sentences you need. (See [Project configuration](#manage-project-window) for more details.)
+
+This parser does not require any arguments.
+
+The **excel** parser returns every non-empty cell from a specified column in an Excel file.
+
+It requires at least one argument: the letter of the column containing the text (e.g., `D` to get cells from column D). You can also specify a second argument if you want to use another column (e.g., an ID column) to identify lines instead of the row number. Arguments should be provided as follows:
+
+    {column with texts},{column with id (optional)}
+    D,A
+
+The **csv** parser returns every non-empty value from a specified column in a CSV file.
+
+It requires at least one argument: the number of the column (the first column is 1). You can also specify a second argument if you want to use another column (e.g., an ID column) to identify lines instead of the line number. Arguments should be provided as follows:
+
+    {column with texts},{column with id (optional)}
+    4,1
+
