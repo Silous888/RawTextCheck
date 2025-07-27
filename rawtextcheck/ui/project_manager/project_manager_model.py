@@ -475,11 +475,11 @@ class IgnoredCodesModel(QAbstractTableModel):
         """
         self.beginResetModel()
         if space_list is not None:
-            self._data = [(code.strip(), True) for code in space_list if code.strip()]
+            self._data = [(code, True) for code in space_list if code]
         else:
             self._data = []
         if nospace_list is not None:
-            self._data += [(code.strip(), False) for code in nospace_list if code.strip()]
+            self._data += [(code, False) for code in nospace_list if code]
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
@@ -547,7 +547,7 @@ class IgnoredCodesModel(QAbstractTableModel):
         if row == len(self._data):
             if col == self.code_col and role == Qt.ItemDataRole.EditRole and value:
                 self.beginInsertRows(QModelIndex(), row, row)
-                self._data.append((value.strip(), True))
+                self._data.append((value, True))
                 self.endInsertRows()
                 return True
             return False
@@ -560,7 +560,7 @@ class IgnoredCodesModel(QAbstractTableModel):
             return True
 
         if col == self.code_col and role == Qt.ItemDataRole.EditRole:
-            self._data[row] = (str(value).strip(), is_space)
+            self._data[row] = (str(value), is_space)
             self.dataChanged.emit(index, index)
             return True
 
@@ -645,8 +645,8 @@ class IgnoredCodesModel(QAbstractTableModel):
             - The first list is ignored_space.
             - The second list is ignored_nospace.
         """
-        space: list[str] = [code for code, is_space in self._data if is_space and code.strip()]
-        nospace: list[str] = [code for code, is_space in self._data if not is_space and code.strip()]
+        space: list[str] = [code for code, is_space in self._data if is_space and code]
+        nospace: list[str] = [code for code, is_space in self._data if not is_space and code]
         return space, nospace
 
 
@@ -760,8 +760,8 @@ class IgnoredSubstringsModel(QAbstractTableModel):
 
         if row >= len(self._data):
             if col in (self.start_col, self.end_col) and value:
-                start: str = value.strip() if col == self.start_col else ""
-                end: str = value.strip() if col == self.end_col else ""
+                start: str = value if col == self.start_col else ""
+                end: str = value if col == self.end_col else ""
                 self.beginInsertRows(QModelIndex(), row, row)
                 self._data.append((start, end, True))
                 self.endInsertRows()
@@ -773,9 +773,9 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         if col == self.check_col and role == Qt.ItemDataRole.CheckStateRole:
             self._data[row] = (start, end, value == Qt.CheckState.Checked)
         elif col == self.start_col and role == Qt.ItemDataRole.EditRole:
-            self._data[row] = (str(value).strip(), end, is_space)
+            self._data[row] = (str(value), end, is_space)
         elif col == self.end_col and role == Qt.ItemDataRole.EditRole:
-            self._data[row] = (start, str(value).strip(), is_space)
+            self._data[row] = (start, str(value), is_space)
         else:
             return False
 
@@ -864,7 +864,7 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         space_dict: dict[str, list[str]] = {}
         nospace_dict: dict[str, list[str]] = {}
         for start, end, is_space in self._data:
-            if not start.strip() or not end.strip():
+            if not start or not end:
                 continue
             target: dict[str, list[str]] = space_dict if is_space else nospace_dict
             if start not in target:
