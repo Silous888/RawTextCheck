@@ -480,7 +480,6 @@ class IgnoredCodesModel(QAbstractTableModel):
             self._data = []
         if nospace_list is not None:
             self._data += [(code.strip(), False) for code in nospace_list if code.strip()]
-        self._data.sort(key=lambda x: (x[0].lower(), x[1]))
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
@@ -695,7 +694,6 @@ class IgnoredSubstringsModel(QAbstractTableModel):
             for start, ends in nospace_dict.items()
             for end in ends
         ]
-        self._data.sort(key=lambda x: (x[0].lower(), x[1].lower(), x[2]))
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
