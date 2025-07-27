@@ -142,3 +142,30 @@ It requires at least one argument: the number of the column (the first column is
     {column with texts},{column with id (optional)}
     4,1
 
+### Additional parsers
+
+If the built-in parsers are not sufficient, you can create your own.
+
+A parser is a Python file that implements a specific function. To add a parser to the list available in the app, place the Python file in the `parsers` folder.
+
+To create a parser, you need to implement the following function in your file:
+
+```python
+def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
+    """Read a file and return a list with each text line associated with the line number or ID.
+    Args:
+        pathfile (str): Path to the file.
+        argument (str): Argument for the parser, if needed.
+
+    Returns:
+        list[tuple[str, str]]: List of (line number or ID, text of the line).
+    """
+```
+Imports of the parser need to already be present in RawTextCheck.
+
+Remember that Ignored codes and Ignored substrings can be used to filter parts of each line, so your parser does not necessarily need to clean the text itself.
+
+The name of the parser will be the name of the file. Be careful not to use the same name as any built-in parser.
+
+If your parser could be useful to others, or if you just want to share it, you can add it to the [community parsers repository](https://github.com/Silous888/RawTextCheck-parsers).
+
