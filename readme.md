@@ -62,3 +62,45 @@ For each line, several actions are available by right-clicking on it:
 ### Manage Project Window
 
 ![project config window](resources/readme_app_2.png)
+
+***Top Part***
+
+- **Create New Project**: You need to specify a unique name, a language for analysis, and a parser. All settings can be changed at any time.
+- **Project selection combo box**: Select a project to load and edit its parameters in the window.
+- **Delete button**: Delete the currently selected project.
+- **Import button**: Import a project configuration. This will overwrite the current project's settings except for its name.
+- **Export button**: Export the configuration of the current project.
+
+***Left Part (Table)***
+
+- **Dictionary**: Words that will not generate spelling errors. You can manually add words, and also delete them either by right-clicking or with the delete key.
+- **Banwords**: Words that will generate errors, even if they are correct in your language. You can manually add words, and also delete them either by right-clicking or with the delete key.
+- **Ignored codes**: Codes in the text to filter out. These will either be removed or replaced by a space.
+
+    If your line looks like this:
+
+    ```
+    That's [c4]Yoko Fukunaga[c0].[r]Good, at least I can remember that much.
+    ```
+    You can add [c4] and [c0] as ignored codes without checking the checkbox, and [r] with the checkbox checked to add a space.
+
+    So your filtered line will look like this:
+
+    ```
+    That's Yoko Fukunaga. Good, at least I can remember that much.
+    ```
+
+- **Ignored substrings**: You can filter text using delimiters. This will be applied after Ignored codes.
+
+    For this text:
+
+    ```
+    That's [c4]Yoko Fukunaga[c0].[r]Good, at least I can remember that much.
+    ```
+
+    Suppose that for this project, [r] is the only code where a space is needed, and other codes with [ ] do not need a space. So instead of adding [c4], [c0], and many others to Ignored codes, you can add [ as the start and ] as the end delimiter, without checking the checkbox, to filter everything starting with [ and ending with ]. The result will look the same:
+    ```
+    That's Yoko Fukunaga. Good, at least I can remember that much.
+    ```
+
+- **Ignored grammar rules**: LanguageTool rules to ignore. You can manually add rules, and also delete them either by right-clicking or with the delete key.
