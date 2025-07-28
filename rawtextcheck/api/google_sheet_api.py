@@ -16,7 +16,13 @@ from typing import Any
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials  # type: ignore
 
-from logger import get_logger
+from rawtextcheck.logger import get_logger
+
+
+# == Constants ===============================================================
+
+MAX_RETRIES = 100
+WAIT_TIME = 5
 
 
 # == Global Variables =========================================================
@@ -28,42 +34,30 @@ SCOPE: list[str] = ["https://spreadsheets.google.com/feeds",
                     "https://www.googleapis.com/auth/drive.file",
                     "https://www.googleapis.com/auth/drive"]
 
-is_credentials_correct = True
-
-gc = None
-current_spreadsheet = None
-last_sheet: gspread.Worksheet | None = None
-last_sheet_index: int | None = None
-
-MAX_RETRIES = 100
-WAIT_TIME = 5
+gc: gspread.Client | None = None
 
 
 # == Functions ================================================================
 
 def set_credentials_info(credentials_info: dict[str, Any]) -> None:
-    """init access to google drive
-
-    Returns:
-        int: 0 if access are given, otherwise, return an error code.
-
-    error code:
-    -2 if credentials not correct
+    """Set the credentials information for Google Sheets API.
+    Args:
+        credentials_info (dict[str, Any]): The credentials information as a dictionary.
     """
-    global is_credentials_correct
-    global is_credentials_file_exists
     global gc
     if gc is None:
         try:
-            credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_info, SCOPE)
-            gc = gspread.authorize(credentials)
-            is_credentials_correct = True
-        except Exception:
-            is_credentials_correct = False
-
-    if not is_credentials_correct:
-        return -2
-    return 0
+            credentials: ServiceAccountCredentials = (
+                ServiceAccountCredentials.from_json_keyfile_dict(  # type: ignore
+                    credentials_info, SCOPE  # type: ignore
+                )
+            )
+            gc = gspread.authorize(credentials)  # type: ignore
+            logger.info("Google Sheets credentials set successfully.")
+        except Exception as e:
+            logger.error("Failed to set credentials: %s", e)
+    else:
+        logger.warning("Credentials already set, skipping.")
 
 
 def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) -> Any:
