@@ -13,7 +13,7 @@ from typing import List
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtCore import QMimeData, QModelIndex, QUrl, QItemSelectionModel
 from PyQt5.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent
-from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QActionGroup
+from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QActionGroup, QFileDialog
 
 # -------------------- Import Lib User -------------------
 from rawtextcheck.default_parameters import (
@@ -92,6 +92,7 @@ class MainWindow(QMainWindow):
         """
         # Menu
         self.ui.actionProjects.triggered.connect(self.actionProjects_triggered)
+        self.ui.actionAdd_google_credentials.triggered.connect(self.actionAdd_google_credentials_triggered)
         self.language_group.triggered.connect(self.language_selected)
         # combobox
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
@@ -113,6 +114,11 @@ class MainWindow(QMainWindow):
         self.dialog_project_manager.exec()
         self.model.titleComboBoxModel.load_data()
         self.ui.comboBox_project.setCurrentText(current_project)
+
+    def actionAdd_google_credentials_triggered(self) -> None:
+        """Slot for handling the Add Google Credentials menu action.
+        Opens a dialog to add Google API credentials."""
+        self.add_google_creadentials_process()
 
     def comboBox_project_currentIndexChanged(self, index: int) -> None:
         """Slot for handling changes in the project combobox.
@@ -243,6 +249,21 @@ class MainWindow(QMainWindow):
         self.ui.tableView_result.setEnabled(is_enabled)
         self.ui.menuManage.setEnabled(is_enabled)
         self.ui.menuPreference.setEnabled(is_enabled)
+
+    def add_google_creadentials_process(self) -> None:
+
+        filepath, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Select Google Credentials JSON File"),
+            "",
+            self.tr("JSON Files (*.json)")
+        )
+
+        if not filepath:
+            return
+        credentials: dict[str, str] | None = json_config.load_imported_credentials(filepath)
+        if credentials is not None:
+            json_config.set_credentials_google(credentials)
 
     def language_selected(self, action: QAction) -> None:
         selected_code = action.data()
