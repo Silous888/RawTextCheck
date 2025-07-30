@@ -106,7 +106,6 @@ def open_spreadsheet(sheet_id: str) -> Spreadsheet | None:
 
     Returns:
         Spreadsheet | None: Spreadsheet object, or None if error.
-
     """
     global _current_spreadsheet
     global _last_sheet
@@ -121,13 +120,20 @@ def open_spreadsheet(sheet_id: str) -> Spreadsheet | None:
         if "MAX_RETRIES" not in str(spreadsheet):
             logger.error("Spreadsheet %s can't be opened, error: %s", sheet_id, spreadsheet)
         return
-    else:
-        return spreadsheet
+    return spreadsheet
 
-# def get_sheet_name() -> str | int:
-#     if _current_spreadsheet is None:
-#         return -4
-#     return _safe_execute_method(_current_spreadsheet, "title")
+
+def get_spreadsheet_name(spreadsheet: Spreadsheet) -> str | None:
+    """Get the name of a spreadsheet
+
+    Args:
+        spreadsheet (Spreadsheet): an opened spreadsheet
+
+    Returns:
+        str: name of the spreadsheet
+    """
+    return spreadsheet.title
+    
 
 
 # def _open_sheet(sheet_index: int) -> int:
