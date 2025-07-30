@@ -154,3 +154,21 @@ def open_worksheet(spreadsheet: Spreadsheet, sheet_index: int) -> Worksheet | No
     return worksheet
 
 
+def get_worksheet_values(worksheet: Worksheet) -> (list[list[str]] | None):
+    """get the values in a worksheet
+    length is (last row with value, last col with value)
+    every list[str] will have the same lenght.
+    empty cell will be an empty string
+
+    Args:
+        worksheet (Worksheet): worksheet opened
+
+    Returns:
+        list[list[str]] | None: values in the worksheet, or None if error
+    """
+    values: list[list[str]] | Exception = _safe_execute_method(worksheet, "get_all_values")
+    if isinstance(values, Exception):
+        if "MAX_RETRIES" not in str(worksheet):
+            logger.error("Can't get values of worksheet name:%s, id:%s", worksheet.title, worksheet.id)
+        return
+    return values
