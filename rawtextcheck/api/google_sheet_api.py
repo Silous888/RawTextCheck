@@ -14,6 +14,7 @@ import time
 from typing import Any
 
 import gspread
+from gspread import Client, Spreadsheet
 from oauth2client.service_account import ServiceAccountCredentials  # type: ignore
 
 from rawtextcheck.logger import get_logger
@@ -21,7 +22,7 @@ from rawtextcheck.logger import get_logger
 
 # == Constants ===============================================================
 
-MAX_RETRIES = 100
+MAX_RETRIES = 30
 WAIT_TIME = 5
 
 
@@ -34,7 +35,7 @@ SCOPE: list[str] = ["https://spreadsheets.google.com/feeds",
                     "https://www.googleapis.com/auth/drive.file",
                     "https://www.googleapis.com/auth/drive"]
 
-gc: gspread.Client | None = None
+gc: Client | None = None
 
 
 # == Functions ================================================================
@@ -54,13 +55,13 @@ def set_credentials_info(credentials_info: dict[str, Any]) -> None:
             )
             gc = gspread.authorize(credentials)  # type: ignore
             logger.info("Google Sheets credentials set successfully.")
-        except Exception as e:
-            logger.error("Failed to set credentials: %s", e)
+        except ValueError as e:
+            logger.error("Credentials not correctly set in config: %s", e)
     else:
         logger.warning("Credentials already set, skipping.")
 
 
-def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) -> Any:
+def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) -> Any | Exception:
     """Execute a method of an object with given arguments in a try-except block,
        until it works or the maximum number of retries is reached.
 
@@ -71,7 +72,7 @@ def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) 
         **kwargs (Any): Keyword arguments for the method.
 
     Returns:
-        Any: The result of the method if it succeeds, otherwise an error code.
+        Any: The result of the method if it succeeds, otherwise an Exception.
     """
     method = getattr(obj, method_name)
 
@@ -84,20 +85,21 @@ def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) 
             result = method(*args, **kwargs)
             return result
         except Exception as e:
-            logger.error("Exception caught: %s", e)
+            if "429" in str(e) or "500" in str(e) or "503" in str(e):
+                logger.info("Waiting for token, retry in %s seconds, error: %s", WAIT_TIME, e)
+                time.sleep(WAIT_TIME)
+                continue
 
-            if "429" not in str(e) and "500" not in str(e) and "503" not in str(e):
-                logger.error("Non-retryable error")
-                return
+            # method_name will manage log of the error
+            return e
 
-            time.sleep(WAIT_TIME)
-
-    logger.error("Max retries reached")
-    return  # Max retries reached
+    logger.error("After %s retries, failed to execute %s.", MAX_RETRIES, method_name)
+    return RuntimeError("MAX_RETRIES")
 
 
-# def open_spreadsheet(sheet_id: str) -> int:
-#     """open a sheet for others functions
+
+def open_spreadsheet(sheet_id: str) -> Spreadsheet | None:
+    """open a sheet for others functions
 
 #     Args:
 #         sheet_id (str): id of the sheet
