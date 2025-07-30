@@ -101,34 +101,28 @@ def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) 
 def open_spreadsheet(sheet_id: str) -> Spreadsheet | None:
     """open a sheet for others functions
 
-#     Args:
-#         sheet_id (str): id of the sheet
+    Args:
+        sheet_id (str): id of the sheet
 
-#     Returns:
-#         int: 0 if no error, error code otherwise
+    Returns:
+        Spreadsheet | None: Spreadsheet object, or None if error.
 
-#     error code:
-#     -1 if no credentials file found
-#     -2 if credentials not correct
-#     -3 if no token, end of waiting time
-#     -4 if sheet id not correct
-#     """
-#     global _current_spreadsheet
-#     global _last_sheet
-#     global _last_sheet_index
+    """
+    global _current_spreadsheet
+    global _last_sheet
+    global _last_sheet_index
 
-#     ret = __init()
-#     if ret != 0:
-#         return ret
+    if gc is None:
+        logger.error("Credentials not set.")
+        return
 
-#     spreadsheet: _gspread.spreadsheet.Spreadsheet = _safe_execute_method(_gc, "open_by_key", sheet_id)
-#     # need to check exception
-
-#     _current_spreadsheet = spreadsheet
-#     _last_sheet = None
-#     _last_sheet_index = None
-#     return 0
-
+    spreadsheet: Spreadsheet | Exception = _safe_execute_method(gc, "open_by_key", sheet_id)
+    if isinstance(spreadsheet, Exception):
+        if "MAX_RETRIES" not in str(spreadsheet):
+            logger.error("Spreadsheet %s can't be opened, error: %s", sheet_id, spreadsheet)
+        return
+    else:
+        return spreadsheet
 
 # def get_sheet_name() -> str | int:
 #     if _current_spreadsheet is None:
