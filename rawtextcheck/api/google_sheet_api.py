@@ -14,7 +14,7 @@ import time
 from typing import Any
 
 import gspread
-from gspread import Client, Spreadsheet
+from gspread import Client, Spreadsheet, Worksheet
 from oauth2client.service_account import ServiceAccountCredentials  # type: ignore
 
 from rawtextcheck.logger import get_logger
@@ -135,52 +135,22 @@ def get_spreadsheet_name(spreadsheet: Spreadsheet) -> str | None:
     return spreadsheet.title
     
 
+def open_worksheet(spreadsheet: Spreadsheet, sheet_index: int) -> Worksheet | None:
+    """open a Worksheet for others functions
 
-# def _open_sheet(sheet_index: int) -> int:
-#     """open a sheet for others functions
-#     change the value of the global variables "_last_sheet" and
-#     "_last_sheet_index"
+    Args:
+        spreadsheet (Spreadsheet): spreadsheet of the worksheet
+        sheet_index (int): index of the worksheet, first is 0
 
-#     Args:
-#         sheet_index (int): index of the sheet, first is 0
-
-#     Returns:
-#         int : 0 if no problem, error code otherwise
-
-#     error code:
-#     -3 if no token, end of waiting time
-#     -4 if no spreadsheet opened
-#     -5 if index not found
-#     """
-#     global _last_sheet
-#     global _last_sheet_index
-
-#     if _current_spreadsheet is None:
-#         return -4
-
-#     if sheet_index != _last_sheet_index:
-#         last_sheet = _safe_execute_method(_current_spreadsheet, "get_worksheet", sheet_index)
-#         # need to check exception
-#         _last_sheet = last_sheet
-#         _last_sheet_index = sheet_index
-#     return 0
+    Returns:
+        Worksheet | None: Worksheet object, or None if error.
+    """
+    worksheet: Worksheet | Exception = _safe_execute_method(spreadsheet, "get_worksheet", sheet_index)
+    if isinstance(worksheet, Exception):
+        if "MAX_RETRIES" not in str(worksheet):
+            logger.error("Worksheet %s of spreadsheet name:%s, id:%s can't be opened, error: %s",
+                         sheet_index, spreadsheet.title, spreadsheet.id, worksheet)
+        return
+    return worksheet
 
 
-# def get_sheet(sheet_index: int) -> (list[list[str]] | int):
-#     """get the values in a sheet
-
-#     Args:
-#         sheet_index (int): index of the sheet, first is 0
-
-#     Returns:
-#         list[list[str]] | int: values in the sheet, error code otherwise
-
-#     error code:
-#     -3 if no token, end of waiting time
-#     -4 if no spreadsheet opened
-#     -5 if index not found
-#     """
-#     ret = _open_sheet(sheet_index)
-#     if ret != 0:
-#         return ret
-#     return _safe_execute_method(_last_sheet, "get_all_values")
