@@ -14,17 +14,21 @@ combobox model and worker thread for background tasks.
 import os
 
 # -------------------- Import Lib Tier -------------------
+from gspread import Spreadsheet
+from gspread.exceptions import NoValidUrlKeyFound
+from gspread.utils import extract_id_from_url
 from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
 from PyQt5.QtCore import QCoreApplication as QCA
 
 # -------------------- Import Lib User -------------------
+from rawtextcheck.api import google_sheet_api
 from rawtextcheck.default_parameters import (
     INVALID_CHAR_TEXT_ERROR_TYPE,
     BANWORD_TEXT_ERROR_TYPE,
     LANGUAGETOOL_SPELLING_CATEGORY,
 )
 from rawtextcheck.newtype import ItemProject, ItemResult
-from rawtextcheck.script import json_projects, json_results, languagetool
+from rawtextcheck.script import json_config, json_projects, json_results, languagetool
 from rawtextcheck.ui.mainwindow.mainwindow_worker import WorkerMainWindow
 
 
@@ -87,7 +91,19 @@ class MainWindowModel():
         Returns:
             bool: True if the path is a valid file
         """
-        return os.path.isfile(filepath)
+        if os.path.isfile(filepath):
+            return True
+        if json_config.load_data()["credentials_google"]:
+            try:
+                sheet_id: str = extract_id_from_url(filepath)
+                spreadsheet: Spreadsheet | None = google_sheet_api.open_spreadsheet(sheet_id)
+                if spreadsheet is None:
+                    return False
+                return True
+            except NoValidUrlKeyFound:
+                return False
+
+        return False
 
     def get_filename_from_filepath(self, filepath: str) -> str:
         """get the name of the file given its path

@@ -32,9 +32,7 @@ if __name__ == "__main__":
     from rawtextcheck import startup
     from rawtextcheck.ui.mainwindow.mainwindow import MainWindow
 
-    startup.create_folders()
-    startup.create_json_config()
-    startup.create_json_projects()
+    startup.startup_everything()
 
     program = MainWindow()
 

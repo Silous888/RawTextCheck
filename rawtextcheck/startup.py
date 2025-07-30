@@ -44,3 +44,11 @@ def set_google_credentials() -> None:
     config: ItemConfig = json_config.load_data()
     if config["credentials_google"]:
         google_sheet_api.set_credentials_info(config["credentials_google"])
+
+
+def startup_everything() -> None:
+    """Call every function of startup.py"""
+    create_folders()
+    create_json_config()
+    create_json_projects()
+    set_google_credentials()
