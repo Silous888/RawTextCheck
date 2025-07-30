@@ -53,6 +53,7 @@ def save_data(project_name: str, filename: str, data: dict[str, ItemResult]) -> 
         filename (str): name of the file
         data (dict[str, ItemResult]): data to save
     """
+    filename = sanitize_folder_name(filename)
     folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, os.path.basename(filename) + JSON_EXT)
@@ -102,6 +103,7 @@ def is_result_exists(project_name: str, filename: str) -> bool:
     Returns:
         bool: True if the file exists, False otherwise
     """
+    filename = sanitize_folder_name(filename)
     folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
@@ -119,6 +121,7 @@ def get_file_data(project_name: str, filename: str) -> dict[str, ItemResult]:
     Returns:
         dict[str, ItemResult]: data from the file
     """
+    filename = sanitize_folder_name(filename)
     if not is_result_exists(project_name, filename):
         logger.warning("Result for file %s does not exist in project %s.", filename, project_name)
         return {}
@@ -166,6 +169,7 @@ def delete_entry(project_name: str, filename: str, id_error: str) -> int:
     Returns:
         int: 0 if success, 1 if file does not exist, 2 if error not found
     """
+    filename = sanitize_folder_name(filename)
     folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
@@ -198,6 +202,7 @@ def delete_error_type(project_name: str, filename: str, error_type: str) -> None
         filename (str): name of the file
         error_type (str): type of the error to delete
     """
+    filename = sanitize_folder_name(filename)
     folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
@@ -226,6 +231,7 @@ def delete_specific_error_with_type(project_name: str, filename: str, error_type
         error_type (str): type of the error to delete
         error (str): error to delete
     """
+    filename = sanitize_folder_name(filename)
     folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
@@ -255,6 +261,7 @@ def delete_specific_error_with_category(project_name: str, filename: str,
         error_issue_category (str): category of the error to delete
         error (str): error to delete
     """
+    filename = sanitize_folder_name(filename)
     folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
     filepath: str = os.path.join(folderpath, filename + JSON_EXT)
