@@ -107,10 +107,6 @@ def open_spreadsheet(sheet_id: str) -> Spreadsheet | None:
     Returns:
         Spreadsheet | None: Spreadsheet object, or None if error.
     """
-    global _current_spreadsheet
-    global _last_sheet
-    global _last_sheet_index
-
     if gc is None:
         logger.error("Credentials not set.")
         return

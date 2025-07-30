@@ -4,7 +4,7 @@ Author      : Silous
 Created on  : 2025-07-19
 Description : Parser for excel files.
 
-This module provides a function to parse a excel file and return its non-empty lines.
+This module provides a function to parse a excel file and return non-empty cells of a column.
 This parser acts as a default parser for excel files.
 """
 
