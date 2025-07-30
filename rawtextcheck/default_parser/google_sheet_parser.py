@@ -41,7 +41,7 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
     """
     try:
         parts: list[str] = [arg.strip().upper() for arg in argument.split(",")]
-        col_value_index: int = column_letter_to_index(parts[0]) - 1 # Always required
+        col_value_index: int = column_letter_to_index(parts[0]) - 1  # Always required
         col_id_index: int | None = column_letter_to_index(parts[1]) - 1 if len(parts) > 1 else None
     except Exception:
         logger.error("%s is not a valid argument for the google sheet parser.", argument)
@@ -53,20 +53,18 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
     spreadsheet: Spreadsheet | None = google_sheet_api.open_spreadsheet(id_sheet)
     if spreadsheet is None:
         return []
-    
+
     worksheet: Worksheet | None = google_sheet_api.open_worksheet(spreadsheet, 0)
     if worksheet is None:
         return []
 
     values: list[list[str]] | None = google_sheet_api.get_worksheet_values(worksheet)
-
-
     if values is None:
         return []
 
     results: list[tuple[str, str]] = []
 
-    if col_id_index is None:    
+    if col_id_index is None:
         for i, line in enumerate(values):
             if not line[col_value_index].strip():
                 continue

@@ -16,6 +16,7 @@ from PyQt5.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent
 from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QActionGroup, QFileDialog
 
 # -------------------- Import Lib User -------------------
+from rawtextcheck.api import google_sheet_api
 from rawtextcheck.default_parameters import (
     INVALID_CHAR_TEXT_ERROR_TYPE,
     BANWORD_TEXT_ERROR_TYPE,
@@ -264,6 +265,7 @@ class MainWindow(QMainWindow):
         credentials: dict[str, str] | None = json_config.load_imported_credentials(filepath)
         if credentials is not None:
             json_config.set_credentials_google(credentials)
+            google_sheet_api.set_credentials_info(credentials, reload=True)
 
     def language_selected(self, action: QAction) -> None:
         selected_code = action.data()

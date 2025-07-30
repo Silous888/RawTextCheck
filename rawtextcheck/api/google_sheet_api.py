@@ -40,13 +40,13 @@ gc: Client | None = None
 
 # == Functions ================================================================
 
-def set_credentials_info(credentials_info: dict[str, Any]) -> None:
+def set_credentials_info(credentials_info: dict[str, Any], reload: bool = False) -> None:
     """Set the credentials information for Google Sheets API.
     Args:
         credentials_info (dict[str, Any]): The credentials information as a dictionary.
     """
     global gc
-    if gc is None:
+    if gc is None or reload:
         try:
             credentials: ServiceAccountCredentials = (
                 ServiceAccountCredentials.from_json_keyfile_dict(  # type: ignore
@@ -97,7 +97,6 @@ def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) 
     return RuntimeError("MAX_RETRIES")
 
 
-
 def open_spreadsheet(sheet_id: str) -> Spreadsheet | None:
     """open a sheet for others functions
 
@@ -129,7 +128,7 @@ def get_spreadsheet_name(spreadsheet: Spreadsheet) -> str | None:
         str: name of the spreadsheet
     """
     return spreadsheet.title
-    
+
 
 def open_worksheet(spreadsheet: Spreadsheet, sheet_index: int) -> Worksheet | None:
     """open a Worksheet for others functions
