@@ -12,6 +12,7 @@ tool to perform the analysis and returns structured results.
 
 # == Imports ==================================================================
 
+import os
 from typing import Callable
 
 from rawtextcheck import default_parser
@@ -242,4 +243,5 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
 
     data: dict[str, ItemResult] = json_results.generate_id_errors(all_result)
 
-    json_results.save_data(project_name, filepath, data)
+
+    json_results.save_data(project_name, os.path.basename(filepath), data)

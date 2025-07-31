@@ -56,7 +56,7 @@ def save_data(project_name: str, filename: str, data: dict[str, ItemResult]) -> 
     filename = sanitize_folder_name(filename)
     folderpath: str = os.path.join(RESULTS_FOLDER,
                                    sanitize_folder_name(project_name))
-    filepath: str = os.path.join(folderpath, os.path.basename(filename) + JSON_EXT)
+    filepath: str = os.path.join(folderpath, filename + JSON_EXT)
 
     # Create the folder if it doesn't exist
     os.makedirs(folderpath, exist_ok=True)
