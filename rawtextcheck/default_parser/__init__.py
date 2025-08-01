@@ -8,6 +8,8 @@ Description : Default parsers for various file types.
 
 # == Imports ==================================================================
 
+from types import ModuleType
+
 from . import (
     csv_parser,
     excel_parser,
@@ -15,15 +17,13 @@ from . import (
     textfile_parser
 )
 
-from rawtextcheck.default_parameters import PARSERFUNCTIONTYPE
-
 
 # == Constants ================================================================
 
-LIST_DEFAULT_PARSER: dict[str, PARSERFUNCTIONTYPE] = {
-    "csv": csv_parser.parse_file,
-    "excel": excel_parser.parse_file,
-    "textfile": textfile_parser.parse_file,
-    "google sheet": google_sheet_parser.parse_file
+LIST_DEFAULT_PARSER: dict[str, ModuleType] = {
+    "csv": csv_parser,
+    "excel": excel_parser,
+    "textfile": textfile_parser,
+    "google sheet": google_sheet_parser
 }
 """Every default parsers provided by the application"""

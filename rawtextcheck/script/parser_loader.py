@@ -14,9 +14,11 @@ extending the application with custom parsers without modifying the core code.
 
 import os
 from logging import Logger
+from importlib.machinery import ModuleSpec
 import importlib.util
+from types import ModuleType
 
-from rawtextcheck.default_parameters import PLUGIN_PARSER_FOLDER, PARSERFUNCTIONTYPE
+from rawtextcheck.default_parameters import PLUGIN_PARSER_FOLDER
 from rawtextcheck.logger import get_logger
 
 
@@ -27,7 +29,7 @@ logger: Logger = get_logger(__name__)
 
 # == Functions ================================================================
 
-def get_all_parsers() -> dict[str, PARSERFUNCTIONTYPE]:
+def get_all_parsers() -> dict[str, ModuleType]:
     """
     Dynamically load all .py plugin files from a given directory,
     and extract their 'parse_file' function.
@@ -35,7 +37,7 @@ def get_all_parsers() -> dict[str, PARSERFUNCTIONTYPE]:
     Returns:
         dict[str, ParserFunction]: A mapping of module names to their parse_file functions.
     """
-    parsers: dict[str, PARSERFUNCTIONTYPE] = {}
+    parsers: dict[str, ModuleType] = {}
 
     os.makedirs(PLUGIN_PARSER_FOLDER, exist_ok=True)
 
@@ -46,9 +48,9 @@ def get_all_parsers() -> dict[str, PARSERFUNCTIONTYPE]:
             filepath: str = os.path.join(PLUGIN_PARSER_FOLDER, filename)
 
             # Load the module from the given file path
-            spec = importlib.util.spec_from_file_location(module_name, filepath)
+            spec: ModuleSpec | None = importlib.util.spec_from_file_location(module_name, filepath)
             if spec and spec.loader:
-                module = importlib.util.module_from_spec(spec)
+                module: ModuleType = importlib.util.module_from_spec(spec)
                 try:
                     # Execute the module to load its contents
                     spec.loader.exec_module(module)
@@ -56,8 +58,7 @@ def get_all_parsers() -> dict[str, PARSERFUNCTIONTYPE]:
                     # Check if the module has a 'parse_file' function
                     if hasattr(module, "parse_file"):
                         # Store the parse_file function under the module's name
-                        parsers[module_name] = getattr(module, "parse_file")
-
+                        parsers[module_name] = module
                 except Exception as e:
                     logger.error("Error loading parser %s: %s", module_name, e)
 

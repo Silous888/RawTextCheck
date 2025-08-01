@@ -12,8 +12,9 @@ tool to perform the analysis and returns structured results.
 
 # == Imports ==================================================================
 
+from logging import Logger
 import os
-from typing import Callable
+from types import ModuleType
 
 from rawtextcheck import default_parser
 from rawtextcheck.default_parameters import (
@@ -23,8 +24,14 @@ from rawtextcheck.default_parameters import (
     BANWORD_TEXT_ERROR
     )
 
+from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ItemProject, ItemResult
 from rawtextcheck.script import json_projects, json_results, languagetool, parser_loader
+
+
+# == Global Variables =========================================================
+
+logger: Logger = get_logger(__name__)
 
 
 # == Functions ================================================================
@@ -204,7 +211,7 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
         return
 
     # Merge default and dynamic parsers
-    all_parsers: dict[str, Callable[[str, str], list[tuple[str, str]]]] = {
+    all_parsers: dict[str, ModuleType] = {
         **default_parser.LIST_DEFAULT_PARSER,
         **parser_loader.get_all_parsers()
     }
@@ -214,7 +221,7 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
         return
 
     # Parse the file using the selected parser
-    texts: list[tuple[str, str]] = all_parsers[parser_name](filepath, argument_parser)
+    texts: list[tuple[str, str]] = all_parsers[parser_name].parse_file(filepath, argument_parser)
 
     texts = remove_ignored_elements_in_texts(
         texts,
@@ -243,5 +250,13 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
 
     data: dict[str, ItemResult] = json_results.generate_id_errors(all_result)
 
+    filename: str = filepath
+    if hasattr(all_parsers[parser_name], "get_filename"):
+        try:
+            filename = all_parsers[parser_name].get_filename(filepath)
+        except Exception as e:
+            logger.error("error during get_filename method of parser %s: %s", parser_name, e)
+    else:
+        filename = os.path.basename(filepath)
 
-    json_results.save_data(project_name, os.path.basename(filepath), data)
+    json_results.save_data(project_name, filename, data)

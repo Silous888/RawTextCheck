@@ -137,8 +137,12 @@ class MainWindow(QMainWindow):
         if the text is a valid filepath, update ui and model
         if not, clear ui and current data
         """
-        if self.model.is_file_exist(self.ui.lineEdit_filepath.text()):
-            filename: str = self.model.get_filename_from_filepath(self.ui.lineEdit_filepath.text())
+        if self.model.is_file_exist(
+            self.ui.comboBox_project.currentText(),
+            self.ui.lineEdit_filepath.text()
+        ):
+            filename: str = self.model.get_filename_from_filepath(self.ui.comboBox_project.currentText(),
+                                                                  self.ui.lineEdit_filepath.text())
             self.model.resultsTableModel.filename = filename
             self.ui.label_fileOpened.setText(filename)
             self.model.resultsTableModel.load_data()
