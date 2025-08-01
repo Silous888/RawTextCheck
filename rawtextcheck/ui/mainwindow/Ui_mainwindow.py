@@ -98,7 +98,11 @@ class Ui_MainWindow(object):
         self.actionImport_projects_configuration.setObjectName("actionImport_projects_configuration")
         self.actionLanguage = QtWidgets.QAction(MainWindow)
         self.actionLanguage.setObjectName("actionLanguage")
+        self.actionAdd_google_credentials = QtWidgets.QAction(MainWindow)
+        self.actionAdd_google_credentials.setObjectName("actionAdd_google_credentials")
         self.menuManage.addAction(self.actionProjects)
+        self.menuManage.addSeparator()
+        self.menuManage.addAction(self.actionAdd_google_credentials)
         self.menuBar.addAction(self.menuManage.menuAction())
         self.menuBar.addAction(self.menuPreference.menuAction())
 
@@ -127,4 +131,5 @@ class Ui_MainWindow(object):
         self.actionExport_projects_configuration.setText(_translate("MainWindow", "Export all projects configuration"))
         self.actionImport_projects_configuration.setText(_translate("MainWindow", "Import all projects configuration"))
         self.actionLanguage.setText(_translate("MainWindow", "Language"))
+        self.actionAdd_google_credentials.setText(_translate("MainWindow", "Add google credentials"))
 from rawtextcheck.ui.widgets.dataresult_tableview import DataResultTableView

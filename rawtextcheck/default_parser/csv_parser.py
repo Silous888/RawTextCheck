@@ -23,11 +23,11 @@ logger: Logger = get_logger(__name__)
 
 # == Functions ================================================================
 
-def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
+def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
     """Parse a CSV file and return each non-empty cell from the specified column with its row identifier.
 
     Args:
-        pathfile (str): Path to the CSV file (.csv).
+        filepath (str): Path to the CSV file (.csv).
         argument (str): Column index (starting from 1), or "4,1" where:
                         - first is content column
                         - second (optional) is row ID column
@@ -49,7 +49,7 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
     results: list[tuple[str, str]] = []
 
     try:
-        with open(pathfile, newline='', encoding='utf-8') as csvfile:
+        with open(filepath, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
             for i, row in enumerate(reader, start=1):
                 if len(row) < col_value_index:
@@ -66,6 +66,6 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
 
                     results.append((row_id, value))
     except Exception as e:
-        logger.error("Error when parsing the CSV %s : %s", pathfile, e)
+        logger.error("Error when parsing the CSV %s : %s", filepath, e)
 
     return results

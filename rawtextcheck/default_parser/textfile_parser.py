@@ -22,11 +22,11 @@ logger: Logger = get_logger(__name__)
 
 # == Functions ================================================================
 
-def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
+def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
     """Parse a file and return each non-empty line with its line number.
 
     Args:
-        pathfile (str): Path of the file.
+        filepath (str): Path of the file.
         argument (str): Specific argument for this file (not used).
 
     Returns:
@@ -35,7 +35,7 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
     lines: list[tuple[str, str]] = []
     try:
 
-        with open(pathfile, "r", encoding="utf-8") as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             for i, line in enumerate(f, start=1):
                 stripped: str = line.strip()
                 if stripped:
@@ -43,5 +43,5 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
 
         return lines
     except UnicodeDecodeError as e:
-        logger.error("Error when parsing the textfile %s : %s", pathfile, e)
+        logger.error("Error when parsing the textfile %s : %s", filepath, e)
         return lines

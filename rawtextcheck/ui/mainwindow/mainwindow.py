@@ -13,9 +13,10 @@ from typing import List
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtCore import QMimeData, QModelIndex, QUrl, QItemSelectionModel
 from PyQt5.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent
-from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QActionGroup
+from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QActionGroup, QFileDialog
 
 # -------------------- Import Lib User -------------------
+from rawtextcheck.api import google_sheet_api
 from rawtextcheck.default_parameters import (
     INVALID_CHAR_TEXT_ERROR_TYPE,
     BANWORD_TEXT_ERROR_TYPE,
@@ -92,6 +93,7 @@ class MainWindow(QMainWindow):
         """
         # Menu
         self.ui.actionProjects.triggered.connect(self.actionProjects_triggered)
+        self.ui.actionAdd_google_credentials.triggered.connect(self.actionAdd_google_credentials_triggered)
         self.language_group.triggered.connect(self.language_selected)
         # combobox
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
@@ -114,6 +116,11 @@ class MainWindow(QMainWindow):
         self.model.titleComboBoxModel.load_data()
         self.ui.comboBox_project.setCurrentText(current_project)
 
+    def actionAdd_google_credentials_triggered(self) -> None:
+        """Slot for handling the Add Google Credentials menu action.
+        Opens a dialog to add Google API credentials."""
+        self.add_google_creadentials_process()
+
     def comboBox_project_currentIndexChanged(self, index: int) -> None:
         """Slot for handling changes in the project combobox.
         Updates the argument line edit with the selected project's argument parser.
@@ -130,8 +137,12 @@ class MainWindow(QMainWindow):
         if the text is a valid filepath, update ui and model
         if not, clear ui and current data
         """
-        if self.model.is_file_exist(self.ui.lineEdit_filepath.text()):
-            filename: str = self.model.get_filename_from_filepath(self.ui.lineEdit_filepath.text())
+        if self.model.is_file_exist(
+            self.ui.comboBox_project.currentText(),
+            self.ui.lineEdit_filepath.text()
+        ):
+            filename: str = self.model.get_filename_from_filepath(self.ui.comboBox_project.currentText(),
+                                                                  self.ui.lineEdit_filepath.text())
             self.model.resultsTableModel.filename = filename
             self.ui.label_fileOpened.setText(filename)
             self.model.resultsTableModel.load_data()
@@ -243,6 +254,22 @@ class MainWindow(QMainWindow):
         self.ui.tableView_result.setEnabled(is_enabled)
         self.ui.menuManage.setEnabled(is_enabled)
         self.ui.menuPreference.setEnabled(is_enabled)
+
+    def add_google_creadentials_process(self) -> None:
+
+        filepath, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Select Google Credentials JSON File"),
+            "",
+            self.tr("JSON Files (*.json)")
+        )
+
+        if not filepath:
+            return
+        credentials: dict[str, str] | None = json_config.load_imported_credentials(filepath)
+        if credentials is not None:
+            json_config.set_credentials_google(credentials)
+            google_sheet_api.set_credentials_info(credentials, reload=True)
 
     def language_selected(self, action: QAction) -> None:
         selected_code = action.data()

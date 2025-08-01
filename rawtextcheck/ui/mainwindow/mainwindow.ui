@@ -119,6 +119,8 @@
      <string>Manage</string>
     </property>
     <addaction name="actionProjects"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_google_credentials"/>
    </widget>
    <widget class="QMenu" name="menuPreference">
     <property name="title">
@@ -181,6 +183,11 @@
   <action name="actionLanguage">
    <property name="text">
     <string>Language</string>
+   </property>
+  </action>
+  <action name="actionAdd_google_credentials">
+   <property name="text">
+    <string>Add google credentials</string>
    </property>
   </action>
  </widget>

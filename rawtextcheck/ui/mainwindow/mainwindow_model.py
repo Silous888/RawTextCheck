@@ -11,9 +11,12 @@ combobox model and worker thread for background tasks.
 
 # == Imports ==================================================================
 
+from logging import Logger
 import os
+from types import ModuleType
 
 # -------------------- Import Lib Tier -------------------
+
 from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
 from PyQt5.QtCore import QCoreApplication as QCA
 
@@ -23,9 +26,16 @@ from rawtextcheck.default_parameters import (
     BANWORD_TEXT_ERROR_TYPE,
     LANGUAGETOOL_SPELLING_CATEGORY,
 )
+from rawtextcheck import default_parser
+from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ItemProject, ItemResult
-from rawtextcheck.script import json_projects, json_results, languagetool
+from rawtextcheck.script import json_projects, json_results, languagetool, parser_loader
 from rawtextcheck.ui.mainwindow.mainwindow_worker import WorkerMainWindow
+
+
+# == Global Variables =========================================================
+
+logger: Logger = get_logger(__name__)
 
 
 # == Classes ==================================================================
@@ -80,22 +90,56 @@ class MainWindowModel():
             return ""
         return data["arg_parser"]
 
-    def is_file_exist(self, filepath: str) -> bool:
+    def is_file_exist(self, project_name: str, filepath: str) -> bool:
         """test if a filepath is correct
         Args:
             filepath (str): the path of the file
         Returns:
             bool: True if the path is a valid file
         """
+        project_data: ItemProject | None = json_projects.get_project_data(project_name)
+        all_parsers: dict[str, ModuleType] = {
+            **default_parser.LIST_DEFAULT_PARSER,
+            **parser_loader.get_all_parsers()
+        }
+        if not project_data:
+            return False
+        parser_name: str = project_data["parser"]
+        if parser_name not in all_parsers:
+            return False
+        if hasattr(all_parsers[parser_name], "is_filepath_valid"):
+            try:
+                return all_parsers[parser_name].is_filepath_valid(filepath)
+            except Exception as e:
+                logger.error("error during is_filepath_valid method of parser %s: %s", parser_name, e)
+                return False
+        # if no is_filepath_valid, then consider file to be offline
         return os.path.isfile(filepath)
 
-    def get_filename_from_filepath(self, filepath: str) -> str:
+    def get_filename_from_filepath(self, project_name: str, filepath: str) -> str:
         """get the name of the file given its path
         Args:
             filepath (str): path of the file
         Returns:
             str: name of the file
         """
+        project_data: ItemProject | None = json_projects.get_project_data(project_name)
+        all_parsers: dict[str, ModuleType] = {
+            **default_parser.LIST_DEFAULT_PARSER,
+            **parser_loader.get_all_parsers()
+        }
+        if not project_data:
+            return ""
+        parser_name: str = project_data["parser"]
+        if parser_name not in all_parsers:
+            return ""
+        if hasattr(all_parsers[parser_name], "get_filename"):
+            try:
+                return all_parsers[parser_name].get_filename(filepath)
+            except Exception as e:
+                logger.error("error during get_filename method of parser %s: %s", parser_name, e)
+                return ""
+        # if no get_filename, then consider file to be offline
         return os.path.basename(filepath)
 
     def generate_result(self, filepath: str, project_name: str, argument_parser: str) -> None:

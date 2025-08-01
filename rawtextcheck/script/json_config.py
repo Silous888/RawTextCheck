@@ -125,3 +125,22 @@ def set_credentials_google(credentials: dict[str, str]) -> None:
     data["credentials_google"] = credentials
     save_data(data)
     logger.info("App configuration Google credentials updated.")
+
+
+def load_imported_credentials(filepath: str) -> dict[str, str] | None:
+    """Load credentials from a JSON file.
+    Args:
+        filepath (str): Path to the JSON file containing credentials.
+    Returns:
+        dict[str, str] | None: Credentials if loaded successfully, None otherwise.
+    """
+    if not os.path.exists(filepath):
+        logger.error("File %s does not exist.", filepath)
+        return None
+    with open(filepath, "r", encoding="utf-8") as f:
+        try:
+            credentials: dict[str, str] = json.load(f)
+            return credentials
+        except json.JSONDecodeError as e:
+            logger.error("Error decoding JSON from %s: %s", filepath, e)
+            return None

@@ -13,7 +13,9 @@ including creating necessary folders, creating JSON configuration.
 
 import os
 
+from rawtextcheck.api import google_sheet_api
 from rawtextcheck.default_parameters import RESULTS_FOLDER, PLUGIN_PARSER_FOLDER
+from rawtextcheck.newtype import ItemConfig
 from rawtextcheck.script import json_config, json_projects
 
 
@@ -35,3 +37,18 @@ def create_folders() -> None:
         os.makedirs(RESULTS_FOLDER)
     if not os.path.exists(PLUGIN_PARSER_FOLDER):
         os.makedirs(PLUGIN_PARSER_FOLDER)
+
+
+def set_google_credentials() -> None:
+    """Set Google API credentials."""
+    config: ItemConfig = json_config.load_data()
+    if config["credentials_google"]:
+        google_sheet_api.set_credentials_info(config["credentials_google"])
+
+
+def startup_everything() -> None:
+    """Call every function of startup.py"""
+    create_folders()
+    create_json_config()
+    create_json_projects()
+    set_google_credentials()
