@@ -151,10 +151,10 @@ A parser is a Python file that implements a specific function. To add a parser t
 To create a parser, you need to implement the following function in your file:
 
 ```python
-def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
+def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
     """Read a file and return a list with each text line associated with the line number or ID.
     Args:
-        pathfile (str): Path to the file.
+        filepath (str): Path to the file.
         argument (str): Argument for the parser, if needed.
 
     Returns:

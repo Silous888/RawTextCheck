@@ -14,10 +14,10 @@ This parser acts as a default parser for google sheet.
 from logging import Logger
 
 from gspread import Spreadsheet, Worksheet
+from gspread.exceptions import NoValidUrlKeyFound
 from gspread.utils import column_letter_to_index, extract_id_from_url
 
 from rawtextcheck.api import google_sheet_api
-from rawtextcheck.script import json_config
 from rawtextcheck.logger import get_logger
 
 
@@ -28,11 +28,48 @@ logger: Logger = get_logger(__name__)
 
 # == Functions ================================================================
 
-def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
+def is_filepath_valid(filepath: str) -> bool:
+    """check if the filepath is a valid file for this parser
+
+    Args:
+        filepath (str): path of the file
+
+    Returns:
+        bool: True if valid, False otherwise
+    """
+    if not google_sheet_api.is_credentials_set():
+        return False
+    try:
+        sheet_id: str = extract_id_from_url(filepath)
+        spreadsheet: Spreadsheet | None = google_sheet_api.open_spreadsheet(sheet_id)
+        if spreadsheet is None:
+            return False
+        return True
+    except NoValidUrlKeyFound:
+        return False
+
+
+def get_filename(filepath: str) -> str:
+    """get the filename of the filepath
+
+    Args:
+        filepath (str): path of the file
+
+    Returns:
+        str: name of the file
+    """
+    sheet_id: str = extract_id_from_url(filepath)
+    spreadsheet: Spreadsheet | None = google_sheet_api.open_spreadsheet(sheet_id)
+    if spreadsheet is None:
+        return ""
+    return google_sheet_api.get_spreadsheet_name(spreadsheet)
+
+
+def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
     """Parse a google sheet and return each non-empty cell from the specified column with row identifier.
 
     Args:
-        pathfile (str): url of the google sheet.
+        filepath (str): url of the google sheet.
         argument (str): Column(s), e.g., 'E' or 'E,A'. First is the content column,
                         second (optional) is the row ID column.
 
@@ -47,8 +84,7 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
         logger.error("%s is not a valid argument for the google sheet parser.", argument)
         return []
 
-    google_sheet_api.set_credentials_info(json_config.load_data()['credentials_google'])
-    id_sheet: str = extract_id_from_url(pathfile)
+    id_sheet: str = extract_id_from_url(filepath)
 
     spreadsheet: Spreadsheet | None = google_sheet_api.open_spreadsheet(id_sheet)
     if spreadsheet is None:

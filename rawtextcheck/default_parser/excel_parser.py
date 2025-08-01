@@ -25,11 +25,11 @@ logger: Logger = get_logger(__name__)
 
 # == Functions ================================================================
 
-def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
+def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
     """Parse an Excel file and return each non-empty cell from the specified column with row identifier.
 
     Args:
-        pathfile (str): Path to the Excel file (.xlsx).
+        filepath (str): Path to the Excel file (.xlsx).
         argument (str): Column(s), e.g., 'E' or 'E,A'. First is the content column,
                         second (optional) is the row ID column.
 
@@ -45,7 +45,7 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
         return []
 
     try:
-        wb: Workbook = load_workbook(pathfile, data_only=True)
+        wb: Workbook = load_workbook(filepath, data_only=True)
         ws = wb.active
 
         results: list[tuple[str, str]] = []
@@ -69,5 +69,5 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
         return results
 
     except Exception as e:
-        logger.error("Error when parsing the Excel file %s : %s", pathfile, e)
+        logger.error("Error when parsing the Excel file %s : %s", filepath, e)
         return []

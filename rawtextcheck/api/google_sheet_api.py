@@ -61,6 +61,15 @@ def set_credentials_info(credentials_info: dict[str, Any], reload: bool = False)
         logger.warning("Credentials already set, skipping.")
 
 
+def is_credentials_set() -> bool:
+    """check if credentials are loaded
+
+    Returns:
+        bool: True if set, False otherwise
+    """
+    return gc is not None
+
+
 def _safe_execute_method(obj: Any, method_name: str, *args: Any, **kwargs: Any) -> Any | Exception:
     """Execute a method of an object with given arguments in a try-except block,
        until it works or the maximum number of retries is reached.
@@ -118,7 +127,7 @@ def open_spreadsheet(sheet_id: str) -> Spreadsheet | None:
     return spreadsheet
 
 
-def get_spreadsheet_name(spreadsheet: Spreadsheet) -> str | None:
+def get_spreadsheet_name(spreadsheet: Spreadsheet) -> str:
     """Get the name of a spreadsheet
 
     Args:

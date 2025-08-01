@@ -75,7 +75,7 @@ PLUGIN_PARSER_FOLDER = "parsers"
 """Directory where plugin parsers are stored"""
 
 PARSERFUNCTIONTYPE = Callable[[str, str], list[tuple[str, str]]]
-"""Type alias for a parser function: it takes (pathfile, argument)
+"""Type alias for a parser function: it takes (filepath, argument)
 and returns a list of (str, str) tuples"""
 
 # The list is sorted by language code for easier readability.
