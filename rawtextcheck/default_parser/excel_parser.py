@@ -11,12 +11,30 @@ This parser acts as a default parser for excel files.
 
 # == Imports ==================================================================
 
+from dataclasses import dataclass
 from logging import Logger
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import column_index_from_string
 
 from rawtextcheck.logger import get_logger
+
+
+# == Classes ==================================================================
+
+@dataclass(frozen=True)
+class ParserArgument:
+    name: str
+    optional: bool
+
+
+# == Constants ================================================================
+
+COL_ARG = ParserArgument(name="col", optional=False)
+COL_ID_ARG = ParserArgument(name="colID", optional=True)
+
+LIST_ARGUMENTS: list[ParserArgument] = [COL_ARG, COL_ID_ARG]
+
 
 # == Global Variables =========================================================
 
@@ -25,7 +43,7 @@ logger: Logger = get_logger(__name__)
 
 # == Functions ================================================================
 
-def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
+def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]]:
     """Parse an Excel file and return each non-empty cell from the specified column with row identifier.
 
     Args:
@@ -37,11 +55,12 @@ def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
         list[tuple[str, str]]: List of (row ID as string, cell content).
     """
     try:
-        parts: list[str] = [arg.strip().upper() for arg in argument.split(",")]
-        col_value_index: int = column_index_from_string(parts[0])  # Always required
-        col_id_index: int | None = column_index_from_string(parts[1]) if len(parts) > 1 else None
+        col_value_index: int = column_index_from_string(arguments[COL_ARG.name])
+        col_id_index: int | None = None
+        if COL_ID_ARG.name in arguments.keys():
+            col_id_index = column_index_from_string(arguments[COL_ID_ARG.name])
     except ValueError:
-        logger.error("%s is not a valid argument for the excel parser.", argument)
+        logger.error("%s is not a valid argument for the excel parser.", arguments)
         return []
 
     try:

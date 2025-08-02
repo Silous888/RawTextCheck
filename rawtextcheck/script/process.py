@@ -26,7 +26,7 @@ from rawtextcheck.default_parameters import (
 
 from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ItemProject, ItemResult
-from rawtextcheck.script import json_projects, json_results, languagetool, parser_loader
+from rawtextcheck.script import json_projects, json_results, languagetool, parser_loader, utils
 
 
 # == Global Variables =========================================================
@@ -221,7 +221,8 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
         return
 
     # Parse the file using the selected parser
-    texts: list[tuple[str, str]] = all_parsers[parser_name].parse_file(filepath, argument_parser)
+    argument_parser_dict: dict[str, str] = utils.parse_attributes(argument_parser)
+    texts: list[tuple[str, str]] = all_parsers[parser_name].parse_file(filepath, argument_parser_dict)
 
     texts = remove_ignored_elements_in_texts(
         texts,

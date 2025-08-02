@@ -11,6 +11,7 @@ This parser acts as a default parser for google sheet.
 
 # == Imports ==================================================================
 
+from dataclasses import dataclass
 from logging import Logger
 
 from gspread import Spreadsheet, Worksheet
@@ -19,6 +20,22 @@ from gspread.utils import column_letter_to_index, extract_id_from_url
 
 from rawtextcheck.api import google_sheet_api
 from rawtextcheck.logger import get_logger
+
+
+# == Classes ==================================================================
+
+@dataclass(frozen=True)
+class ParserArgument:
+    name: str
+    optional: bool
+
+
+# == Constants ================================================================
+
+COL_ARG = ParserArgument(name="col", optional=False)
+COL_ID_ARG = ParserArgument(name="colID", optional=True)
+
+LIST_ARGUMENTS: list[ParserArgument] = [COL_ARG, COL_ID_ARG]
 
 
 # == Global Variables =========================================================
@@ -65,7 +82,7 @@ def get_filename(filepath: str) -> str:
     return google_sheet_api.get_spreadsheet_name(spreadsheet)
 
 
-def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
+def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]]:
     """Parse a google sheet and return each non-empty cell from the specified column with row identifier.
 
     Args:
@@ -77,11 +94,12 @@ def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
         list[tuple[str, str]]: List of (row ID as string, cell content).
     """
     try:
-        parts: list[str] = [arg.strip().upper() for arg in argument.split(",")]
-        col_value_index: int = column_letter_to_index(parts[0]) - 1  # Always required
-        col_id_index: int | None = column_letter_to_index(parts[1]) - 1 if len(parts) > 1 else None
+        col_value_index: int = column_letter_to_index(arguments[COL_ARG.name]) - 1  # Always required
+        col_id_index: int | None = None
+        if COL_ID_ARG.name in arguments.keys():
+            col_id_index = column_letter_to_index(arguments[COL_ID_ARG.name]) - 1
     except Exception:
-        logger.error("%s is not a valid argument for the google sheet parser.", argument)
+        logger.error("%s is not a valid argument for the google sheet parser.", arguments)
         return []
 
     id_sheet: str = extract_id_from_url(filepath)

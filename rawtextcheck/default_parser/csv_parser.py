@@ -11,10 +11,26 @@ from the specified column. The first column starts at 1.
 # == Imports ==================================================================
 
 import csv
+from dataclasses import dataclass
 from logging import Logger
 
 from rawtextcheck.logger import get_logger
 
+
+# == Classes ==================================================================
+
+@dataclass(frozen=True)
+class ParserArgument:
+    name: str
+    optional: bool
+
+
+# == Constants ================================================================
+
+COL_ARG = ParserArgument(name="col", optional=False)
+COL_ID_ARG = ParserArgument(name="colID", optional=True)
+
+LIST_ARGUMENTS: list[ParserArgument] = [COL_ARG, COL_ID_ARG]
 
 # == Global Variables =========================================================
 
@@ -23,7 +39,7 @@ logger: Logger = get_logger(__name__)
 
 # == Functions ================================================================
 
-def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
+def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]]:
     """Parse a CSV file and return each non-empty cell from the specified column with its row identifier.
 
     Args:
@@ -36,14 +52,15 @@ def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
         list[tuple[str, str]]: List of (row ID as string, cell content).
     """
     try:
-        parts = [int(a.strip()) for a in argument.split(",")]
-        col_value_index = parts[0]
-        col_id_index = parts[1] if len(parts) > 1 else None
-
+        col_value_index: int = int(arguments[COL_ARG.name])
+        col_id_index: int | None = None
+        if COL_ID_ARG.name in arguments.keys():
+            col_id_index = int(arguments[COL_ID_ARG.name])
         if col_value_index < 1 or (col_id_index is not None and col_id_index < 1):
             return []
+
     except ValueError:
-        logger.error("%s is not a valid argument for the CSV parser.", argument)
+        logger.error("%s is not a valid argument for the CSV parser.", arguments)
         return []
 
     results: list[tuple[str, str]] = []
@@ -58,7 +75,7 @@ def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
                 value: str = row[col_value_index - 1].strip()
                 if value:
                     if col_id_index is not None and len(row) >= col_id_index:
-                        row_id = row[col_id_index - 1].strip()
+                        row_id: str = row[col_id_index - 1].strip()
                         if not row_id:
                             row_id = str(i)
                     else:
