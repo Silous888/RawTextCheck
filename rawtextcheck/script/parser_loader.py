@@ -21,6 +21,7 @@ from types import ModuleType
 from rawtextcheck.default_parameters import PLUGIN_PARSER_FOLDER
 from rawtextcheck.default_parser import LIST_DEFAULT_PARSER
 from rawtextcheck.logger import get_logger
+from rawtextcheck.newtype import ParserArgument
 
 
 # == Global Variables =========================================================
@@ -81,10 +82,7 @@ def call_is_filepath_valid(parser_name: str, filepath: str) -> tuple[bool, bool]
     Returns:
         tuple[bool, bool]: is_filepath_valid result, if is_filepath_valid exists
     """
-    all_parsers: dict[str, ModuleType] = {
-        **LIST_DEFAULT_PARSER,
-        **get_all_parsers()
-    }
+    all_parsers: dict[str, ModuleType] = get_all_parsers()
     if parser_name not in all_parsers:
         return False, False
     if hasattr(all_parsers[parser_name], "is_filepath_valid"):
@@ -108,10 +106,7 @@ def call_get_filename(parser_name: str, filepath: str) -> tuple[str, bool]:
     Returns:
         tuple[str, bool]: result of get_filename, and if get_filename exists
     """
-    all_parsers: dict[str, ModuleType] = {
-        **LIST_DEFAULT_PARSER,
-        **get_all_parsers()
-    }
+    all_parsers: dict[str, ModuleType] = get_all_parsers()
     if parser_name not in all_parsers:
         return "", False
     if hasattr(all_parsers[parser_name], "get_filename"):
@@ -122,3 +117,22 @@ def call_get_filename(parser_name: str, filepath: str) -> tuple[str, bool]:
             return "", True
     else:
         return "", False
+
+
+def get_arguments_keys(parser_name: str) -> tuple(list[ParserArgument], bool):  # type: ignore
+    """call LIST_ARGUMENT of the parser, and return the list, and existence
+    of the list in the parser.
+
+    Args:
+        parser_name (str): name of the parser
+
+    Returns:
+        tuple[list[str], bool]: list of the argument keys, and existence of LIST_ARGUMENT
+    """
+    all_parsers: dict[str, ModuleType] = get_all_parsers()
+    if parser_name not in all_parsers:
+        return ParserArgument(name="", optional=True), False
+    if hasattr(all_parsers[parser_name], "LIST_ARGUMENTS"):
+        return all_parsers[parser_name].LIST_ARGUMENTS, True
+    else:
+        return ParserArgument(name="", optional=True), False

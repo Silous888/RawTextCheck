@@ -12,6 +12,7 @@ which are used to structure data related to projects and results of language che
 
 # == Imports ==================================================================
 
+from dataclasses import dataclass
 from typing import TypedDict
 
 
@@ -84,3 +85,14 @@ class ItemConfig(TypedDict):
     hidden_column: list[str]
     last_project: str
     credentials_google: dict[str, str]
+
+
+@dataclass(frozen=True)
+class ParserArgument:
+    """class for arguments of the parser
+    Attributes:
+        name (str): name of the argument, like name="value"
+        optional (bool): if the argument need to have a value
+    """
+    name: str
+    optional: bool

@@ -11,21 +11,13 @@ This parser acts as a default parser for excel files.
 
 # == Imports ==================================================================
 
-from dataclasses import dataclass
 from logging import Logger
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import column_index_from_string
 
 from rawtextcheck.logger import get_logger
-
-
-# == Classes ==================================================================
-
-@dataclass(frozen=True)
-class ParserArgument:
-    name: str
-    optional: bool
+from rawtextcheck.newtype import ParserArgument
 
 
 # == Constants ================================================================

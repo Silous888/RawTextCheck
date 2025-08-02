@@ -11,18 +11,10 @@ from the specified column. The first column starts at 1.
 # == Imports ==================================================================
 
 import csv
-from dataclasses import dataclass
 from logging import Logger
 
 from rawtextcheck.logger import get_logger
-
-
-# == Classes ==================================================================
-
-@dataclass(frozen=True)
-class ParserArgument:
-    name: str
-    optional: bool
+from rawtextcheck.newtype import ParserArgument
 
 
 # == Constants ================================================================

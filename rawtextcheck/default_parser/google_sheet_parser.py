@@ -11,7 +11,6 @@ This parser acts as a default parser for google sheet.
 
 # == Imports ==================================================================
 
-from dataclasses import dataclass
 from logging import Logger
 
 from gspread import Spreadsheet, Worksheet
@@ -20,14 +19,7 @@ from gspread.utils import column_letter_to_index, extract_id_from_url
 
 from rawtextcheck.api import google_sheet_api
 from rawtextcheck.logger import get_logger
-
-
-# == Classes ==================================================================
-
-@dataclass(frozen=True)
-class ParserArgument:
-    name: str
-    optional: bool
+from rawtextcheck.newtype import ParserArgument
 
 
 # == Constants ================================================================

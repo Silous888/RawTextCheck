@@ -13,6 +13,12 @@ This parser acts as a default parser for text files.
 from logging import Logger
 
 from rawtextcheck.logger import get_logger
+from rawtextcheck.newtype import ParserArgument
+
+
+# == Constants ================================================================
+
+LIST_ARGUMENTS: list[ParserArgument] = []
 
 
 # == Global Variables =========================================================
@@ -22,7 +28,7 @@ logger: Logger = get_logger(__name__)
 
 # == Functions ================================================================
 
-def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
+def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]]:
     """Parse a file and return each non-empty line with its line number.
 
     Args:

@@ -69,7 +69,7 @@ class DialogProjectManager(QDialog):
         self.ui.pushButton_export.clicked.connect(self.pushButton_export_clicked)
         # comboboxes
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
-
+        self.ui.comboBox_parser.currentIndexChanged.connect(self.comboBox_parser_currentIndexChanged)
         # lineEdits
         self.ui.lineEdit_projectName.editingFinished.connect(self.lineEdit_projectName_editingFinished)
 
@@ -139,6 +139,16 @@ class DialogProjectManager(QDialog):
             return
         self.load_project_data(index)
         self.set_enabled_has_project(self.ui.comboBox_project.count() > 0)
+
+    def comboBox_parser_currentIndexChanged(self, index: int) -> None:
+        """Slot when the parser combobox index is changed.
+        Loads the keys of the parser arguments in the lineEdit
+        Args:
+            index (int): The index of the selected parser in the combobox.
+        """
+        if index < 0:
+            return
+        return
 
     def lineEdit_projectName_editingFinished(self) -> None:
         """Slot when the project name line edit editing is finished."""
