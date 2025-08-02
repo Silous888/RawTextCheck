@@ -16,7 +16,6 @@ from logging import Logger
 import os
 from types import ModuleType
 
-from rawtextcheck import default_parser
 from rawtextcheck.default_parameters import (
     INVALID_CHAR_TEXT_ERROR_TYPE,
     INVALID_CHAR_TEXT_ERROR,
@@ -211,10 +210,7 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
         return
 
     # Merge default and dynamic parsers
-    all_parsers: dict[str, ModuleType] = {
-        **default_parser.LIST_DEFAULT_PARSER,
-        **parser_loader.get_all_parsers()
-    }
+    all_parsers: dict[str, ModuleType] = parser_loader.get_all_parsers()
 
     parser_name: str = project_data["parser"]
     if parser_name not in all_parsers:

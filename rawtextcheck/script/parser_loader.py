@@ -38,7 +38,7 @@ def get_all_parsers() -> dict[str, ModuleType]:
     Returns:
         dict[str, ParserFunction]: A mapping of module names to their parse_file functions.
     """
-    parsers: dict[str, ModuleType] = {}
+    plugin_parser: dict[str, ModuleType] = {}
 
     os.makedirs(PLUGIN_PARSER_FOLDER, exist_ok=True)
 
@@ -59,11 +59,15 @@ def get_all_parsers() -> dict[str, ModuleType]:
                     # Check if the module has a 'parse_file' function
                     if hasattr(module, "parse_file"):
                         # Store the parse_file function under the module's name
-                        parsers[module_name] = module
+                        plugin_parser[module_name] = module
                 except Exception as e:
                     logger.error("Error loading parser %s: %s", module_name, e)
 
-    return parsers
+    all_parsers: dict[str, ModuleType] = {
+        **LIST_DEFAULT_PARSER,
+        **plugin_parser
+    }
+    return all_parsers
 
 
 def call_is_filepath_valid(parser_name: str, filepath: str) -> tuple[bool, bool]:

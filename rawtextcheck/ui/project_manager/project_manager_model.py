@@ -18,7 +18,6 @@ from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, Q
 
 # -------------------- Import Lib User -------------------
 from rawtextcheck.default_parameters import LANGUAGES_LANGUAGETOOL
-from rawtextcheck.default_parser import LIST_DEFAULT_PARSER
 from rawtextcheck.newtype import ItemProject
 from rawtextcheck.script import json_projects, parser_loader
 
@@ -49,8 +48,7 @@ class ProjectManagerModel():
         """Initialize the models for comboboxes and table views."""
         self.titleComboBoxModel = ProjectTitleComboBoxModel()
         self.languageComboBoxModel = LanguagesComboBoxModel(LANGUAGES_LANGUAGETOOL)
-        self.parserComboBoxModel = ParserComboBoxModel(list(LIST_DEFAULT_PARSER.keys()) +
-                                                       list(parser_loader.get_all_parsers().keys()))
+        self.parserComboBoxModel = ParserComboBoxModel(list(parser_loader.get_all_parsers().keys()))
         self.dictionaryModel = ListTableModel()
         self.banwordsModel = ListTableModel()
         self.rulesModel = ListTableModel()
