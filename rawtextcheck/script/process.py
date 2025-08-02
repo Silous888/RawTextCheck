@@ -226,8 +226,10 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
 
     texts = remove_ignored_elements_in_texts(
         texts,
-        project_data["ignored_codes_into_space"], project_data["ignored_codes_into_nothing"],
-        project_data["ignored_substrings_into_space"], project_data["ignored_substrings_into_nothing"]
+        project_data["ignored_codes_into_space"],
+        project_data["ignored_codes_into_nothing"],
+        project_data["ignored_substrings_into_space"],
+        project_data["ignored_substrings_into_nothing"]
     )
 
     languagetool.initialize_tool(project_data["language"])
@@ -252,11 +254,9 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
     data: dict[str, ItemResult] = json_results.generate_id_errors(all_result)
 
     filename: str = filepath
-    if hasattr(all_parsers[parser_name], "get_filename"):
-        try:
-            filename = all_parsers[parser_name].get_filename(filepath)
-        except Exception as e:
-            logger.error("error during get_filename method of parser %s: %s", parser_name, e)
+    result, success = parser_loader.call_get_filename(parser_name, filepath)
+    if success:
+        filename = result
     else:
         filename = os.path.basename(filepath)
 

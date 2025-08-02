@@ -19,6 +19,7 @@ import importlib.util
 from types import ModuleType
 
 from rawtextcheck.default_parameters import PLUGIN_PARSER_FOLDER
+from rawtextcheck.default_parser import LIST_DEFAULT_PARSER
 from rawtextcheck.logger import get_logger
 
 
@@ -63,3 +64,57 @@ def get_all_parsers() -> dict[str, ModuleType]:
                     logger.error("Error loading parser %s: %s", module_name, e)
 
     return parsers
+
+
+def call_is_filepath_valid(parser_name: str, filepath: str) -> tuple[bool, bool]:
+    """call is_filepath_valid of a parser, and return result and existence of the
+    method in the parser
+
+    Args:
+        parser_name (str): name of the parser
+        filepath (str): filepath to test
+
+    Returns:
+        tuple[bool, bool]: is_filepath_valid result, if is_filepath_valid exists
+    """
+    all_parsers: dict[str, ModuleType] = {
+        **LIST_DEFAULT_PARSER,
+        **get_all_parsers()
+    }
+    if parser_name not in all_parsers:
+        return False, False
+    if hasattr(all_parsers[parser_name], "is_filepath_valid"):
+        try:
+            return all_parsers[parser_name].is_filepath_valid(filepath), True
+        except Exception as e:
+            logger.error("error during is_filepath_valid method of parser %s: %s", parser_name, e)
+            return False, True
+    else:
+        return False, False
+
+
+def call_get_filename(parser_name: str, filepath: str) -> tuple[str, bool]:
+    """call get_filename of a parser, and return result, and existence of
+    the method in the parser
+
+    Args:
+        parser_name (str): name of the parser
+        filepath (str): filepath of the file
+
+    Returns:
+        tuple[str, bool]: result of get_filename, and if get_filename exists
+    """
+    all_parsers: dict[str, ModuleType] = {
+        **LIST_DEFAULT_PARSER,
+        **get_all_parsers()
+    }
+    if parser_name not in all_parsers:
+        return "", False
+    if hasattr(all_parsers[parser_name], "get_filename"):
+        try:
+            return all_parsers[parser_name].get_filename(filepath), True
+        except Exception as e:
+            logger.error("error during get_filename method of parser %s: %s", parser_name, e)
+            return "", True
+    else:
+        return "", False
