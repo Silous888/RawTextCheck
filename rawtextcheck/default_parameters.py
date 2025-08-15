@@ -13,8 +13,6 @@ maintenance.
 
 # == Imports ==================================================================
 
-from typing import Tuple
-
 from PyQt5.QtCore import QCoreApplication as QCA
 
 
@@ -28,14 +26,14 @@ CONFIG_FOLDER = "config"
 JSON_CONFIG_PATH = CONFIG_FOLDER + "/config.json"
 """Path to the JSON file containing app configuration"""
 
-LANGUAGES: list[Tuple[str, str]] = [
+LANGUAGES: list[tuple[str, str]] = [
     ("english", QCA.translate("language", "English")),
     ("french", QCA.translate("language", "French"))
     ]
 """Avalaible language for the app interface, first value
 is default value"""
 
-THEMES: list[Tuple[str, str]] = [
+THEMES: list[tuple[str, str]] = [
     ("light", QCA.translate("color theme", "Light"))
     ]
 """Avalaible theme for the app interface, first value is
@@ -75,7 +73,7 @@ PLUGIN_PARSER_FOLDER = "parsers"
 """Directory where plugin parsers are stored"""
 
 # The list is sorted by language code for easier readability.
-LANGUAGES_LANGUAGETOOL: list[Tuple[str, str]] = [
+LANGUAGES_LANGUAGETOOL: list[tuple[str, str]] = [
     ("ar", QCA.translate("Language", "Arabic")),
     ("ast", QCA.translate("Language", "Asturian")),
     ("ast-ES", QCA.translate("Language", "Asturian (Spain)")),

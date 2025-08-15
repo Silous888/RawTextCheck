@@ -114,7 +114,7 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
         for i, line in enumerate(values):
             if not line[col_value_index].strip():
                 continue
-            results.append((str(i), line[col_value_index]))
+            results.append((str(i + 1), line[col_value_index]))
     else:
         for i, line in enumerate(values):
             if not line[col_value_index].strip():
@@ -122,6 +122,6 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
             if line[col_id_index].strip():
                 results.append((line[col_id_index], line[col_value_index]))
             else:
-                results.append((str(i), line[col_value_index]))
+                results.append((str(i + 1), line[col_value_index]))
 
     return results

@@ -119,7 +119,7 @@ def call_get_filename(parser_name: str, filepath: str) -> tuple[str, bool]:
         return "", False
 
 
-def get_arguments_keys(parser_name: str) -> tuple(list[ParserArgument], bool):  # type: ignore
+def get_arguments_keys(parser_name: str) -> tuple[list[ParserArgument], bool]:  # type: ignore
     """call LIST_ARGUMENT of the parser, and return the list, and existence
     of the list in the parser.
 
@@ -131,8 +131,8 @@ def get_arguments_keys(parser_name: str) -> tuple(list[ParserArgument], bool):  
     """
     all_parsers: dict[str, ModuleType] = get_all_parsers()
     if parser_name not in all_parsers:
-        return ParserArgument(name="", optional=True), False
+        return [ParserArgument(name="", optional=True)], False
     if hasattr(all_parsers[parser_name], "LIST_ARGUMENTS"):
         return all_parsers[parser_name].LIST_ARGUMENTS, True
     else:
-        return ParserArgument(name="", optional=True), False
+        return [ParserArgument(name="", optional=True)], False
