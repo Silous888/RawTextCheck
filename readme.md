@@ -118,31 +118,50 @@ For each line, several actions are available by right-clicking on it:
 
 ### Parsers
 
-There are 3 built-in parsers:
+There are 4 built-in parsers:
 
 - **textfile**
 - **excel**
 - **csv**
+- **google sheet**
+
+For every parsers, arguments should be written like this:
+
+    arg1="value", arg2="value", arg3='value'
+
+both quote and double quote can be used.
+
+#### textfile
 
 The **textfile** parser is the default parser for all text-based files. It returns every non-empty line in the file. This is useful if Ignored codes and Ignored substrings are sufficient to extract the sentences you need. (See [Project configuration](#manage-project-window) for more details.)
 
 This parser does not require any arguments.
 
+#### excel
+
 The **excel** parser returns every non-empty cell from a specified column in an Excel file.
 
-It requires at least one argument: the letter of the column containing the text (e.g., `D` to get cells from column D). You can also specify a second argument if you want to use another column (e.g., an ID column) to identify lines instead of the row number. Arguments should be provided as follows:
+Arguments are:
+ - col: letter of the column containing the text (e.g., `D` to get cells from column D)
+ - colID (optional): another column (e.g., an ID column) to identify lines instead of the row number
 
-    {column with texts},{column with id (optional)}
-    D,A
+#### csv
 
 The **csv** parser returns every non-empty value from a specified column in a CSV file.
 
-It requires at least one argument: the number of the column (the first column is 1). You can also specify a second argument if you want to use another column (e.g., an ID column) to identify lines instead of the line number. Arguments should be provided as follows:
+Arguments are:
+ - col: the number of the column (the first column is 1)
+ - colID (optional): another column (e.g., an ID column) to identify lines instead of the line number.
 
-    {column with texts},{column with id (optional)}
-    4,1
+#### google sheet
 
-### Additional parsers
+The **google sheet** parser returns every non-empty cell from a specified column in a google sheet. Path is the url of the google sheet. Credentials are needed to access a google sheet.
+
+Arguments are:
+ - col: letter of the column containing the text (e.g., `D` to get cells from column D)
+ - colID (optional): another column (e.g., an ID column) to identify lines instead of the row number
+
+### Additional parsers (NEED CHANGE)
 
 If the built-in parsers are not sufficient, you can create your own.
 
@@ -151,11 +170,11 @@ A parser is a Python file that implements a specific function. To add a parser t
 To create a parser, you need to implement the following function in your file:
 
 ```python
-def parse_file(filepath: str, argument: str) -> list[tuple[str, str]]:
+def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]]:
     """Read a file and return a list with each text line associated with the line number or ID.
     Args:
         filepath (str): Path to the file.
-        argument (str): Argument for the parser, if needed.
+        argument (dict[str, str]): Argument for the parser, if needed.
 
     Returns:
         list[tuple[str, str]]: List of (line number or ID, text of the line).

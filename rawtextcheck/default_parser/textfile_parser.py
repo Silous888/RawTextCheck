@@ -33,7 +33,7 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
 
     Args:
         filepath (str): Path of the file.
-        argument (str): Specific argument for this file (not used).
+        argument (dict[str, str]): Specific argument for this file (not used).
 
     Returns:
         list[tuple[str, str]]: List of tuples (line number as string, line content).
