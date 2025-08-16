@@ -103,6 +103,17 @@ class ProjectManagerModel():
         if data:
             self.save_project_data(project_name, data)
 
+    def get_default_parser_arg(self, parser_name: str) -> str:
+        args, has_args = parser_loader.get_arguments_keys(parser_name)
+        default_args: str = ""
+        if not has_args:
+            return default_args
+        for arg in args:
+            if arg.optional:
+                continue
+            default_args += arg.name + '="", '
+        return default_args
+
 
 class ProjectTitleComboBoxModel(QAbstractListModel):
     """Model for the project title combobox in the project manager dialog.

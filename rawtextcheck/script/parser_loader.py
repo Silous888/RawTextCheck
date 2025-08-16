@@ -37,7 +37,7 @@ def get_all_parsers() -> dict[str, ModuleType]:
     and extract their 'parse_file' function.
 
     Returns:
-        dict[str, ParserFunction]: A mapping of module names to their parse_file functions.
+        dict[str, ModuleType]: A mapping of module names.
     """
     plugin_parser: dict[str, ModuleType] = {}
 

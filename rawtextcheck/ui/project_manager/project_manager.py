@@ -81,6 +81,7 @@ class DialogProjectManager(QDialog):
         dialog: DialogCreateProject = DialogCreateProject()
         dialog.exec_()
         self.model.titleComboBoxModel.load_data()
+        self.comboBox_parser_currentIndexChanged(self.ui.comboBox_parser.currentIndex())
 
     def pushButton_deleteProject_clicked(self) -> None:
         """Slot when the delete project button is clicked.
@@ -148,6 +149,8 @@ class DialogProjectManager(QDialog):
         """
         if index < 0:
             return
+        parser_name: str = self.ui.comboBox_parser.currentText()
+        self.ui.lineEdit_argParser.setText(self.model.get_default_parser_arg(parser_name))
         return
 
     def lineEdit_projectName_editingFinished(self) -> None:
