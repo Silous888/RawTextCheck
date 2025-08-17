@@ -112,6 +112,8 @@ class ProjectManagerModel():
             if arg.optional:
                 continue
             default_args += arg.name + '="", '
+        if default_args:
+            default_args = default_args[:-2]
         return default_args
 
 

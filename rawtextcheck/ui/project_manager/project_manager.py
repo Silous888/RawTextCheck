@@ -70,8 +70,6 @@ class DialogProjectManager(QDialog):
         # comboboxes
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
         self.ui.comboBox_parser.currentIndexChanged.connect(self.comboBox_parser_currentIndexChanged)
-        # lineEdits
-        self.ui.lineEdit_projectName.editingFinished.connect(self.lineEdit_projectName_editingFinished)
 
     # -------------------- Slots -------------------
 
@@ -79,9 +77,11 @@ class DialogProjectManager(QDialog):
         """Slot when the create project button is clicked.
         Opens a dialog to create a new project."""
         dialog: DialogCreateProject = DialogCreateProject()
-        dialog.exec_()
-        self.model.titleComboBoxModel.load_data()
-        self.comboBox_parser_currentIndexChanged(self.ui.comboBox_parser.currentIndex())
+        result: int = dialog.exec_()
+        if result == QDialog.Accepted:  # type: ignore
+            project_name: str = dialog.get_project_name()
+            self.model.titleComboBoxModel.load_data()
+            self.ui.comboBox_project.setCurrentText(project_name)
 
     def pushButton_deleteProject_clicked(self) -> None:
         """Slot when the delete project button is clicked.
@@ -152,10 +152,6 @@ class DialogProjectManager(QDialog):
         parser_name: str = self.ui.comboBox_parser.currentText()
         self.ui.lineEdit_argParser.setText(self.model.get_default_parser_arg(parser_name))
         return
-
-    def lineEdit_projectName_editingFinished(self) -> None:
-        """Slot when the project name line edit editing is finished."""
-        pass
 
     # -------------------- Methods -------------------
 
@@ -228,14 +224,6 @@ class DialogProjectManager(QDialog):
         Args:
             project_name (str): The name of the project to save.
         """
-        # Prepare the data to be saved
-        if self.ui.lineEdit_projectName.text() != project_name:
-            project_name_new: str = self.ui.lineEdit_projectName.text()
-            self.model.rename_project(project_name, project_name_new)
-            self.model.titleComboBoxModel.load_data()
-            self.ui.comboBox_project.setCurrentText(project_name_new)
-            project_name = project_name_new
-
         parser: str | None = self.model.parserComboBoxModel.get_value(self.ui.comboBox_parser.currentIndex())
         if parser is None:
             parser = "textfile"
@@ -263,6 +251,12 @@ class DialogProjectManager(QDialog):
         }
         # Save the project data using the model
         self.model.save_project_data(project_name, data)
+
+        if self.ui.lineEdit_projectName.text() != project_name:
+            project_name_new: str = self.ui.lineEdit_projectName.text()
+            self.model.rename_project(project_name, project_name_new)
+            self.model.titleComboBoxModel.load_data()
+            self.ui.comboBox_project.setCurrentText(project_name_new)
 
     def export_process(self, project_name: str) -> None:
         """Exports the project data to a JSON file.

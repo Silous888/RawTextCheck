@@ -59,6 +59,7 @@ class DialogCreateProject(QDialog):
     def pushButton_create_clicked(self) -> None:
         """Slot for the create button click."""
         self.create_new_project()
+        self.accept()
         self.close()
 
     def lineEdit_projectName_textChanged(self) -> None:
@@ -82,3 +83,11 @@ class DialogCreateProject(QDialog):
             return
 
         self.model.create_project(project_name, language_code, parser)
+
+    def get_project_name(self) -> str:
+        """get project name of the project created
+
+        Returns:
+            str: name of the project
+        """
+        return self.ui.lineEdit_projectName.text().strip()
