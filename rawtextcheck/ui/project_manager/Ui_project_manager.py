@@ -310,7 +310,7 @@ class Ui_Dialog_projectManager(object):
         self.gridLayout_6.addLayout(self.verticalLayout, 0, 0, 1, 1)
 
         self.retranslateUi(Dialog_projectManager)
-        self.tabWidget_editArea.setCurrentIndex(2)
+        self.tabWidget_editArea.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Dialog_projectManager)
 
     def retranslateUi(self, Dialog_projectManager):
