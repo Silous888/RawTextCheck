@@ -34,12 +34,18 @@ def initialize_tool(language: str) -> None:
     """
     global tool
     if tool is None:
-        tool = language_tool_python.LanguageTool(language)
+        try:
+            tool = language_tool_python.LanguageTool(language)
+        except ModuleNotFoundError as e:
+            logger.error(e)
         logger.info("Loaded languagetool with %s language.", language)
     elif tool.language == language:
         logger.info("Languagetool already loaded with %s language", language)
     else:
-        tool = language_tool_python.LanguageTool(language)
+        try:
+            tool = language_tool_python.LanguageTool(language)
+        except ModuleNotFoundError as e:
+            logger.error(e)
         logger.info("Reloaded languagetool with %s language.", language)
 
 
