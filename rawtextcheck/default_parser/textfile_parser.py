@@ -77,7 +77,7 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                     if i < begin_line_number:
                         continue
                 elif BEGIN_TEXT.name in arguments.keys():
-                    if arguments[BEGIN_TEXT.name] == line:
+                    if arguments[BEGIN_TEXT.name] == line.strip():
                         is_begin_text_found = True
                     elif not is_begin_text_found:
                         continue
@@ -86,7 +86,7 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                     if i >= end_line_number:
                         break
                 elif END_TEXT.name in arguments.keys():
-                    if arguments[END_TEXT.name] == line:
+                    if arguments[END_TEXT.name] == line.strip():
                         break
 
                 if CONTAINS.name in arguments.keys() and arguments[CONTAINS.name] not in line:
