@@ -44,4 +44,8 @@ def parse_attributes(line: str) -> dict[str, str]:
     """
     pattern = r'(\w+)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')'
     matches: list[str] = re.findall(pattern, line)
-    return {key: val1 if val1 else val2 for key, val1, val2 in matches}
+    return {
+        key: (val1 if val1 else val2)
+        for key, val1, val2 in matches
+        if (val1 if val1 else val2)  # only keep non-empty values
+    }
