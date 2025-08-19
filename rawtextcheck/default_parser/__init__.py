@@ -13,6 +13,7 @@ from types import ModuleType
 from . import (
     csv_parser,
     excel_parser,
+    po_parser,
     google_sheet_parser,
     textfile_parser
 )
@@ -23,6 +24,7 @@ from . import (
 LIST_DEFAULT_PARSER: dict[str, ModuleType] = {
     "csv": csv_parser,
     "excel": excel_parser,
+    "pofile": po_parser,
     "textfile": textfile_parser,
     "google sheet": google_sheet_parser
 }
