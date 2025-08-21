@@ -15,7 +15,8 @@ from . import (
     excel_parser,
     po_parser,
     google_sheet_parser,
-    textfile_parser
+    textfile_parser,
+    xml_parser
 )
 
 
@@ -24,8 +25,9 @@ from . import (
 LIST_DEFAULT_PARSER: dict[str, ModuleType] = {
     "csv": csv_parser,
     "excel": excel_parser,
+    "google sheet": google_sheet_parser,
     "pofile": po_parser,
     "textfile": textfile_parser,
-    "google sheet": google_sheet_parser
+    "xml": xml_parser
 }
 """Every default parsers provided by the application"""
