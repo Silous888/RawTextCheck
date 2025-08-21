@@ -32,6 +32,7 @@ class ItemProject(TypedDict):
         ignored_codes_into_nothing (list[str]): List of codes to ignore, replacing with nothing.
         ignored_substrings_into_space (dict[str, list[str]]): Substrings to ignore, replacing with space.
         ignored_substrings_into_nothing (dict[str, list[str]]): Substrings to ignore, replacing with nothing.
+        replace_codes (dict[str, str]): Codes to replace with their corresponding values.
         ignored_rules (list[str]): List of LanguageTool rules to ignore.
     """
 
@@ -46,6 +47,7 @@ class ItemProject(TypedDict):
     ignored_codes_into_nothing: list[str]
     ignored_substrings_into_space: dict[str, list[str]]
     ignored_substrings_into_nothing: dict[str, list[str]]
+    replace_codes: dict[str, str]
     ignored_rules: list[str]
 
 

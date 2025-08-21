@@ -54,6 +54,7 @@ class ProjectManagerModel():
         self.rulesModel = ListTableModel()
         self.codesModel = IgnoredCodesModel()
         self.substringsModel = IgnoredSubstringsModel()
+        self.replaceCodesModel = ReplaceCodesModel()
 
     def get_project_data(self, project_name: str) -> ItemProject | None:
         """Retrieves the project data for the given project name.
@@ -883,3 +884,128 @@ class IgnoredSubstringsModel(QAbstractTableModel):
             if end not in target[start]:
                 target[start].append(end)
         return space_dict, nospace_dict
+
+
+class ReplaceCodesModel(QAbstractTableModel):
+    """Model for the replace codes table in the project manager dialog.
+    This model provides a table view for managing codes that should be replaced
+    with specific values.
+    Attributes:
+        code_col (int): The index of the code column.
+        value_col (int): The index of the replacement value column.
+    """
+
+    code_col = 0
+    value_col = 1
+
+    def __init__(self, replace_dict: dict[str, str] | None = None) -> None:
+        """Initialize the ReplaceCodesModel with the provided dictionary.
+        Args:
+            replace_dict (dict[str, str] | None): Dictionary of codes to their replacements.
+        """
+        super().__init__()
+        self._data: list[tuple[str, str]] = []
+        self.load_data(replace_dict or {})
+
+    def load_data(self, replace_dict: dict[str, str]) -> None:
+        """Load the data into the model from the provided dictionary.
+        Args:
+            replace_dict (dict[str, str]): Dictionary of codes to their replacements.
+        """
+        self.beginResetModel()
+        self._data = [(code, value) for code, value in replace_dict.items()]
+        self.endResetModel()
+
+    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return len(self._data) + 1  # extra empty row for editing
+
+    def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return 2  # code + value
+
+    def data(self, index: QModelIndex,
+             role: int = Qt.ItemDataRole.DisplayRole) -> str | QVariant:
+        if not index.isValid():
+            return QVariant()
+
+        row, col = index.row(), index.column()
+
+        if row >= len(self._data):
+            if role in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole):
+                return ""
+            return QVariant()
+
+        code, value = self._data[row]
+        if role in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole):
+            if col == self.code_col:
+                return code
+            if col == self.value_col:
+                return value
+
+        return QVariant()
+
+    def setData(self, index: QModelIndex, value: str,
+                role: int = Qt.ItemDataRole.EditRole) -> bool:
+        if not index.isValid():
+            return False
+
+        row, col = index.row(), index.column()
+
+        # inserting new row at the end
+        if row == len(self._data):
+            if col in (self.code_col, self.value_col) and value:
+                new_code = value if col == self.code_col else ""
+                new_val = value if col == self.value_col else ""
+                self.beginInsertRows(QModelIndex(), row, row)
+                self._data.append((new_code, new_val))
+                self.endInsertRows()
+                return True
+            return False
+
+        code, val = self._data[row]
+        if col == self.code_col and role == Qt.ItemDataRole.EditRole:
+            self._data[row] = (str(value), val)
+        elif col == self.value_col and role == Qt.ItemDataRole.EditRole:
+            self._data[row] = (code, str(value))
+        else:
+            return False
+
+        self.dataChanged.emit(index, index)
+        return True
+
+    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+        if not index.isValid():
+            return Qt.ItemFlag.NoItemFlags  # type: ignore
+        return (
+            Qt.ItemFlag.ItemIsEditable
+            | Qt.ItemFlag.ItemIsEnabled
+            | Qt.ItemFlag.ItemIsSelectable  # type: ignore
+        )
+
+    def headerData(self, section: int, orientation: Qt.Orientation,
+                   role: int = Qt.ItemDataRole.DisplayRole) -> str | QVariant:
+        labelCode: str = self.tr("Code")
+        labelValue: str = self.tr("Replacement")
+        if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Horizontal:
+            return [labelCode, labelValue][section]
+        return QVariant()
+
+    def insertRows(self, row: int, count: int = 1,
+                   parent: QModelIndex = QModelIndex()) -> bool:
+        self.beginInsertRows(QModelIndex(), row, row + count - 1)
+        for _ in range(count):
+            self._data.insert(row, ("", ""))
+        self.endInsertRows()
+        return True
+
+    def removeRows(self, row: int, count: int = 1,
+                   parent: QModelIndex = QModelIndex()) -> bool:
+        self.beginRemoveRows(QModelIndex(), row, row + count - 1)
+        for _ in range(count):
+            if row < len(self._data):
+                del self._data[row]
+        self.endRemoveRows()
+        return True
+
+    def get_data(self) -> dict[str, str]:
+        """Return a dictionary of valid (non-empty) code → replacement pairs."""
+        return {code: value for code, value in self._data if code and value}

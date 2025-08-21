@@ -56,6 +56,7 @@ class DialogProjectManager(QDialog):
         self.ui.dataTableView_ignoredCodes.setModel(self.model.codesModel)
         self.ui.dataTableView_rules.setModel(self.model.rulesModel)
         self.ui.dataTableView_ignoredSubstrings.setModel(self.model.substringsModel)
+        self.ui.dataTableView_replaceCodes.setModel(self.model.replaceCodesModel)
 
     def set_up_connect(self) -> None:
         """connect slots and signals"""
@@ -218,6 +219,7 @@ class DialogProjectManager(QDialog):
         self.model.substringsModel.load_data(data["ignored_substrings_into_space"],
                                              data["ignored_substrings_into_nothing"])
         self.model.rulesModel.load_data(data["ignored_rules"])
+        self.model.replaceCodesModel.load_data(data["replace_codes"])
 
     def save_project_data(self, project_name: str) -> None:
         """Saves the current project data to the model.
@@ -247,6 +249,7 @@ class DialogProjectManager(QDialog):
             "ignored_codes_into_nothing": self.model.codesModel.get_data()[1],
             "ignored_substrings_into_space": self.model.substringsModel.get_data()[0],
             "ignored_substrings_into_nothing": self.model.substringsModel.get_data()[1],
+            "replace_codes": self.model.replaceCodesModel.get_data(),
             "ignored_rules": self.model.rulesModel.get_data()
         }
         # Save the project data using the model

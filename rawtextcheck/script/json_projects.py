@@ -188,6 +188,7 @@ def create_new_entry(
         ignored_codes_into_nothing: list[str] | None = None,
         ignored_substrings_into_space: dict[str, list[str]] | None = None,
         ignored_substrings_into_nothing: dict[str, list[str]] | None = None,
+        replace_codes: dict[str, str] | None = None,
         ignored_rules: list[str] | None = None
         ) -> None:
     """Add a new entry in the json
@@ -204,6 +205,7 @@ def create_new_entry(
         ignored_codes_into_nothing (list[str], optional): Defaults to [].
         ignored_substrings_into_space (dict[str, list[str]], optional): Defaults to {}.
         ignored_substrings_into_nothing (dict[str, list[str]], optional): Defaults to {}.
+        replace_codes (dict[str, str], optional): Defaults to {}.
         ignored_rules (list[str], optional): Defaults to [].
     """
     if not project_name:
@@ -232,6 +234,7 @@ def create_new_entry(
         "ignored_codes_into_nothing": ignored_codes_into_nothing or [],
         "ignored_substrings_into_space": ignored_substrings_into_space or {},
         "ignored_substrings_into_nothing": ignored_substrings_into_nothing or {},
+        "replace_codes": replace_codes or {},
         "ignored_rules": ignored_rules or []
     }
 
@@ -251,6 +254,7 @@ def set_entry(
     ignored_codes_into_nothing: list[str] | None = None,
     ignored_substrings_into_space: dict[str, list[str]] | None = None,
     ignored_substrings_into_nothing: dict[str, list[str]] | None = None,
+    replace_codes: dict[str, str] | None = None,
     ignored_rules: list[str] | None = None
 ) -> None:
     """set the entry in the json, if arg not specified, it will not be changed
@@ -266,6 +270,7 @@ def set_entry(
         ignored_codes_into_nothing (list[str] | None): ignored codes into nothing of the
         ignored_substrings_into_space (dict[str, list[str]] | None): ignored substrings into space of the project
         ignored_substrings_into_nothing (dict[str, list[str]] | None): ignored substrings into nothing of the project
+        replace_codes (dict[str, str] | None): replace codes of the project
         ignored_rules (list[str] | None): ignored rules of the project
     """
     if not is_project_name_exist(project_name):
@@ -291,6 +296,8 @@ def set_entry(
         set_ignored_substrings_into_space(project_name, ignored_substrings_into_space)
     if ignored_substrings_into_nothing is not None:
         set_ignored_substrings_into_nothing(project_name, ignored_substrings_into_nothing)
+    if replace_codes is not None:
+        set_replace_codes(project_name, replace_codes)
     if ignored_rules is not None:
         set_ignored_rules(project_name, ignored_rules)
     logger.info("Entry %s updated.", project_name)
@@ -324,6 +331,7 @@ def set_entry_from_item(project_name: str, data: ItemProject) -> None:
         ignored_codes_into_nothing=data["ignored_codes_into_nothing"],
         ignored_substrings_into_space=data["ignored_substrings_into_space"],
         ignored_substrings_into_nothing=data["ignored_substrings_into_nothing"],
+        replace_codes=data["replace_codes"],
         ignored_rules=data["ignored_rules"]
     )
 
@@ -601,6 +609,59 @@ def set_ignored_substrings_into_nothing(project_name: str, substrings: dict[str,
         substrings (dict[str, list[str]]): substrings to set
     """
     _set_to_dict_list_field(project_name, "ignored_substrings_into_nothing", substrings)
+
+
+def add_replace_codes(project_name: str, code: str, replacement: str) -> None:
+    """add a code to the replace codes of the project
+
+    Args:
+        project_name (str): id of the project
+        code (str): code to add
+        replacement (str): replacement for the code
+    """
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
+        return
+    data: dict[str, ItemProject] = load_data()
+    replace_codes: dict[str, str] = data[project_name]["replace_codes"]
+    if code not in replace_codes or replace_codes[code] != replacement:
+        replace_codes[code] = replacement
+        data[project_name]["replace_codes"] = replace_codes
+        save_data(data)
+
+
+def remove_replace_codes(project_name: str, code: str, replacement: str) -> None:
+    """remove a code from the replace codes of the project
+
+    Args:
+        project_name (str): id of the project
+        code (str): code to remove
+        replacement (str): replacement for the code
+    """
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
+        return
+    data: dict[str, ItemProject] = load_data()
+    replace_codes: dict[str, str] = data[project_name]["replace_codes"]
+    if code in replace_codes and replace_codes[code] == replacement:
+        del replace_codes[code]
+        data[project_name]["replace_codes"] = replace_codes
+        save_data(data)
+
+
+def set_replace_codes(project_name: str, replace_codes: dict[str, str]) -> None:
+    """set the replace codes of the project
+
+    Args:
+        project_name (str): id of the project
+        replace_codes (dict[str, str]): replace codes to set
+    """
+    if not is_project_name_exist(project_name):
+        log_error_id_invalid(project_name)
+        return
+    data: dict[str, ItemProject] = load_data()
+    data[project_name]["replace_codes"] = replace_codes
+    save_data(data)
 
 
 def add_ignored_substrings_into_nothing(project_name: str, begin: str, end: str) -> None:
