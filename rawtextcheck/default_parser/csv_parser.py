@@ -36,9 +36,11 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
 
     Args:
         filepath (str): Path to the CSV file (.csv).
-        argument (str): Column index (starting from 1), or "4,1" where:
-                        - first is content column
-                        - second (optional) is row ID column
+        argument (str): Specific argument for this file.
+            keys:
+                - "col": Column number (1-based index) to parse.
+                - "colID": Optional column number (1-based index) for row
+                        identifier (default is the row number).
 
     Returns:
         list[tuple[str, str]]: List of (row ID as string, cell content).

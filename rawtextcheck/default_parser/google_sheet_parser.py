@@ -79,7 +79,10 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
 
     Args:
         filepath (str): url of the google sheet.
-        argument (dict[str, str]):
+        argument (dict[str, str]): Specific argument for this file.
+            keys:
+                - "col": Column letter (e.g., "A") to parse.
+                - "colID": Optional column letter for row identifier (default is the row number).
 
     Returns:
         list[tuple[str, str]]: List of (row ID as string, cell content).

@@ -43,7 +43,16 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
 
     Args:
         filepath (str): Path of the file.
-        argument (dict[str, str]): Specific argument for this file (not used).
+        arguments (dict[str, str]): Specific argument for this file.
+        keys:
+            - "beginText": Optional text to start parsing from.
+                        Not used if "beginLineNumber" is provided.
+            - "endText": Optional text to stop parsing at.
+                        Not used if "endLineNumber" is provided.
+            - "beginLineNumber": Optional line number to start parsing from.
+            - "endLineNumber": Optional line number to stop parsing at.
+            - "contains": Optional substring that each line must contain.
+            - "notContains": Optional substring that each line must not contain.
 
     Returns:
         list[tuple[str, str]]: List of tuples (line number as string, line content).

@@ -36,8 +36,9 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
 
     Args:
         filepath (str): Path to the .po file.
-        arguments (dict[str, str]): Parser arguments.
-            - "id": "line" (default) or "msgid"
+        arguments (dict[str, str]): Specific argument for this file.
+        keys:
+            - "id": Optional identifier for the row, can be "line" or "msgid".
 
     Returns:
         list[tuple[str, str]]: List of (row identifier, msgstr).
