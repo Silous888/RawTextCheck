@@ -52,7 +52,7 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
     if BEGIN_LINE_NUMBER.name in arguments.keys():
         try:
             begin_line_number = int(arguments[BEGIN_LINE_NUMBER.name])
-        except:
+        except Exception:
             logger.error("%s not a valid argument for %s.",
                          arguments[BEGIN_LINE_NUMBER.name],
                          BEGIN_LINE_NUMBER.name)
@@ -61,7 +61,7 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
     if END_LINE_NUMBER.name in arguments.keys():
         try:
             end_line_number = int(arguments[END_LINE_NUMBER.name])
-        except Exception as e:
+        except Exception:
             logger.error("%s not a valid argument for %s.",
                          arguments[END_LINE_NUMBER.name],
                          END_LINE_NUMBER.name)
@@ -90,9 +90,9 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                         break
 
                 if CONTAINS.name in arguments.keys() and arguments[CONTAINS.name] not in line:
-                  continue
+                    continue
                 if NOT_CONTAINS.name in arguments.keys() and arguments[NOT_CONTAINS.name] in line:
-                  continue
+                    continue
 
                 stripped: str = line.strip()
                 if stripped:
