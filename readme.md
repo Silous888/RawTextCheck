@@ -165,21 +165,10 @@ Arguments are:
 
 If the built-in parsers are not sufficient, you can create your own.
 
-A parser is a Python file that implements a specific function. To add a parser to the list available in the app, place the Python file in the `parsers` folder.
+A parser is a Python file that implements a specific function. A template can be found [here](https://github.com/Silous888/RawTextCheck-parsers/blob/main/template_parser.py). For examples of parser implementations, see the [default parsers included in RawTextCheck](https://github.com/Silous888/RawTextCheck/tree/master/rawtextcheck/default_parser).
 
-To create a parser, you need to implement the following function in your file:
+To add a parser to the list available in the app, place the Python file in the `parsers` folder.
 
-```python
-def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]]:
-    """Read a file and return a list with each text line associated with the line number or ID.
-    Args:
-        filepath (str): Path to the file.
-        argument (dict[str, str]): Argument for the parser, if needed.
-
-    Returns:
-        list[tuple[str, str]]: List of (line number or ID, text of the line).
-    """
-```
 Imports of the parser need to already be present in RawTextCheck.
 
 Remember that Ignored codes and Ignored substrings can be used to filter parts of each line, so your parser does not necessarily need to clean the text itself.
