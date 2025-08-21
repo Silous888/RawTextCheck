@@ -142,7 +142,26 @@ def remove_ignored_elements_in_texts(
     return cleaned_texts
 
 
-def generate_errors_invalid_characters(texts: list[tuple[str, str]], valid_characters: str) -> list[ItemResult]:
+def replace_codes_in_texts(texts: list[tuple[str, str]],
+                           replace_codes: dict[str, str]) -> list[tuple[str, str]]:
+    """replace codes in texts with the given replace_codes
+    Args:
+        texts (list[tuple[str, str]]): list of every [line number, line text]
+        replace_codes (dict[str, str]): codes to replace with the given value
+    Returns:
+        list[tuple[str, str]]: texts with replaced codes
+    """
+    replaced_texts: list[tuple[str, str]] = []
+    for line_number, line in texts:
+        for code, replacement in replace_codes.items():
+            line = line.replace(code, replacement)
+        if line:
+            replaced_texts.append((line_number, line))
+    return replaced_texts
+
+
+def generate_errors_invalid_characters(texts: list[tuple[str, str]],
+                                       valid_characters: str) -> list[ItemResult]:
     """create errors for invalid characters in line of texts
 
     Args:
@@ -219,6 +238,8 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
     # Parse the file using the selected parser
     argument_parser_dict: dict[str, str] = utils.parse_attributes(argument_parser)
     texts: list[tuple[str, str]] = all_parsers[parser_name].parse_file(filepath, argument_parser_dict)
+
+    texts = replace_codes_in_texts(texts, project_data["replace_codes"])
 
     texts = remove_ignored_elements_in_texts(
         texts,
