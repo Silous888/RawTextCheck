@@ -23,6 +23,13 @@ Each file is analyzed within the context of a project, which defines parameters 
 - Filters to exclude code fragments, either by defining specific tokens or start/end delimiters
 - Replacement of values with others
 
+
+### ⚠️ Requirement
+
+RawTextCheck (LanguageTool) requires [Java (version 8 or higher)](https://www.java.com/en/download/manual.jsp) to run.
+
+Make sure Java is installed and available in your system’s PATH before using the tool.
+
 ## Documentation
 
 ### Main Window
