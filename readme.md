@@ -37,6 +37,7 @@ Make sure Java is installed and available in your system’s PATH before using t
 
 - **Manage menu**:
     - **Configure project**: Opens the project management window. Use this to create your first project. ([Project configuration](#manage-project-window))
+    - **Add google credentials**: To add google api credentials file. Needed for Google sheet parser. See [this guide to get credentials for your project](resources/credentials_google_api.md)
 - **Preference menu**:
     - **Language**: Select the application language. The app must be restarted for changes to take effect. Note: This setting does not affect the language used for text analysis.
 - **Project selection combo box**: Select which project to use for file analysis.
@@ -183,7 +184,7 @@ Arguments are:
 
 #### google sheet
 
-The **google sheet** parser returns every non-empty cell from a specified column in a google sheet. Path is the url of the google sheet. Credentials are needed to access a google sheet.
+The **google sheet** parser returns every non-empty cell from a specified column in a google sheet. Path is the url of the google sheet. Credentials are needed to access a google sheet. See [this guide to get credentials for your project](resources/credentials_google_api.md)
 
 Arguments are:
  - **col**: letter of the column containing the text (e.g., `D` to get cells from column D)
