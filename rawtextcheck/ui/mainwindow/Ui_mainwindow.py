@@ -16,6 +16,9 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1193, 860)
         MainWindow.setAcceptDrops(True)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/resources/RawTextCheck.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("")
         self.centralwidget.setObjectName("centralwidget")
@@ -133,3 +136,4 @@ class Ui_MainWindow(object):
         self.actionLanguage.setText(_translate("MainWindow", "Language"))
         self.actionAdd_google_credentials.setText(_translate("MainWindow", "Add google credentials"))
 from rawtextcheck.ui.widgets.dataresult_tableview import DataResultTableView
+import rawtextcheck.ui.resources_rc

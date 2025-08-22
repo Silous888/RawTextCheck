@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Manage Projects</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resources.qrc">
+    <normaloff>:/resources/RawTextCheck.ico</normaloff>:/resources/RawTextCheck.ico</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout_6">
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1,0">
@@ -777,6 +781,8 @@
    <header>rawtextcheck/ui/widgets/data_tableview.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

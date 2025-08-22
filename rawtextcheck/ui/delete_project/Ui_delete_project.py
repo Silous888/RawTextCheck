@@ -15,6 +15,9 @@ class Ui_Dialog_deleteProject(object):
     def setupUi(self, Dialog_deleteProject):
         Dialog_deleteProject.setObjectName("Dialog_deleteProject")
         Dialog_deleteProject.resize(655, 143)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/resources/RawTextCheck.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Dialog_deleteProject.setWindowIcon(icon)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(Dialog_deleteProject)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.verticalLayout_main = QtWidgets.QVBoxLayout()
@@ -89,3 +92,4 @@ class Ui_Dialog_deleteProject(object):
         self.label_question.setText(_translate("Dialog_deleteProject", "Do you really want to delete this project?"))
         self.pushButton_yes.setText(_translate("Dialog_deleteProject", "Yes"))
         self.pushButton_no.setText(_translate("Dialog_deleteProject", "No"))
+import rawtextcheck.ui.resources_rc

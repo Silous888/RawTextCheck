@@ -15,6 +15,9 @@ class Ui_Dialog_projectManager(object):
     def setupUi(self, Dialog_projectManager):
         Dialog_projectManager.setObjectName("Dialog_projectManager")
         Dialog_projectManager.resize(1283, 645)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/resources/RawTextCheck.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Dialog_projectManager.setWindowIcon(icon)
         self.gridLayout_6 = QtWidgets.QGridLayout(Dialog_projectManager)
         self.gridLayout_6.setObjectName("gridLayout_6")
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -358,3 +361,4 @@ class Ui_Dialog_projectManager(object):
         self.pushButton_save.setText(_translate("Dialog_projectManager", "Save"))
         self.pushButton_saveAndQuit.setText(_translate("Dialog_projectManager", "Save and Quit"))
 from rawtextcheck.ui.widgets.data_tableview import DataTableView
+import rawtextcheck.ui.resources_rc
