@@ -24,8 +24,7 @@ from rawtextcheck.default_parameters import (
     DEFAULT_VALID_SPACE,
     LANGUAGES_LANGUAGETOOL
 )
-from rawtextcheck.default_parser import LIST_DEFAULT_PARSER
-from rawtextcheck.script import json_projects
+from rawtextcheck.script import json_projects, parser_loader
 
 
 # == Classes ==================================================================
@@ -46,7 +45,7 @@ class CreateProjectModel():
     def model_start(self) -> None:
         """Initialize the language combo box model."""
         self.languageComboBoxModel = LanguagesComboBoxModel(LANGUAGES_LANGUAGETOOL)
-        self.parserComboBoxModel = ParserComboBoxModel(list(LIST_DEFAULT_PARSER.keys()))
+        self.parserComboBoxModel = ParserComboBoxModel(list(parser_loader.get_all_parsers().keys()))
 
     def create_project(self, project_name: str, language_code: str, parser: str) -> None:
         """Create a new project with the given name and language code.

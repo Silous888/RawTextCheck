@@ -12,6 +12,7 @@ which are used to structure data related to projects and results of language che
 
 # == Imports ==================================================================
 
+from dataclasses import dataclass
 from typing import TypedDict
 
 
@@ -31,6 +32,7 @@ class ItemProject(TypedDict):
         ignored_codes_into_nothing (list[str]): List of codes to ignore, replacing with nothing.
         ignored_substrings_into_space (dict[str, list[str]]): Substrings to ignore, replacing with space.
         ignored_substrings_into_nothing (dict[str, list[str]]): Substrings to ignore, replacing with nothing.
+        replace_codes (dict[str, str]): Codes to replace with their corresponding values.
         ignored_rules (list[str]): List of LanguageTool rules to ignore.
     """
 
@@ -45,6 +47,7 @@ class ItemProject(TypedDict):
     ignored_codes_into_nothing: list[str]
     ignored_substrings_into_space: dict[str, list[str]]
     ignored_substrings_into_nothing: dict[str, list[str]]
+    replace_codes: dict[str, str]
     ignored_rules: list[str]
 
 
@@ -84,3 +87,14 @@ class ItemConfig(TypedDict):
     hidden_column: list[str]
     last_project: str
     credentials_google: dict[str, str]
+
+
+@dataclass(frozen=True)
+class ParserArgument:
+    """class for arguments of the parser
+    Attributes:
+        name (str): name of the argument, like name="value"
+        optional (bool): if the argument need to have a value
+    """
+    name: str
+    optional: bool

@@ -14,7 +14,15 @@ import csv
 from logging import Logger
 
 from rawtextcheck.logger import get_logger
+from rawtextcheck.newtype import ParserArgument
 
+
+# == Constants ================================================================
+
+COL_ARG = ParserArgument(name="col", optional=False)
+COL_ID_ARG = ParserArgument(name="colID", optional=True)
+
+LIST_ARGUMENTS: list[ParserArgument] = [COL_ARG, COL_ID_ARG]
 
 # == Global Variables =========================================================
 
@@ -23,33 +31,36 @@ logger: Logger = get_logger(__name__)
 
 # == Functions ================================================================
 
-def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
+def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]]:
     """Parse a CSV file and return each non-empty cell from the specified column with its row identifier.
 
     Args:
-        pathfile (str): Path to the CSV file (.csv).
-        argument (str): Column index (starting from 1), or "4,1" where:
-                        - first is content column
-                        - second (optional) is row ID column
+        filepath (str): Path to the CSV file (.csv).
+        argument (str): Specific argument for this file.
+            keys:
+                - "col": Column number (1-based index) to parse.
+                - "colID": Optional column number (1-based index) for row
+                        identifier (default is the row number).
 
     Returns:
         list[tuple[str, str]]: List of (row ID as string, cell content).
     """
     try:
-        parts = [int(a.strip()) for a in argument.split(",")]
-        col_value_index = parts[0]
-        col_id_index = parts[1] if len(parts) > 1 else None
-
+        col_value_index: int = int(arguments[COL_ARG.name])
+        col_id_index: int | None = None
+        if COL_ID_ARG.name in arguments.keys():
+            col_id_index = int(arguments[COL_ID_ARG.name])
         if col_value_index < 1 or (col_id_index is not None and col_id_index < 1):
             return []
+
     except ValueError:
-        logger.error("%s is not a valid argument for the CSV parser.", argument)
+        logger.error("%s is not a valid argument for the CSV parser.", arguments)
         return []
 
     results: list[tuple[str, str]] = []
 
     try:
-        with open(pathfile, newline='', encoding='utf-8') as csvfile:
+        with open(filepath, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
             for i, row in enumerate(reader, start=1):
                 if len(row) < col_value_index:
@@ -58,7 +69,7 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
                 value: str = row[col_value_index - 1].strip()
                 if value:
                     if col_id_index is not None and len(row) >= col_id_index:
-                        row_id = row[col_id_index - 1].strip()
+                        row_id: str = row[col_id_index - 1].strip()
                         if not row_id:
                             row_id = str(i)
                     else:
@@ -66,6 +77,6 @@ def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
 
                     results.append((row_id, value))
     except Exception as e:
-        logger.error("Error when parsing the CSV %s : %s", pathfile, e)
+        logger.error("Error when parsing the CSV %s : %s", filepath, e)
 
     return results

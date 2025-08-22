@@ -15,6 +15,9 @@ class Ui_Dialog_createProject(object):
     def setupUi(self, Dialog_createProject):
         Dialog_createProject.setObjectName("Dialog_createProject")
         Dialog_createProject.resize(655, 213)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/resources/RawTextCheck.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Dialog_createProject.setWindowIcon(icon)
         self.gridLayout = QtWidgets.QGridLayout(Dialog_createProject)
         self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -109,3 +112,4 @@ class Ui_Dialog_createProject(object):
         self.label_language.setText(_translate("Dialog_createProject", "Language"))
         self.label_parser.setText(_translate("Dialog_createProject", "Parser"))
         self.pushButton_create.setText(_translate("Dialog_createProject", "Create"))
+import rawtextcheck.ui.resources_rc

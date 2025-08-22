@@ -25,17 +25,17 @@
 <context>
     <name>DialogProjectManager</name>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.py" line="252"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.py" line="269"/>
         <source>Export Project</source>
         <translation>Exporter le projet</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.py" line="269"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.py" line="286"/>
         <source>JSON Files (*.json);;All Files (*)</source>
         <translation>fichier JSON (*.json);;Tous les fichiers (*)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.py" line="269"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.py" line="286"/>
         <source>Import Project</source>
         <translation>Importer un fichier</translation>
     </message>
@@ -104,110 +104,115 @@
         <translation>Nouveau projet</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="83"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="86"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="101"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="107"/>
         <source>Import</source>
         <translation>Importer</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="108"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="117"/>
         <source>Export</source>
         <translation>Exporter</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="155"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="167"/>
         <source>Dictionary</source>
         <translation>Dictionnaire</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="184"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="196"/>
         <source>Banwords</source>
         <translation>Mots interdits</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="213"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="225"/>
         <source>Ignored codes</source>
         <translation>codes ignorés</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="239"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="251"/>
         <source>Ignored substrings</source>
         <translation>sous-chaînes ignorées</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="265"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="303"/>
         <source>Ignored grammar rules</source>
         <translation>règles de grammaire ignorées</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="325"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="363"/>
         <source>Project name</source>
         <translation>Nom du projet</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="377"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="415"/>
         <source>Language</source>
         <translation>Langue</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="429"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="467"/>
         <source>Parser</source>
         <translation>Parseur</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="484"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="522"/>
         <source>Argument for parser</source>
         <translation>Argument du parseur</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="538"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="576"/>
         <source>Valid characters</source>
         <translation>caractères valides</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="589"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="627"/>
         <source>Space</source>
         <translation>espace</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="596"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="634"/>
         <source>No-break space</source>
         <translation>espace insécable</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="603"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="641"/>
         <source>narrow no-break space</source>
         <translation>espace insécable fine</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="646"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="684"/>
         <source>Restore</source>
         <translation>restaurer</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="666"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="707"/>
         <source>Save</source>
         <translation>Sauvegarder</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="686"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="730"/>
         <source>Save and Quit</source>
         <translation>Sauvegarder et quitter</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="277"/>
+        <source>Replace codes</source>
+        <translation>Codes à remplacer</translation>
     </message>
 </context>
 <context>
     <name>IgnoredCodesModel</name>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="571"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="589"/>
         <source>Replace with space</source>
         <translation>Remplacer par un espace</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="572"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="590"/>
         <source>Code</source>
         <translation>Code</translation>
     </message>
@@ -215,17 +220,17 @@
 <context>
     <name>IgnoredSubstringsModel</name>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="809"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="826"/>
         <source>Replace with space</source>
         <translation>Remplacer par un espace</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="810"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="827"/>
         <source>Start</source>
         <translation>Début</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="811"/>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="828"/>
         <source>End</source>
         <translation>Fin</translation>
     </message>
@@ -233,382 +238,382 @@
 <context>
     <name>Language</name>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="108"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="102"/>
         <source>English</source>
         <translation>Anglais</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="121"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="115"/>
         <source>French</source>
         <translation>Français</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="83"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="77"/>
         <source>Arabic</source>
         <translation>Arabe</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="84"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="78"/>
         <source>Asturian</source>
         <translation>Asturien</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="85"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="79"/>
         <source>Asturian (Spain)</source>
         <translation>Asturien (Espagne)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="86"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="80"/>
         <source>Auto-detect</source>
         <translation>Détection automatique</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="88"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="82"/>
         <source>Belarusian</source>
         <translation>Biélorusse</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="89"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="83"/>
         <source>Breton</source>
         <translation>Breton</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="90"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="84"/>
         <source>Breton (France)</source>
         <translation>Breton (France)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="91"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="85"/>
         <source>Catalan</source>
         <translation>Catalan</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="92"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="86"/>
         <source>Catalan (Spain)</source>
         <translation>Catalan (Espagne)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="93"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="87"/>
         <source>Catalan (Balearic)</source>
         <translation>Catalan (Baléares)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="94"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="88"/>
         <source>Catalan (Valencian)</source>
         <translation>Catalan (Valencien)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="95"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="89"/>
         <source>Crimean Tatar</source>
         <translation>Tatar de Crimée</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="96"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="90"/>
         <source>Crimean Tatar (Ukraine)</source>
         <translation>Tatar de Crimée (Ukraine)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="97"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="91"/>
         <source>Danish</source>
         <translation>Danois</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="98"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="92"/>
         <source>Danish (Denmark)</source>
         <translation>Danois (Danemark)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="99"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="93"/>
         <source>German</source>
         <translation>Allemand</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="100"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="94"/>
         <source>German (Austria)</source>
         <translation>Allemand (Autriche)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="101"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="95"/>
         <source>German (Switzerland)</source>
         <translation>Allemand (Suisse)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="102"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="96"/>
         <source>German (Germany)</source>
         <translation>Allemand (Allemagne)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="103"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="97"/>
         <source>Simple German</source>
         <translation>Allemand simplifié</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="104"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="98"/>
         <source>Simple German (Germany)</source>
         <translation>Allemand simplifié (Allemagne)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="105"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="99"/>
         <source>German (Luxembourg)</source>
         <translation>Allemand (Luxembourg)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="106"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="100"/>
         <source>Greek</source>
         <translation>Grec</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="107"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="101"/>
         <source>Greek (Greece)</source>
         <translation>Grec (Grèce)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="109"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="103"/>
         <source>English (Australia)</source>
         <translation>Anglais (Australie)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="110"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="104"/>
         <source>English (Canada)</source>
         <translation>Anglais (Canada)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="111"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="105"/>
         <source>English (UK)</source>
         <translation>Anglais (Royaume-Uni)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="112"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="106"/>
         <source>English (New Zealand)</source>
         <translation>Anglais (Nouvelle-Zélande)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="113"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="107"/>
         <source>English (US)</source>
         <translation>Anglais (États-Unis)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="114"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="108"/>
         <source>English (South Africa)</source>
         <translation>Anglais (Afrique du Sud)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="115"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="109"/>
         <source>Esperanto</source>
         <translation>Espéranto</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="116"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="110"/>
         <source>Spanish</source>
         <translation>Espagnol</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="117"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="111"/>
         <source>Spanish (Argentina)</source>
         <translation>Espagnol (Argentine)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="118"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="112"/>
         <source>Spanish (Spain)</source>
         <translation>Espagnol (Espagne)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="119"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="113"/>
         <source>Persian</source>
         <translation>Persan</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="120"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="114"/>
         <source>Persian (Iran)</source>
         <translation>Persan (Iran)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="122"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="116"/>
         <source>French (Belgium)</source>
         <translation>Français (Belgique)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="123"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="117"/>
         <source>French (Canada)</source>
         <translation>Français (Canada)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="124"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="118"/>
         <source>French (Switzerland)</source>
         <translation>Français (Suisse)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="125"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="119"/>
         <source>French (France)</source>
         <translation>Français (France)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="126"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="120"/>
         <source>Irish</source>
         <translation>Irlandais</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="127"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="121"/>
         <source>Irish (Ireland)</source>
         <translation>Irlandais (Irlande)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="128"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="122"/>
         <source>Galician</source>
         <translation>Galicien</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="129"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="123"/>
         <source>Galician (Spain)</source>
         <translation>Galicien (Espagne)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="130"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="124"/>
         <source>Italian</source>
         <translation>Italien</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="131"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="125"/>
         <source>Italian (Italy)</source>
         <translation>Italien (Italie)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="133"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="127"/>
         <source>Japanese</source>
         <translation>Japonais</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="134"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="128"/>
         <source>Khmer</source>
         <translation>Khmer</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="135"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="129"/>
         <source>Khmer (Cambodia)</source>
         <translation>Khmer (Cambodge)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="136"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="130"/>
         <source>Dutch</source>
         <translation>Néerlandais</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="137"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="131"/>
         <source>Dutch (Belgium)</source>
         <translation>Néerlandais (Belgique)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="138"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="132"/>
         <source>Dutch (Netherlands)</source>
         <translation>Néerlandais (Pays-Bas)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="140"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="134"/>
         <source>Polish</source>
         <translation>Polonais</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="141"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="135"/>
         <source>Portuguese</source>
         <translation>Portugais</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="142"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="136"/>
         <source>Portuguese (Angola)</source>
         <translation>Portugais (Angola)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="143"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="137"/>
         <source>Portuguese (Brazil)</source>
         <translation>Portugais (Brésil)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="144"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="138"/>
         <source>Portuguese (Mozambique)</source>
         <translation>Portugais (Mozambique)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="145"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="139"/>
         <source>Portuguese (Portugal)</source>
         <translation>Portugais (Portugal)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="146"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="140"/>
         <source>Romanian</source>
         <translation>Roumain</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="147"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="141"/>
         <source>Romanian (Romania)</source>
         <translation>Roumain (Roumanie)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="149"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="143"/>
         <source>Russian</source>
         <translation>Russe</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="150"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="144"/>
         <source>Slovenian</source>
         <translation>Slovène</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="151"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="145"/>
         <source>Slovenian (Slovenia)</source>
         <translation>Slovène (Slovénie)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="153"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="147"/>
         <source>Slovak</source>
         <translation>Slovaque</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="154"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="148"/>
         <source>Swedish</source>
         <translation>Suédois</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="155"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="149"/>
         <source>Swedish (Sweden)</source>
         <translation>Suédois (Suède)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="156"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="150"/>
         <source>Tamil</source>
         <translation>Tamoul</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="157"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="151"/>
         <source>Tamil (India)</source>
         <translation>Tamoul (Inde)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="158"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="152"/>
         <source>Tagalog</source>
         <translation>Tagalog</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="159"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="153"/>
         <source>Tagalog (Philippines)</source>
         <translation>Tagalog (Philippines)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="160"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="154"/>
         <source>Ukrainian</source>
         <translation>Ukrainien</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="161"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="155"/>
         <source>Ukrainian (Ukraine)</source>
         <translation>Ukrainien (Ukraine)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="162"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="156"/>
         <source>Chinese</source>
         <translation>Chinois</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="163"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="157"/>
         <source>Chinese (Simplified)</source>
         <translation>Chinois (simplifié)</translation>
     </message>
@@ -617,8 +622,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="17"/>
-        <source>CheckFrench</source>
-        <translation></translation>
+        <source>RawTextCheck</source>
+        <translation>RawTextCheck</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="37"/>
@@ -656,90 +661,118 @@
         <translation type="obsolete">Préférences</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="133"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="135"/>
         <source>Open Recent Result</source>
         <translation>Ouvrir le dernier résultat</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="138"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="140"/>
         <source>Open Result</source>
         <translation>Ouvrir un résultat</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="143"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="145"/>
         <source>Configure projects</source>
         <translation>Configurer les projets</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="148"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="150"/>
         <source>Parsers</source>
         <translation>Parseurs</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="153"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="155"/>
         <source>Results</source>
         <translation>Résultats</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="158"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="160"/>
         <source>Keybinding</source>
         <translation>Raccourcis Clavier</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="163"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="165"/>
         <source>Theme</source>
         <translation>Thème</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="168"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="170"/>
         <source>Check for Updates</source>
         <translation>Vérifier les mises à jour</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="173"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="175"/>
         <source>Export all projects configuration</source>
         <translation>Exporter toutes les configurations de projets</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="178"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="180"/>
         <source>Import all projects configuration</source>
         <translation>Importer toutes les configurations de projets</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="273"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="299"/>
         <source>Add character to valid characters</source>
         <translation>Ajouter aux caractères valides</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="279"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="305"/>
         <source>Remove word from the banword list</source>
         <translation>Supprimer des mots interdits</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="285"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="311"/>
         <source>Add this word to dictionary</source>
         <translation>Ajouter ce mot au dictionnaire</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="291"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="317"/>
         <source>Add {item_result[&apos;error_type&apos;]} to ignored rules</source>
         <translation>Ajouter{item_result[&apos;error_type&apos;]} au règles ignorées</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="125"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="127"/>
         <source>Preference</source>
         <translation>Préférences</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="64"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="65"/>
         <source>Language</source>
         <translation>Langue</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="190"/>
+        <source>Add google credentials</source>
+        <translation>Ajouter credentials Google</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="259"/>
+        <source>Select Google Credentials JSON File</source>
+        <translation>Sélectionner le fichier JSON des credentials Google</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="259"/>
+        <source>JSON Files (*.json)</source>
+        <translation>Fichiers JSON (*.json)</translation>
+    </message>
+</context>
+<context>
+    <name>ReplaceCodesModel</name>
+    <message>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="984"/>
+        <source>Code</source>
+        <translation>Code</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager_model.py" line="985"/>
+        <source>Replacement</source>
+        <translation>Remplacement</translation>
     </message>
 </context>
 <context>
     <name>color theme</name>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="39"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="37"/>
         <source>Light</source>
         <translation>Clair</translation>
     </message>
@@ -747,32 +780,32 @@
 <context>
     <name>column title</name>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="176"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="200"/>
         <source>Line Number</source>
         <translation>Numéro de ligne</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="177"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="201"/>
         <source>Line</source>
         <translation>Texte</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="178"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="202"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="179"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="203"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="180"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="204"/>
         <source>Explanation</source>
         <translation>Explication</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="181"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="205"/>
         <source>Suggestion</source>
         <translation>Suggestion</translation>
     </message>
@@ -780,12 +813,12 @@
 <context>
     <name>error text</name>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="173"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="167"/>
         <source>This character in not accepted.</source>
         <translation>Ce caractère n’est pas accepté.</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="180"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="174"/>
         <source>This word is not authorized in this project.</source>
         <translation>Ce mot n’est pas autorisé.</translation>
     </message>
@@ -793,12 +826,12 @@
 <context>
     <name>language</name>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="32"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="30"/>
         <source>English</source>
         <translation>Anglais</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parameters.py" line="33"/>
+        <location filename="../rawtextcheck/default_parameters.py" line="31"/>
         <source>French</source>
         <translation>Français</translation>
     </message>

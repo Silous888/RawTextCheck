@@ -56,6 +56,7 @@ class DialogProjectManager(QDialog):
         self.ui.dataTableView_ignoredCodes.setModel(self.model.codesModel)
         self.ui.dataTableView_rules.setModel(self.model.rulesModel)
         self.ui.dataTableView_ignoredSubstrings.setModel(self.model.substringsModel)
+        self.ui.dataTableView_replaceCodes.setModel(self.model.replaceCodesModel)
 
     def set_up_connect(self) -> None:
         """connect slots and signals"""
@@ -69,9 +70,7 @@ class DialogProjectManager(QDialog):
         self.ui.pushButton_export.clicked.connect(self.pushButton_export_clicked)
         # comboboxes
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
-
-        # lineEdits
-        self.ui.lineEdit_projectName.editingFinished.connect(self.lineEdit_projectName_editingFinished)
+        self.ui.comboBox_parser.currentIndexChanged.connect(self.comboBox_parser_currentIndexChanged)
 
     # -------------------- Slots -------------------
 
@@ -79,8 +78,11 @@ class DialogProjectManager(QDialog):
         """Slot when the create project button is clicked.
         Opens a dialog to create a new project."""
         dialog: DialogCreateProject = DialogCreateProject()
-        dialog.exec_()
-        self.model.titleComboBoxModel.load_data()
+        result: int = dialog.exec_()
+        if result == QDialog.Accepted:  # type: ignore
+            project_name: str = dialog.get_project_name()
+            self.model.titleComboBoxModel.load_data()
+            self.ui.comboBox_project.setCurrentText(project_name)
 
     def pushButton_deleteProject_clicked(self) -> None:
         """Slot when the delete project button is clicked.
@@ -140,9 +142,17 @@ class DialogProjectManager(QDialog):
         self.load_project_data(index)
         self.set_enabled_has_project(self.ui.comboBox_project.count() > 0)
 
-    def lineEdit_projectName_editingFinished(self) -> None:
-        """Slot when the project name line edit editing is finished."""
-        pass
+    def comboBox_parser_currentIndexChanged(self, index: int) -> None:
+        """Slot when the parser combobox index is changed.
+        Loads the keys of the parser arguments in the lineEdit
+        Args:
+            index (int): The index of the selected parser in the combobox.
+        """
+        if index < 0:
+            return
+        parser_name: str = self.ui.comboBox_parser.currentText()
+        self.ui.lineEdit_argParser.setText(self.model.get_default_parser_arg(parser_name))
+        return
 
     # -------------------- Methods -------------------
 
@@ -209,20 +219,13 @@ class DialogProjectManager(QDialog):
         self.model.substringsModel.load_data(data["ignored_substrings_into_space"],
                                              data["ignored_substrings_into_nothing"])
         self.model.rulesModel.load_data(data["ignored_rules"])
+        self.model.replaceCodesModel.load_data(data["replace_codes"])
 
     def save_project_data(self, project_name: str) -> None:
         """Saves the current project data to the model.
         Args:
             project_name (str): The name of the project to save.
         """
-        # Prepare the data to be saved
-        if self.ui.lineEdit_projectName.text() != project_name:
-            project_name_new: str = self.ui.lineEdit_projectName.text()
-            self.model.rename_project(project_name, project_name_new)
-            self.model.titleComboBoxModel.load_data()
-            self.ui.comboBox_project.setCurrentText(project_name_new)
-            project_name = project_name_new
-
         parser: str | None = self.model.parserComboBoxModel.get_value(self.ui.comboBox_parser.currentIndex())
         if parser is None:
             parser = "textfile"
@@ -246,10 +249,17 @@ class DialogProjectManager(QDialog):
             "ignored_codes_into_nothing": self.model.codesModel.get_data()[1],
             "ignored_substrings_into_space": self.model.substringsModel.get_data()[0],
             "ignored_substrings_into_nothing": self.model.substringsModel.get_data()[1],
+            "replace_codes": self.model.replaceCodesModel.get_data(),
             "ignored_rules": self.model.rulesModel.get_data()
         }
         # Save the project data using the model
         self.model.save_project_data(project_name, data)
+
+        if self.ui.lineEdit_projectName.text() != project_name:
+            project_name_new: str = self.ui.lineEdit_projectName.text()
+            self.model.rename_project(project_name, project_name_new)
+            self.model.titleComboBoxModel.load_data()
+            self.ui.comboBox_project.setCurrentText(project_name_new)
 
     def export_process(self, project_name: str) -> None:
         """Exports the project data to a JSON file.

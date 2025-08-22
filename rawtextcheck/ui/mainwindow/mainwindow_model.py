@@ -11,9 +11,11 @@ combobox model and worker thread for background tasks.
 
 # == Imports ==================================================================
 
+from logging import Logger
 import os
 
 # -------------------- Import Lib Tier -------------------
+
 from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, QThread, QVariant, Qt
 from PyQt5.QtCore import QCoreApplication as QCA
 
@@ -23,9 +25,15 @@ from rawtextcheck.default_parameters import (
     BANWORD_TEXT_ERROR_TYPE,
     LANGUAGETOOL_SPELLING_CATEGORY,
 )
+from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ItemProject, ItemResult
-from rawtextcheck.script import json_projects, json_results, languagetool
+from rawtextcheck.script import json_projects, json_results, languagetool, parser_loader
 from rawtextcheck.ui.mainwindow.mainwindow_worker import WorkerMainWindow
+
+
+# == Global Variables =========================================================
+
+logger: Logger = get_logger(__name__)
 
 
 # == Classes ==================================================================
@@ -80,23 +88,39 @@ class MainWindowModel():
             return ""
         return data["arg_parser"]
 
-    def is_file_exist(self, filepath: str) -> bool:
+    def is_file_exist(self, project_name: str, filepath: str) -> bool:
         """test if a filepath is correct
         Args:
             filepath (str): the path of the file
         Returns:
             bool: True if the path is a valid file
         """
-        return os.path.isfile(filepath)
+        project_data: ItemProject | None = json_projects.get_project_data(project_name)
+        if not project_data:
+            return False
+        parser_name: str = project_data["parser"]
+        result, success = parser_loader.call_is_filepath_valid(parser_name, filepath)
+        if success:
+            return result
+        else:
+            return os.path.isfile(filepath)
 
-    def get_filename_from_filepath(self, filepath: str) -> str:
+    def get_filename_from_filepath(self, project_name: str, filepath: str) -> str:
         """get the name of the file given its path
         Args:
             filepath (str): path of the file
         Returns:
             str: name of the file
         """
-        return os.path.basename(filepath)
+        project_data: ItemProject | None = json_projects.get_project_data(project_name)
+        if not project_data:
+            return ""
+        parser_name: str = project_data["parser"]
+        result, success = parser_loader.call_get_filename(parser_name, filepath)
+        if success:
+            return result
+        else:
+            return os.path.basename(filepath)
 
     def generate_result(self, filepath: str, project_name: str, argument_parser: str) -> None:
 

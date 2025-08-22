@@ -8,7 +8,7 @@
 
 ## Overview
 
-RawTextCheck is a Python-based integration of LanguageTool, built with PyQt5. Its purpose is to proofread texts found in non-standard formats such as XML, Excel, CSV, JSON, and other structured files. These files often contain code elements, markup, or special characters that are not part of the actual text, but are essential for the logic or styling of scripts, especially in video games.
+RawTextCheck is a Python-based integration of LanguageTool, built with PyQt5. Its purpose is to proofread texts found in non-standard formats such as XML, Excel, CSV, and other structured files. These files often contain code elements, markup, or special characters that are not part of the actual text, but are essential for the logic or styling of scripts, especially in video games.
 
 This tool was originally designed for fan translation of video games, but it can be adapted to many other use cases where structured text needs linguistic analysis.
 
@@ -21,8 +21,14 @@ Each file is analyzed within the context of a project, which defines parameters 
 - Words to flag as errors (e.g., banned words)
 - Custom dictionary entries to ignore false positives
 - Filters to exclude code fragments, either by defining specific tokens or start/end delimiters
+- Replacement of values with others
 
-RawTextCheck provides a flexible and extensible environment for proofreading structured text embedded in various formats, ensuring cleaner and more accurate translations or content validation.
+
+### ⚠️ Requirement
+
+RawTextCheck (LanguageTool) requires [Java (version 8 or higher)](https://www.java.com/en/download/manual.jsp) to run.
+
+Make sure Java is installed and available in your system’s PATH before using the tool.
 
 ## Documentation
 
@@ -31,6 +37,7 @@ RawTextCheck provides a flexible and extensible environment for proofreading str
 
 - **Manage menu**:
     - **Configure project**: Opens the project management window. Use this to create your first project. ([Project configuration](#manage-project-window))
+    - **Add google credentials**: To add google api credentials file. Needed for Google sheet parser. See [this guide to get credentials for your project](resources/credentials_google_api.md)
 - **Preference menu**:
     - **Language**: Select the application language. The app must be restarted for changes to take effect. Note: This setting does not affect the language used for text analysis.
 - **Project selection combo box**: Select which project to use for file analysis.
@@ -103,6 +110,20 @@ For each line, several actions are available by right-clicking on it:
     That's Yoko Fukunaga. Good, at least I can remember that much.
     ```
 
+- **Replace code**: Define substitutions where specific codes or tokens in the text are automatically replaced with another value.
+
+    For example, if you have this text:
+
+    ```
+    That$s Y#oko Fukunaga.
+    ```
+
+    You can set ' for replacement of $ and ō for replacement of #o to have a line like this:
+    ```
+    That's Yōko Fukunaga.
+    ```
+
+
 - **Ignored grammar rules**: LanguageTool rules to ignore. You can manually add rules, and also delete them either by right-clicking or with the delete key.
 
 ***Right Part***
@@ -110,7 +131,7 @@ For each line, several actions are available by right-clicking on it:
 - **Project name**: Change the name of the project.
 - **Language**: Change the language used for LanguageTool analysis.
 - **Parser**: Select which parser to use for files. Some parsers are included by default; additional parsers can be added. See [Parser](#parsers) for more information.
-- **Argument for parser**: Arguments for the parser. See [Parser](#parsers) for more information.
+- **Argument for parser**: Arguments for the parser. When changing parser, possible arguments are loaded by default. You can add values to have them by default. See [Parser](#parsers) for more information.
 - **Valid characters**: Authorized characters for the project. Checkboxes are available for the three common space characters.
 - **Restore button**: Revert unsaved changes.
 - **Save button**: Save the current configuration.
@@ -118,52 +139,87 @@ For each line, several actions are available by right-clicking on it:
 
 ### Parsers
 
-There are 3 built-in parsers:
+There are 6 built-in parsers:
 
 - **textfile**
-- **excel**
 - **csv**
+- **excel**
+- **google sheet**
+- **pofile**
+- **xml**
 
-The **textfile** parser is the default parser for all text-based files. It returns every non-empty line in the file. This is useful if Ignored codes and Ignored substrings are sufficient to extract the sentences you need. (See [Project configuration](#manage-project-window) for more details.)
+For every parsers, arguments should be written like this:
 
-This parser does not require any arguments.
+    arg1="value", arg2="value", arg3='value'
 
-The **excel** parser returns every non-empty cell from a specified column in an Excel file.
+both quote and double quote can be used.
 
-It requires at least one argument: the letter of the column containing the text (e.g., `D` to get cells from column D). You can also specify a second argument if you want to use another column (e.g., an ID column) to identify lines instead of the row number. Arguments should be provided as follows:
+#### textfile
 
-    {column with texts},{column with id (optional)}
-    D,A
+The **textfile** parser is the default parser for all text-based files. It returns every non-empty line in the file. This is useful if Ignored codes, Ignored substrings and Replace codes are sufficient to extract the sentences you need. (See [Project configuration](#manage-project-window) for more details.)
+
+Arguments are:
+ - **beginText** (optional): text to start parsing from. Not used if "beginLineNumber" is provided
+ - **endText** (optional): text to stop parsing at. Not used if "endLineNumber" is provided
+ - **beginLineNumber** (optional): line number to start parsing from
+ - **endLineNumber** (optional): line number to stop parsing at
+ - **contains** (optional): text that each line must contain. For several texts, use | to separate each text. (contains="valueOne|valueTwo")
+ - **notContains** (optional): text that each line must not contain. For several texts, use | to separate each text. (contains="valueOne|valueTwo")
+
+#### csv
 
 The **csv** parser returns every non-empty value from a specified column in a CSV file.
 
-It requires at least one argument: the number of the column (the first column is 1). You can also specify a second argument if you want to use another column (e.g., an ID column) to identify lines instead of the line number. Arguments should be provided as follows:
+Arguments are:
+ - **col**: the number of the column (the first column is 1)
+ - **colID** (optional): another column (e.g., an ID column) to identify lines instead of the line number.
 
-    {column with texts},{column with id (optional)}
-    4,1
+#### excel
 
-### Additional parsers
+The **excel** parser returns every non-empty cell from a specified column in an Excel file.
+
+Arguments are:
+ - **col**: letter of the column containing the text (e.g., `D` to get cells from column D)
+ - **colID** (optional): another column (e.g., an ID column) to identify lines instead of the row number
+
+#### google sheet
+
+The **google sheet** parser returns every non-empty cell from a specified column in a google sheet. Path is the url of the google sheet. Credentials are needed to access a google sheet. See [this guide to get credentials for your project](resources/credentials_google_api.md)
+
+Arguments are:
+ - **col**: letter of the column containing the text (e.g., `D` to get cells from column D)
+ - **colID** (optional): another column (e.g., an ID column) to identify lines instead of the row number
+
+#### pofile
+
+The **pofile** parser returns every non-empty translation string (msgstr) from a PO file.
+
+Arguments are:
+- **id** (optional): identifier for each row. Possible values are:
+    - line → uses the line number in the file (default)
+    - msgid → uses the corresponding msgid string
+
+#### xml
+
+The **xml** parser returns non-empty text or attribute values from an XML file.
+
+Arguments are:
+ - **tag**: the XML element tag to extract
+ - **attr** (optional): attribute name to extract instead of the element text
+ - **idAttr** (optional): attribute name to use as a row identifier. Defaults to the line number in the file
+
+
+### Additional parsers (NEED CHANGE)
 
 If the built-in parsers are not sufficient, you can create your own.
 
-A parser is a Python file that implements a specific function. To add a parser to the list available in the app, place the Python file in the `parsers` folder.
+A parser is a Python file that implements a specific function. A template can be found [here](https://github.com/Silous888/RawTextCheck-parsers/blob/main/template_parser.py). For examples of parser implementations, see the [default parsers included in RawTextCheck](https://github.com/Silous888/RawTextCheck/tree/master/rawtextcheck/default_parser). You can also start from one of the default parsers if you only need to make small adjustments for your needs.
 
-To create a parser, you need to implement the following function in your file:
+To add a parser to the list available in the app, place the Python file in the `parsers` folder.
 
-```python
-def parse_file(pathfile: str, argument: str) -> list[tuple[str, str]]:
-    """Read a file and return a list with each text line associated with the line number or ID.
-    Args:
-        pathfile (str): Path to the file.
-        argument (str): Argument for the parser, if needed.
-
-    Returns:
-        list[tuple[str, str]]: List of (line number or ID, text of the line).
-    """
-```
 Imports of the parser need to already be present in RawTextCheck.
 
-Remember that Ignored codes and Ignored substrings can be used to filter parts of each line, so your parser does not necessarily need to clean the text itself.
+Remember that Ignored codes, Ignored substrings and Replace codes can be used to filter parts of each line, so your parser does not necessarily need to clean the text itself.
 
 The name of the parser will be the name of the file. Be careful not to use the same name as any built-in parser.
 

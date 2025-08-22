@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Manage Projects</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resources.qrc">
+    <normaloff>:/resources/RawTextCheck.ico</normaloff>:/resources/RawTextCheck.ico</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout_6">
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1,0">
@@ -22,6 +26,9 @@
         <widget class="QPushButton" name="pushButton_createProject">
          <property name="text">
           <string>Create New Project</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -82,6 +89,9 @@
          <property name="text">
           <string>Delete</string>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
       </layout>
@@ -100,12 +110,18 @@
          <property name="text">
           <string>Import</string>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_export">
          <property name="text">
           <string>Export</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -148,7 +164,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab_1">
           <attribute name="title">
@@ -261,6 +277,32 @@
           </layout>
          </widget>
          <widget class="QWidget" name="tab_5">
+          <attribute name="title">
+           <string>Replace codes</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="0" column="0">
+            <widget class="DataTableView" name="dataTableView_replaceCodes">
+             <property name="dragDropOverwriteMode">
+              <bool>false</bool>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::ExtendedSelection</enum>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectItems</enum>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_6">
           <attribute name="title">
            <string>Ignored grammar rules</string>
           </attribute>
@@ -645,6 +687,9 @@
              <property name="text">
               <string>Restore</string>
              </property>
+             <property name="autoDefault">
+              <bool>false</bool>
+             </property>
             </widget>
            </item>
            <item>
@@ -665,6 +710,9 @@
              <property name="text">
               <string>Save</string>
              </property>
+             <property name="autoDefault">
+              <bool>false</bool>
+             </property>
             </widget>
            </item>
            <item>
@@ -684,6 +732,9 @@
             <widget class="QPushButton" name="pushButton_saveAndQuit">
              <property name="text">
               <string>Save and Quit</string>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -730,6 +781,8 @@
    <header>rawtextcheck/ui/widgets/data_tableview.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

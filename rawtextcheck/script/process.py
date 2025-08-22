@@ -12,9 +12,10 @@ tool to perform the analysis and returns structured results.
 
 # == Imports ==================================================================
 
-from typing import Callable
+from logging import Logger
+import os
+from types import ModuleType
 
-from rawtextcheck import default_parser
 from rawtextcheck.default_parameters import (
     INVALID_CHAR_TEXT_ERROR_TYPE,
     INVALID_CHAR_TEXT_ERROR,
@@ -22,8 +23,14 @@ from rawtextcheck.default_parameters import (
     BANWORD_TEXT_ERROR
     )
 
+from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ItemProject, ItemResult
-from rawtextcheck.script import json_projects, json_results, languagetool, parser_loader
+from rawtextcheck.script import json_projects, json_results, languagetool, parser_loader, utils
+
+
+# == Global Variables =========================================================
+
+logger: Logger = get_logger(__name__)
 
 
 # == Functions ================================================================
@@ -135,7 +142,26 @@ def remove_ignored_elements_in_texts(
     return cleaned_texts
 
 
-def generate_errors_invalid_characters(texts: list[tuple[str, str]], valid_characters: str) -> list[ItemResult]:
+def replace_codes_in_texts(texts: list[tuple[str, str]],
+                           replace_codes: dict[str, str]) -> list[tuple[str, str]]:
+    """replace codes in texts with the given replace_codes
+    Args:
+        texts (list[tuple[str, str]]): list of every [line number, line text]
+        replace_codes (dict[str, str]): codes to replace with the given value
+    Returns:
+        list[tuple[str, str]]: texts with replaced codes
+    """
+    replaced_texts: list[tuple[str, str]] = []
+    for line_number, line in texts:
+        for code, replacement in replace_codes.items():
+            line = line.replace(code, replacement)
+        if line:
+            replaced_texts.append((line_number, line))
+    return replaced_texts
+
+
+def generate_errors_invalid_characters(texts: list[tuple[str, str]],
+                                       valid_characters: str) -> list[ItemResult]:
     """create errors for invalid characters in line of texts
 
     Args:
@@ -203,22 +229,24 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
         return
 
     # Merge default and dynamic parsers
-    all_parsers: dict[str, Callable[[str, str], list[tuple[str, str]]]] = {
-        **default_parser.LIST_DEFAULT_PARSER,
-        **parser_loader.get_all_parsers()
-    }
+    all_parsers: dict[str, ModuleType] = parser_loader.get_all_parsers()
 
     parser_name: str = project_data["parser"]
     if parser_name not in all_parsers:
         return
 
     # Parse the file using the selected parser
-    texts: list[tuple[str, str]] = all_parsers[parser_name](filepath, argument_parser)
+    argument_parser_dict: dict[str, str] = utils.parse_attributes(argument_parser)
+    texts: list[tuple[str, str]] = all_parsers[parser_name].parse_file(filepath, argument_parser_dict)
+
+    texts = replace_codes_in_texts(texts, project_data["replace_codes"])
 
     texts = remove_ignored_elements_in_texts(
         texts,
-        project_data["ignored_codes_into_space"], project_data["ignored_codes_into_nothing"],
-        project_data["ignored_substrings_into_space"], project_data["ignored_substrings_into_nothing"]
+        project_data["ignored_codes_into_space"],
+        project_data["ignored_codes_into_nothing"],
+        project_data["ignored_substrings_into_space"],
+        project_data["ignored_substrings_into_nothing"]
     )
 
     languagetool.initialize_tool(project_data["language"])
@@ -242,4 +270,11 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
 
     data: dict[str, ItemResult] = json_results.generate_id_errors(all_result)
 
-    json_results.save_data(project_name, filepath, data)
+    filename: str = filepath
+    result, success = parser_loader.call_get_filename(parser_name, filepath)
+    if success:
+        filename = result
+    else:
+        filename = os.path.basename(filepath)
+
+    json_results.save_data(project_name, filename, data)

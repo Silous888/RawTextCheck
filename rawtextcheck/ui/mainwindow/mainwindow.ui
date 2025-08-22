@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>RawTextCheck</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resources.qrc">
+    <normaloff>:/resources/RawTextCheck.ico</normaloff>:/resources/RawTextCheck.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
     <string notr="true"/>
@@ -119,6 +123,8 @@
      <string>Manage</string>
     </property>
     <addaction name="actionProjects"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_google_credentials"/>
    </widget>
    <widget class="QMenu" name="menuPreference">
     <property name="title">
@@ -183,6 +189,11 @@
     <string>Language</string>
    </property>
   </action>
+  <action name="actionAdd_google_credentials">
+   <property name="text">
+    <string>Add google credentials</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -196,6 +207,8 @@
   <tabstop>lineEdit_filepath</tabstop>
   <tabstop>lineEdit_argument</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

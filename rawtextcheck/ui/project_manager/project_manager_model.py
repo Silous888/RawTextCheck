@@ -18,7 +18,6 @@ from PyQt5.QtCore import QAbstractListModel, QAbstractTableModel, QModelIndex, Q
 
 # -------------------- Import Lib User -------------------
 from rawtextcheck.default_parameters import LANGUAGES_LANGUAGETOOL
-from rawtextcheck.default_parser import LIST_DEFAULT_PARSER
 from rawtextcheck.newtype import ItemProject
 from rawtextcheck.script import json_projects, parser_loader
 
@@ -49,13 +48,13 @@ class ProjectManagerModel():
         """Initialize the models for comboboxes and table views."""
         self.titleComboBoxModel = ProjectTitleComboBoxModel()
         self.languageComboBoxModel = LanguagesComboBoxModel(LANGUAGES_LANGUAGETOOL)
-        self.parserComboBoxModel = ParserComboBoxModel(list(LIST_DEFAULT_PARSER.keys()) +
-                                                       list(parser_loader.get_all_parsers().keys()))
+        self.parserComboBoxModel = ParserComboBoxModel(list(parser_loader.get_all_parsers().keys()))
         self.dictionaryModel = ListTableModel()
         self.banwordsModel = ListTableModel()
         self.rulesModel = ListTableModel()
         self.codesModel = IgnoredCodesModel()
         self.substringsModel = IgnoredSubstringsModel()
+        self.replaceCodesModel = ReplaceCodesModel()
 
     def get_project_data(self, project_name: str) -> ItemProject | None:
         """Retrieves the project data for the given project name.
@@ -104,6 +103,17 @@ class ProjectManagerModel():
         data: ItemProject | None = json_projects.load_imported_project_data(filepath)
         if data:
             self.save_project_data(project_name, data)
+
+    def get_default_parser_arg(self, parser_name: str) -> str:
+        args, has_args = parser_loader.get_arguments_keys(parser_name)
+        default_args: str = ""
+        if not has_args:
+            return default_args
+        for arg in args:
+            default_args += arg.name + '="", '
+        if default_args:
+            default_args = default_args[:-2]
+        return default_args
 
 
 class ProjectTitleComboBoxModel(QAbstractListModel):
@@ -475,12 +485,11 @@ class IgnoredCodesModel(QAbstractTableModel):
         """
         self.beginResetModel()
         if space_list is not None:
-            self._data = [(code.strip(), True) for code in space_list if code.strip()]
+            self._data = [(code, True) for code in space_list if code]
         else:
             self._data = []
         if nospace_list is not None:
-            self._data += [(code.strip(), False) for code in nospace_list if code.strip()]
-        self._data.sort(key=lambda x: (x[0].lower(), x[1]))
+            self._data += [(code, False) for code in nospace_list if code]
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
@@ -548,7 +557,7 @@ class IgnoredCodesModel(QAbstractTableModel):
         if row == len(self._data):
             if col == self.code_col and role == Qt.ItemDataRole.EditRole and value:
                 self.beginInsertRows(QModelIndex(), row, row)
-                self._data.append((value.strip(), True))
+                self._data.append((value, True))
                 self.endInsertRows()
                 return True
             return False
@@ -561,7 +570,7 @@ class IgnoredCodesModel(QAbstractTableModel):
             return True
 
         if col == self.code_col and role == Qt.ItemDataRole.EditRole:
-            self._data[row] = (str(value).strip(), is_space)
+            self._data[row] = (str(value), is_space)
             self.dataChanged.emit(index, index)
             return True
 
@@ -646,8 +655,8 @@ class IgnoredCodesModel(QAbstractTableModel):
             - The first list is ignored_space.
             - The second list is ignored_nospace.
         """
-        space: list[str] = [code for code, is_space in self._data if is_space and code.strip()]
-        nospace: list[str] = [code for code, is_space in self._data if not is_space and code.strip()]
+        space: list[str] = [code for code, is_space in self._data if is_space and code]
+        nospace: list[str] = [code for code, is_space in self._data if not is_space and code]
         return space, nospace
 
 
@@ -695,7 +704,6 @@ class IgnoredSubstringsModel(QAbstractTableModel):
             for start, ends in nospace_dict.items()
             for end in ends
         ]
-        self._data.sort(key=lambda x: (x[0].lower(), x[1].lower(), x[2]))
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
@@ -762,8 +770,8 @@ class IgnoredSubstringsModel(QAbstractTableModel):
 
         if row >= len(self._data):
             if col in (self.start_col, self.end_col) and value:
-                start: str = value.strip() if col == self.start_col else ""
-                end: str = value.strip() if col == self.end_col else ""
+                start: str = value if col == self.start_col else ""
+                end: str = value if col == self.end_col else ""
                 self.beginInsertRows(QModelIndex(), row, row)
                 self._data.append((start, end, True))
                 self.endInsertRows()
@@ -775,9 +783,9 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         if col == self.check_col and role == Qt.ItemDataRole.CheckStateRole:
             self._data[row] = (start, end, value == Qt.CheckState.Checked)
         elif col == self.start_col and role == Qt.ItemDataRole.EditRole:
-            self._data[row] = (str(value).strip(), end, is_space)
+            self._data[row] = (str(value), end, is_space)
         elif col == self.end_col and role == Qt.ItemDataRole.EditRole:
-            self._data[row] = (start, str(value).strip(), is_space)
+            self._data[row] = (start, str(value), is_space)
         else:
             return False
 
@@ -866,7 +874,7 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         space_dict: dict[str, list[str]] = {}
         nospace_dict: dict[str, list[str]] = {}
         for start, end, is_space in self._data:
-            if not start.strip() or not end.strip():
+            if not start or not end:
                 continue
             target: dict[str, list[str]] = space_dict if is_space else nospace_dict
             if start not in target:
@@ -874,3 +882,128 @@ class IgnoredSubstringsModel(QAbstractTableModel):
             if end not in target[start]:
                 target[start].append(end)
         return space_dict, nospace_dict
+
+
+class ReplaceCodesModel(QAbstractTableModel):
+    """Model for the replace codes table in the project manager dialog.
+    This model provides a table view for managing codes that should be replaced
+    with specific values.
+    Attributes:
+        code_col (int): The index of the code column.
+        value_col (int): The index of the replacement value column.
+    """
+
+    code_col = 0
+    value_col = 1
+
+    def __init__(self, replace_dict: dict[str, str] | None = None) -> None:
+        """Initialize the ReplaceCodesModel with the provided dictionary.
+        Args:
+            replace_dict (dict[str, str] | None): Dictionary of codes to their replacements.
+        """
+        super().__init__()
+        self._data: list[tuple[str, str]] = []
+        self.load_data(replace_dict or {})
+
+    def load_data(self, replace_dict: dict[str, str]) -> None:
+        """Load the data into the model from the provided dictionary.
+        Args:
+            replace_dict (dict[str, str]): Dictionary of codes to their replacements.
+        """
+        self.beginResetModel()
+        self._data = [(code, value) for code, value in replace_dict.items()]
+        self.endResetModel()
+
+    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return len(self._data) + 1  # extra empty row for editing
+
+    def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return 2  # code + value
+
+    def data(self, index: QModelIndex,
+             role: int = Qt.ItemDataRole.DisplayRole) -> str | QVariant:
+        if not index.isValid():
+            return QVariant()
+
+        row, col = index.row(), index.column()
+
+        if row >= len(self._data):
+            if role in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole):
+                return ""
+            return QVariant()
+
+        code, value = self._data[row]
+        if role in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole):
+            if col == self.code_col:
+                return code
+            if col == self.value_col:
+                return value
+
+        return QVariant()
+
+    def setData(self, index: QModelIndex, value: str,
+                role: int = Qt.ItemDataRole.EditRole) -> bool:
+        if not index.isValid():
+            return False
+
+        row, col = index.row(), index.column()
+
+        # inserting new row at the end
+        if row == len(self._data):
+            if col in (self.code_col, self.value_col) and value:
+                new_code = value if col == self.code_col else ""
+                new_val = value if col == self.value_col else ""
+                self.beginInsertRows(QModelIndex(), row, row)
+                self._data.append((new_code, new_val))
+                self.endInsertRows()
+                return True
+            return False
+
+        code, val = self._data[row]
+        if col == self.code_col and role == Qt.ItemDataRole.EditRole:
+            self._data[row] = (str(value), val)
+        elif col == self.value_col and role == Qt.ItemDataRole.EditRole:
+            self._data[row] = (code, str(value))
+        else:
+            return False
+
+        self.dataChanged.emit(index, index)
+        return True
+
+    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+        if not index.isValid():
+            return Qt.ItemFlag.NoItemFlags  # type: ignore
+        return (
+            Qt.ItemFlag.ItemIsEditable
+            | Qt.ItemFlag.ItemIsEnabled
+            | Qt.ItemFlag.ItemIsSelectable  # type: ignore
+        )
+
+    def headerData(self, section: int, orientation: Qt.Orientation,
+                   role: int = Qt.ItemDataRole.DisplayRole) -> str | QVariant:
+        labelCode: str = self.tr("Code")
+        labelValue: str = self.tr("Replacement")
+        if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Horizontal:
+            return [labelCode, labelValue][section]
+        return QVariant()
+
+    def insertRows(self, row: int, count: int = 1,
+                   parent: QModelIndex = QModelIndex()) -> bool:
+        self.beginInsertRows(QModelIndex(), row, row + count - 1)
+        for _ in range(count):
+            self._data.insert(row, ("", ""))
+        self.endInsertRows()
+        return True
+
+    def removeRows(self, row: int, count: int = 1,
+                   parent: QModelIndex = QModelIndex()) -> bool:
+        self.beginRemoveRows(QModelIndex(), row, row + count - 1)
+        for _ in range(count):
+            if row < len(self._data):
+                del self._data[row]
+        self.endRemoveRows()
+        return True
+
+    def get_data(self) -> dict[str, str]:
+        """Return a dictionary of valid (non-empty) code → replacement pairs."""
+        return {code: value for code, value in self._data if code and value}
