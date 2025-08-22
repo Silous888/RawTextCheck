@@ -237,7 +237,6 @@ class MainWindow(QMainWindow):
             has_project (bool): True if a project is selected, False otherwise.
         """
         self.ui.comboBox_project.setEnabled(has_project)
-        self.ui.pushButton_process.setEnabled(has_project)
         self.ui.lineEdit_argument.setEnabled(has_project)
         self.ui.lineEdit_filepath.setEnabled(has_project)
         self.ui.tableView_result.setEnabled(has_project)

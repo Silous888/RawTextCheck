@@ -75,6 +75,14 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                          arguments[END_LINE_NUMBER.name],
                          END_LINE_NUMBER.name)
 
+    contains_vals: list[str] = []
+    if CONTAINS.name in arguments:
+        contains_vals = [val.strip() for val in arguments[CONTAINS.name].split("|") if val.strip()]
+
+    not_contains_vals: list[str] = []
+    if NOT_CONTAINS.name in arguments:
+        not_contains_vals = [val.strip() for val in arguments[NOT_CONTAINS.name].split("|") if val.strip()]
+
     is_begin_text_found = False
     lines: list[tuple[str, str]] = []
 
@@ -98,9 +106,10 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                     if arguments[END_TEXT.name] == line.strip():
                         break
 
-                if CONTAINS.name in arguments.keys() and arguments[CONTAINS.name] not in line:
+                if contains_vals and not all(val in line for val in contains_vals):
                     continue
-                if NOT_CONTAINS.name in arguments.keys() and arguments[NOT_CONTAINS.name] in line:
+
+                if not_contains_vals and any(val in line for val in not_contains_vals):
                     continue
 
                 stripped: str = line.strip()
