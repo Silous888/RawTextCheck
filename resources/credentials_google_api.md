@@ -10,8 +10,10 @@ Go in **APIs and services**.
 ![](credentials_google_images/credentials_image_1.png)
 
 Next, in **ENABLE APIS AND SERVICES**, you need to create a project, where only a project name is required. Here the term "project" doesn't specifically refer to your individual project but rather serves as a global container where you can manage each of your service accounts, view API calls, etc. <br>
-Subsequently, you will gain access to **ENABLE APIS AND SERVICES** now.
-Enable the services you intend to use, likely Google Drive and possibly Google Sheets as well.
+
+You will gain access to **ENABLE APIS AND SERVICES** now.
+
+Enable the services you intend to use, here **Google Sheets API**.
 
 ![](credentials_google_images/credentials_image_2.png)
 
