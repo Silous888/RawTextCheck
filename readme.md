@@ -209,7 +209,7 @@ Arguments are:
  - **idAttr** (optional): attribute name to use as a row identifier. Defaults to the line number in the file
 
 
-### Additional parsers (NEED CHANGE)
+### Additional parsers
 
 If the built-in parsers are not sufficient, you can create your own.
 
