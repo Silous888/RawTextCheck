@@ -711,47 +711,47 @@
         <translation>Importer toutes les configurations de projets</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="302"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="307"/>
         <source>Add character to valid characters</source>
         <translation>Ajouter aux caractères valides</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="308"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="313"/>
         <source>Remove word from the banword list</source>
         <translation>Supprimer des mots interdits</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="314"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="319"/>
         <source>Add this word to dictionary</source>
         <translation>Ajouter ce mot au dictionnaire</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="320"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="325"/>
         <source>Add {item_result[&apos;error_type&apos;]} to ignored rules</source>
         <translation>Ajouter{item_result[&apos;error_type&apos;]} au règles ignorées</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="65"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="70"/>
         <source>Language</source>
         <translation>Langue</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="194"/>
         <source>Add google credentials</source>
-        <translation>Ajouter credentials Google</translation>
+        <translation>Ajouter une clé d’accès Google</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="262"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="267"/>
         <source>Select Google Credentials JSON File</source>
         <translation>Sélectionner le fichier JSON des credentials Google</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="262"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="267"/>
         <source>JSON Files (*.json)</source>
         <translation>Fichiers JSON (*.json)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="152"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="157"/>
         <source>File not found</source>
         <translation>Fichier non trouvé</translation>
     </message>
@@ -834,6 +834,105 @@
         <location filename="../rawtextcheck/default_parameters.py" line="31"/>
         <source>French</source>
         <translation>Français</translation>
+    </message>
+</context>
+<context>
+    <name>message error</name>
+    <message>
+        <location filename="../rawtextcheck/default_parser/csv_parser.py" line="61"/>
+        <source>{arguments} is not a valid argument for the CSV parser.</source>
+        <translation>{arguments} n’est pas un argument valide pour le parseur de CSV.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/csv_parser.py" line="88"/>
+        <source>Error when parsing the CSV file.</source>
+        <translation>Erreur pendant l’extration de texte du CSV.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/excel_parser.py" line="60"/>
+        <source>{arguments} is not a valid argument for the excel parser.</source>
+        <translation>{arguments} n’est pas un argument valide pour le parseur d’excel.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/excel_parser.py" line="92"/>
+        <source>Error when parsing the Excel file.</source>
+        <translation>Erreur lors de l’extraction de texte du Excel.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/google_sheet_parser.py" line="98"/>
+        <source>{arguments} is not a valid argument for the google sheet parser.</source>
+        <translation>{arguments} n’est pas un argument valide pour le parseur de google sheet.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/po_parser.py" line="69"/>
+        <source>Error when parsing the PO file.</source>
+        <translation>Erreur lors de l’extraction de texte du fichier PO.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/textfile_parser.py" line="71"/>
+        <source>{arguments[BEGIN_LINE_NUMBER.name]} is not a valid argument for {BEGIN_LINE_NUMBER.name}.</source>
+        <translation>{arguments[BEGIN_LINE_NUMBER.name]} n’est pas un argument valide pour {BEGIN_LINE_NUMBER.name}.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/textfile_parser.py" line="86"/>
+        <source>{arguments[END_LINE_NUMBER.name]} is not a valid argument for {END_LINE_NUMBER.name}.</source>
+        <translation>{arguments[END_LINE_NUMBER.name]} n’est pas un argument valide pour {END_LINE_NUMBER.name}.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/textfile_parser.py" line="137"/>
+        <source>Error when parsing the text file. The file might not be a valid UTF-8 text file.</source>
+        <translation>Erreur lors de l’extraction de texte du fichier. Ce n’est peut-être pas un un fichier UTF-8 valide.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/xml_parser.py" line="74"/>
+        <source>Missing required argument {TAG_ARG.name}</source>
+        <translation>L’argument {TAG_ARG.name} est manquant.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/xml_parser.py" line="111"/>
+        <source>Error when parsing the XML file.</source>
+        <translation>Erreur lors de l’extraction de texte du XML.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/script/languagetool.py" line="63"/>
+        <source>Java is not installed or not found.</source>
+        <translation>Java n’est pas installé ou n’a pas été trouvé.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/script/languagetool.py" line="70"/>
+        <source>Failed to initialize LanguageTool.</source>
+        <translation>Impossible d’initialiser LanguageTool.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/script/languagetool.py" line="112"/>
+        <source>LanguageTool failed to analyze the text.</source>
+        <translation type="unfinished">Échec de l’analyse de texte avec LanguageTool.</translation>
+    </message>
+</context>
+<context>
+    <name>message info</name>
+    <message>
+        <location filename="../rawtextcheck/script/json_config.py" line="131"/>
+        <source>Google API credentials have been updated successfully.</source>
+        <translation>La clé d’accès google a bien été mise à jour.</translation>
+    </message>
+</context>
+<context>
+    <name>window title</name>
+    <message>
+        <location filename="../rawtextcheck/default_parser/xml_parser.py" line="111"/>
+        <source>Parser Error</source>
+        <translation>Erreur parseur</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/script/json_config.py" line="131"/>
+        <source>Google API credentials updated.</source>
+        <translation>Mise à jour clé d’accès google</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/script/languagetool.py" line="112"/>
+        <source>LanguageTool Error</source>
+        <translation>Erreur LanguageTool</translation>
     </message>
 </context>
 </TS>
