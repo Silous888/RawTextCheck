@@ -148,8 +148,11 @@ class MainWindow(QMainWindow):
             self.model.resultsTableModel.load_data()
             self.set_enabled_file_valid(True)
         else:
+            if self.ui.lineEdit_filepath.text():
+                self.ui.label_fileOpened.setText(self.tr("File not found"))
+            else:
+                self.ui.label_fileOpened.setText("")
             self.model.resultsTableModel.filename = ""
-            self.ui.label_fileOpened.setText("")
             self.model.resultsTableModel.clear_data()
             self.set_enabled_file_valid(False)
 
