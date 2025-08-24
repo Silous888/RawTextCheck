@@ -11,12 +11,14 @@ This module provides functions to initialize and use LanguageTool for analyzing 
 # == Imports ==================================================================
 
 from logging import Logger
+
 import language_tool_python  # type: ignore
+from PyQt5.QtCore import QCoreApplication as QCA
 
 from rawtextcheck.default_parameters import LANGUAGETOOL_SPELLING_CATEGORY, LANGUAGETOOL_MAX_LINES_PER_BATCH
 from rawtextcheck.newtype import ItemResult
 from rawtextcheck.logger import get_logger
-
+from rawtextcheck.ui.messagebox import popup_manager
 
 # == Global Variables =========================================================
 
@@ -38,9 +40,17 @@ def initialize_tool(language: str) -> None:
             tool = language_tool_python.LanguageTool(language)
         except ModuleNotFoundError as e:
             logger.error(e)
+            popup_manager.show_error.emit(
+                QCA.translate("window title", "LanguageTool Error"),
+                QCA.translate("message error", "Java is not installed or not found.")
+            )
             return
         except Exception as e:
             logger.error("Failed to initialize LanguageTool: %s", e)
+            popup_manager.show_error.emit(
+                QCA.translate("window title", "LanguageTool Error"),
+                QCA.translate("message error", "Failed to initialize LanguageTool.")
+            )
             return
         logger.info("Loaded languagetool with %s language.", language)
     elif tool.language == language:
@@ -50,9 +60,17 @@ def initialize_tool(language: str) -> None:
             tool = language_tool_python.LanguageTool(language)
         except ModuleNotFoundError as e:
             logger.error(e)
+            popup_manager.show_error.emit(
+                QCA.translate("window title", "LanguageTool Error"),
+                QCA.translate("message error", "Java is not installed or not found.")
+            )
             return
         except Exception as e:
             logger.error("Failed to re-initialize LanguageTool: %s", e)
+            popup_manager.show_error.emit(
+                QCA.translate("window title", "LanguageTool Error"),
+                QCA.translate("message error", "Failed to initialize LanguageTool.")
+            )
             return
         logger.info("Reloaded languagetool with %s language.", language)
 
@@ -91,6 +109,10 @@ def analyze_text(texts: list[tuple[str, str]], ignored_words: list[str],
             errors: list[language_tool_python.Match] = tool.check(combined_text)
         except Exception as e:
             logger.error("LanguageTool failed on batch %d: %s", batch_start, e)
+            popup_manager.show_error.emit(
+                QCA.translate("window title", "LanguageTool Error"),
+                QCA.translate("message error", "LanguageTool failed to analyze the text.")
+            )
             continue
 
         for error in errors:
