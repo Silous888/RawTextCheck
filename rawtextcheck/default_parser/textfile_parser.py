@@ -12,8 +12,11 @@ This parser acts as a default parser for text files.
 
 from logging import Logger
 
+from PyQt5.QtCore import QCoreApplication as QCA
+
 from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ParserArgument
+from rawtextcheck.ui.messagebox import popup_manager
 
 
 # == Constants ================================================================
@@ -65,6 +68,12 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
             logger.error("%s not a valid argument for %s.",
                          arguments[BEGIN_LINE_NUMBER.name],
                          BEGIN_LINE_NUMBER.name)
+            popup_manager.show_error.emit(
+                QCA.translate("window title", "Parser Error"),
+                QCA.translate(
+                    "message error",
+                    f"{arguments[BEGIN_LINE_NUMBER.name]} is not a valid argument for {BEGIN_LINE_NUMBER.name}.")
+                )
 
     end_line_number = None
     if END_LINE_NUMBER.name in arguments.keys():
@@ -74,6 +83,12 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
             logger.error("%s not a valid argument for %s.",
                          arguments[END_LINE_NUMBER.name],
                          END_LINE_NUMBER.name)
+            popup_manager.show_error.emit(
+                QCA.translate("window title", "Parser Error"),
+                QCA.translate(
+                    "message error",
+                    f"{arguments[END_LINE_NUMBER.name]} is not a valid argument for {END_LINE_NUMBER.name}.")
+                )
 
     contains_vals: list[str] = []
     if CONTAINS.name in arguments:
@@ -119,4 +134,9 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
         return lines
     except UnicodeDecodeError as e:
         logger.error("Error when parsing the textfile %s : %s", filepath, e)
+        popup_manager.show_error.emit(QCA.translate("window title", "Parser Error"),
+                                      QCA.translate("message error",
+                                                    "Error when parsing the text file. "
+                                                    "The file might not be a valid UTF-8 text file.")
+                                      )
         return lines

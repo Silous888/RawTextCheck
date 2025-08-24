@@ -16,9 +16,12 @@ import json
 from logging import Logger
 import os
 
+from PyQt5.QtCore import QCoreApplication as QCA
+
 from rawtextcheck.default_parameters import CONFIG_FOLDER, JSON_CONFIG_PATH, LANGUAGES, THEMES
 from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ItemConfig
+from rawtextcheck.ui.messagebox import Popup
 
 
 # == Global Variables =========================================================
@@ -125,6 +128,10 @@ def set_credentials_google(credentials: dict[str, str]) -> None:
     data["credentials_google"] = credentials
     save_data(data)
     logger.info("App configuration Google credentials updated.")
+    Popup.info(None,
+               QCA.translate("window title", "Google API credentials updated."),
+               QCA.translate("message info", "Google API credentials have been updated successfully.")
+               )
 
 
 def load_imported_credentials(filepath: str) -> dict[str, str] | None:
