@@ -12,6 +12,7 @@ This module provides functions to initialize and use LanguageTool for analyzing 
 
 from logging import Logger
 
+
 import language_tool_python  # type: ignore
 from PyQt5.QtCore import QCoreApplication as QCA
 
@@ -46,10 +47,16 @@ def initialize_tool(language: str) -> None:
             )
             return
         except Exception as e:
-            logger.error("Failed to initialize LanguageTool: %s", e)
+            logger.error("Failed to initialize LanguageTool: %s", e, exc_info=True)
             popup_manager.show_error.emit(
                 QCA.translate("window title", "LanguageTool Error"),
-                QCA.translate("message error", "Failed to initialize LanguageTool.")
+                QCA.translate(
+                    "message error",
+                    (
+                        "Failed to initialize LanguageTool. Maybe you don't have the correct Java version. "
+                        "Java 17+ is required."
+                    )
+                )
             )
             return
         logger.info("Loaded languagetool with %s language.", language)

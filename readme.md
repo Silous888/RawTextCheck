@@ -26,7 +26,7 @@ Each file is analyzed within the context of a project, which defines parameters 
 
 ### ⚠️ Requirement
 
-RawTextCheck (LanguageTool) requires [Java (version 8 or higher)](https://www.java.com/en/download/manual.jsp) to run.
+RawTextCheck (LanguageTool) requires [Java (version 17 or higher)](https://adoptium.net/temurin/releases?version=21&os=any&arch=any) to run.
 
 Make sure Java is installed and available in your system’s PATH before using the tool.
 

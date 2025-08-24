@@ -8,7 +8,7 @@
             "module": "rawtextcheck.main",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": false
         },
         {
             "name": "Run debug test",
