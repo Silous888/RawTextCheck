@@ -13,7 +13,7 @@ from typing import List
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtCore import QMimeData, QModelIndex, QUrl, QItemSelectionModel
 from PyQt5.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent
-from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QActionGroup, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QActionGroup, QFileDialog, QMessageBox
 
 # -------------------- Import Lib User -------------------
 from rawtextcheck.api import google_sheet_api
@@ -28,6 +28,7 @@ from rawtextcheck.script import json_config
 from rawtextcheck.ui.mainwindow.mainwindow_model import MainWindowModel
 from rawtextcheck.ui.mainwindow.Ui_mainwindow import Ui_MainWindow
 from rawtextcheck.ui.project_manager.project_manager import DialogProjectManager
+from rawtextcheck.ui.messagebox import popup_manager
 
 
 # == Classes ==================================================================
@@ -43,6 +44,10 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)  # type: ignore
+
+        popup_manager.show_error.connect(
+            lambda title, msg: QMessageBox.critical(self, title, msg)  # type: ignore
+        )
 
         self.ui.tableView_result.set_columns_hidden_by_default(json_config.load_data()["hidden_column"])
         self.set_up_language_menu()

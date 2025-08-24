@@ -15,9 +15,11 @@ from logging import Logger
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import column_index_from_string
+from PyQt5.QtCore import QCoreApplication as QCA
 
 from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ParserArgument
+from rawtextcheck.ui.messagebox import popup_manager
 
 
 # == Constants ================================================================
@@ -55,6 +57,10 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
             col_id_index = column_index_from_string(arguments[COL_ID_ARG.name])
     except ValueError:
         logger.error("%s is not a valid argument for the excel parser.", arguments)
+        popup_manager.show_error.emit(QCA.translate("window title", "Parser Error"),
+                                      QCA.translate("message error",
+                                                    f"{arguments} is not a valid argument for the excel parser.")
+                                      )
         return []
 
     try:
@@ -83,4 +89,8 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
 
     except Exception as e:
         logger.error("Error when parsing the Excel file %s : %s", filepath, e)
+        popup_manager.show_error.emit(QCA.translate("window title", "Parser Error"),
+                                      QCA.translate("message error",
+                                                    "Error when parsing the Excel file.")
+                                      )
         return []

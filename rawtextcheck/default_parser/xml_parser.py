@@ -14,8 +14,11 @@ from logging import Logger
 import xml.etree.ElementTree as ET
 import xml.sax.saxutils as saxutils
 
+from PyQt5.QtCore import QCoreApplication as QCA
+
 from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ParserArgument
+from rawtextcheck.ui.messagebox import popup_manager
 
 
 # == Constants ================================================================
@@ -68,6 +71,10 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
         id_attr: str | None = arguments.get(ID_ATTR_ARG.name)
     except KeyError as e:
         logger.error("Missing required argument: %s", e)
+        popup_manager.show_error.emit(QCA.translate("window title", "Parser Error"),
+                                      QCA.translate("message error",
+                                                    f"Missing required argument {TAG_ARG.name}")
+                                      )
         return []
 
     results: list[tuple[str, str]] = []
@@ -101,4 +108,8 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
 
     except Exception as e:
         logger.error("Error when parsing the XML file %s : %s", filepath, e)
+        popup_manager.show_error.emit(QCA.translate("window title", "Parser Error"),
+                                      QCA.translate("message error",
+                                                    "Error when parsing the XML file.")
+                                      )
         return []

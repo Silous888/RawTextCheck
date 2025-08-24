@@ -13,8 +13,11 @@ from the specified column. The first column starts at 1.
 import csv
 from logging import Logger
 
+from PyQt5.QtCore import QCoreApplication as QCA
+
 from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ParserArgument
+from rawtextcheck.ui.messagebox import popup_manager
 
 
 # == Constants ================================================================
@@ -55,6 +58,10 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
 
     except ValueError:
         logger.error("%s is not a valid argument for the CSV parser.", arguments)
+        popup_manager.show_error.emit(QCA.translate("window title", "Parser Error"),
+                                      QCA.translate("message error",
+                                                    f"{arguments} is not a valid argument for the CSV parser.")
+                                      )
         return []
 
     results: list[tuple[str, str]] = []
@@ -78,5 +85,9 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                     results.append((row_id, value))
     except Exception as e:
         logger.error("Error when parsing the CSV %s : %s", filepath, e)
+        popup_manager.show_error.emit(QCA.translate("window title", "Parser Error"),
+                                      QCA.translate("message error",
+                                                    "Error when parsing the CSV file.")
+                                      )
 
     return results

@@ -16,11 +16,12 @@ from logging import Logger
 from gspread import Spreadsheet, Worksheet
 from gspread.exceptions import NoValidUrlKeyFound
 from gspread.utils import column_letter_to_index, extract_id_from_url
+from PyQt5.QtCore import QCoreApplication as QCA
 
 from rawtextcheck.api import google_sheet_api
 from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ParserArgument
-
+from rawtextcheck.ui.messagebox import popup_manager
 
 # == Constants ================================================================
 
@@ -94,6 +95,10 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
             col_id_index = column_letter_to_index(arguments[COL_ID_ARG.name]) - 1
     except Exception:
         logger.error("%s is not a valid argument for the google sheet parser.", arguments)
+        popup_manager.show_error.emit(QCA.translate("window title", "Parser Error"),
+                                      QCA.translate("message error",
+                                                    f"{arguments} is not a valid argument for the google sheet parser.")
+                                      )
         return []
 
     id_sheet: str = extract_id_from_url(filepath)
