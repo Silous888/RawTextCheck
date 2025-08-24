@@ -38,6 +38,10 @@ def initialize_tool(language: str) -> None:
             tool = language_tool_python.LanguageTool(language)
         except ModuleNotFoundError as e:
             logger.error(e)
+            return
+        except Exception as e:
+            logger.error("Failed to initialize LanguageTool: %s", e)
+            return
         logger.info("Loaded languagetool with %s language.", language)
     elif tool.language == language:
         logger.info("Languagetool already loaded with %s language", language)
@@ -46,6 +50,10 @@ def initialize_tool(language: str) -> None:
             tool = language_tool_python.LanguageTool(language)
         except ModuleNotFoundError as e:
             logger.error(e)
+            return
+        except Exception as e:
+            logger.error("Failed to re-initialize LanguageTool: %s", e)
+            return
         logger.info("Reloaded languagetool with %s language.", language)
 
 
