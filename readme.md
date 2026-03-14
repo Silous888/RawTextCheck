@@ -32,7 +32,6 @@ Make sure Java is installed and available in your system’s PATH before using t
 
 ### development setup
 
-
 Create a virtual environment:
 
     py -m venv venv
