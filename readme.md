@@ -30,6 +30,30 @@ RawTextCheck (LanguageTool) requires [Java (version 17 or higher)](https://adopt
 
 Make sure Java is installed and available in your system’s PATH before using the tool.
 
+### development setup
+
+
+Create a virtual environment:
+
+    py -m venv venv
+
+Activate it (PowerShell):
+
+    .\venv\Scripts\Activate.ps1
+
+Install dependencies:
+
+    pip install -r requirements.txt
+
+
+To run the project, you can use the VS Code configuration or this command:
+
+    py -m rawtextcheck.main
+
+To build the project:
+
+    pyinstaller rawtextcheck.spec
+
 ## Documentation
 
 ### Main Window
