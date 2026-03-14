@@ -123,9 +123,9 @@ def analyze_text(texts: list[tuple[str, str]], ignored_words: list[str],
             continue
 
         for error in errors:
-            if (str(error.matchedText) in ignored_words and str(error.ruleIssueType) == LANGUAGETOOL_SPELLING_CATEGORY):
+            if (str(error.matched_text) in ignored_words and str(error.rule_issue_type) == LANGUAGETOOL_SPELLING_CATEGORY):
                 continue
-            if str(error.ruleId) in ignored_rules:
+            if str(error.rule_id) in ignored_rules:
                 continue
 
             line_number: int = next(
@@ -136,9 +136,9 @@ def analyze_text(texts: list[tuple[str, str]], ignored_words: list[str],
                 ItemResult(
                     line_number=batch[line_number][0],
                     line=batch[line_number][1],
-                    error=str(error.matchedText),
-                    error_type=str(error.ruleId),
-                    error_issue_type=error.ruleIssueType,
+                    error=str(error.matched_text),
+                    error_type=str(error.rule_id),
+                    error_issue_type=error.rule_issue_type,
                     explanation=str(error.message),
                     suggestion=str(error.replacements)
                 )
