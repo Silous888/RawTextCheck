@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\RawTextCheck\rawtextcheck\ui\delete_project\delete_project.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\RawTextCheck\rawtextcheck\ui\delete_project\delete_project_view.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.11
 #
@@ -11,14 +11,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Dialog_deleteProject(object):
-    def setupUi(self, Dialog_deleteProject):
-        Dialog_deleteProject.setObjectName("Dialog_deleteProject")
-        Dialog_deleteProject.resize(655, 143)
+class Ui_Dialog_deleteProjectView(object):
+    def setupUi(self, Dialog_deleteProjectView):
+        Dialog_deleteProjectView.setObjectName("Dialog_deleteProjectView")
+        Dialog_deleteProjectView.resize(655, 143)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/resources/RawTextCheck.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        Dialog_deleteProject.setWindowIcon(icon)
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(Dialog_deleteProject)
+        Dialog_deleteProjectView.setWindowIcon(icon)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(Dialog_deleteProjectView)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.verticalLayout_main = QtWidgets.QVBoxLayout()
         self.verticalLayout_main.setObjectName("verticalLayout_main")
@@ -27,7 +27,7 @@ class Ui_Dialog_deleteProject(object):
         self.horizontalLayout_projectName.setObjectName("horizontalLayout_projectName")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_projectName.addItem(spacerItem)
-        self.label_projectName = QtWidgets.QLabel(Dialog_deleteProject)
+        self.label_projectName = QtWidgets.QLabel(Dialog_deleteProjectView)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -47,7 +47,7 @@ class Ui_Dialog_deleteProject(object):
         self.horizontalLayout_question.setObjectName("horizontalLayout_question")
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_question.addItem(spacerItem3)
-        self.label_question = QtWidgets.QLabel(Dialog_deleteProject)
+        self.label_question = QtWidgets.QLabel(Dialog_deleteProjectView)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -65,12 +65,12 @@ class Ui_Dialog_deleteProject(object):
         self.horizontalLayout_buttons.setObjectName("horizontalLayout_buttons")
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_buttons.addItem(spacerItem6)
-        self.pushButton_yes = QtWidgets.QPushButton(Dialog_deleteProject)
+        self.pushButton_yes = QtWidgets.QPushButton(Dialog_deleteProjectView)
         self.pushButton_yes.setObjectName("pushButton_yes")
         self.horizontalLayout_buttons.addWidget(self.pushButton_yes)
         spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_buttons.addItem(spacerItem7)
-        self.pushButton_no = QtWidgets.QPushButton(Dialog_deleteProject)
+        self.pushButton_no = QtWidgets.QPushButton(Dialog_deleteProjectView)
         self.pushButton_no.setObjectName("pushButton_no")
         self.horizontalLayout_buttons.addWidget(self.pushButton_no)
         spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -83,13 +83,13 @@ class Ui_Dialog_deleteProject(object):
         self.verticalLayout_main.setStretch(5, 2)
         self.horizontalLayout_2.addLayout(self.verticalLayout_main)
 
-        self.retranslateUi(Dialog_deleteProject)
-        QtCore.QMetaObject.connectSlotsByName(Dialog_deleteProject)
+        self.retranslateUi(Dialog_deleteProjectView)
+        QtCore.QMetaObject.connectSlotsByName(Dialog_deleteProjectView)
 
-    def retranslateUi(self, Dialog_deleteProject):
+    def retranslateUi(self, Dialog_deleteProjectView):
         _translate = QtCore.QCoreApplication.translate
-        Dialog_deleteProject.setWindowTitle(_translate("Dialog_deleteProject", "Delete Project?"))
-        self.label_question.setText(_translate("Dialog_deleteProject", "Do you really want to delete this project?"))
-        self.pushButton_yes.setText(_translate("Dialog_deleteProject", "Yes"))
-        self.pushButton_no.setText(_translate("Dialog_deleteProject", "No"))
+        Dialog_deleteProjectView.setWindowTitle(_translate("Dialog_deleteProjectView", "Delete Project?"))
+        self.label_question.setText(_translate("Dialog_deleteProjectView", "Do you really want to delete this project?"))
+        self.pushButton_yes.setText(_translate("Dialog_deleteProjectView", "Yes"))
+        self.pushButton_no.setText(_translate("Dialog_deleteProjectView", "No"))
 import rawtextcheck.ui.resources_rc

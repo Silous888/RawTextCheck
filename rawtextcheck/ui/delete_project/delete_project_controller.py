@@ -15,12 +15,12 @@ from PyQt5.QtWidgets import QDialog
 
 # -------------------- Import Lib User -------------------
 from rawtextcheck.script import json_projects
-from rawtextcheck.ui.delete_project.Ui_delete_project import Ui_Dialog_deleteProject
+from rawtextcheck.ui.delete_project.Ui_delete_project_view import Ui_Dialog_deleteProjectView
 
 
 # == Classes ==================================================================
 
-class DialogDeleteProject(QDialog):
+class DialogDeleteProjectController(QDialog):
     """Dialog for deleting a project.
     This dialog prompts the user to confirm the deletion of a project and handles the deletion logic.
     Attributes:
@@ -33,7 +33,7 @@ class DialogDeleteProject(QDialog):
             project_name (str): The name of the project to be deleted.
         """
         super(QDialog, self).__init__()
-        self.ui = Ui_Dialog_deleteProject()
+        self.ui = Ui_Dialog_deleteProjectView()
 
         self.ui.setupUi(self)  # type: ignore
         self.project_name: str = project_name

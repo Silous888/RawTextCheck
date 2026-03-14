@@ -28,7 +28,7 @@ from rawtextcheck.default_parameters import (
 from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ItemProject, ItemResult
 from rawtextcheck.script import json_projects, json_results, languagetool, parser_loader
-from rawtextcheck.ui.mainwindow.mainwindow_worker import WorkerMainWindow
+from rawtextcheck.ui.mainwindow.mainwindow_worker import MainWindowWorker
 
 
 # == Global Variables =========================================================
@@ -55,7 +55,7 @@ class MainWindowModel():
         """Initialize the worker thread and move the worker to it."""
         self.thread = QThread()
         self.thread.start()
-        self.worker = WorkerMainWindow()
+        self.worker = MainWindowWorker()
         self.worker.moveToThread(self.thread)
 
     def worker_stop(self) -> None:

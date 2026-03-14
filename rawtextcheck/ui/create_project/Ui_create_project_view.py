@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\RawTextCheck\rawtextcheck\ui\create_project\create_project.ui'
+# Form implementation generated from reading ui file 'f:\Documents\Programmation\PublicProject\RawTextCheck\rawtextcheck\ui\create_project\create_project_view.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.11
 #
@@ -11,21 +11,21 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Dialog_createProject(object):
-    def setupUi(self, Dialog_createProject):
-        Dialog_createProject.setObjectName("Dialog_createProject")
-        Dialog_createProject.resize(655, 213)
+class Ui_Dialog_createProjectView(object):
+    def setupUi(self, Dialog_createProjectView):
+        Dialog_createProjectView.setObjectName("Dialog_createProjectView")
+        Dialog_createProjectView.resize(655, 213)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/resources/RawTextCheck.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        Dialog_createProject.setWindowIcon(icon)
-        self.gridLayout = QtWidgets.QGridLayout(Dialog_createProject)
+        Dialog_createProjectView.setWindowIcon(icon)
+        self.gridLayout = QtWidgets.QGridLayout(Dialog_createProjectView)
         self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout_projectName = QtWidgets.QHBoxLayout()
         self.horizontalLayout_projectName.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         self.horizontalLayout_projectName.setObjectName("horizontalLayout_projectName")
-        self.label_projectName = QtWidgets.QLabel(Dialog_createProject)
+        self.label_projectName = QtWidgets.QLabel(Dialog_createProjectView)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -36,7 +36,7 @@ class Ui_Dialog_createProject(object):
         self.horizontalLayout_projectName.addWidget(self.label_projectName)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_projectName.addItem(spacerItem)
-        self.lineEdit_projectName = QtWidgets.QLineEdit(Dialog_createProject)
+        self.lineEdit_projectName = QtWidgets.QLineEdit(Dialog_createProjectView)
         self.lineEdit_projectName.setObjectName("lineEdit_projectName")
         self.horizontalLayout_projectName.addWidget(self.lineEdit_projectName)
         self.horizontalLayout_projectName.setStretch(0, 1)
@@ -47,7 +47,7 @@ class Ui_Dialog_createProject(object):
         self.horizontalLayout_language = QtWidgets.QHBoxLayout()
         self.horizontalLayout_language.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         self.horizontalLayout_language.setObjectName("horizontalLayout_language")
-        self.label_language = QtWidgets.QLabel(Dialog_createProject)
+        self.label_language = QtWidgets.QLabel(Dialog_createProjectView)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -58,7 +58,7 @@ class Ui_Dialog_createProject(object):
         self.horizontalLayout_language.addWidget(self.label_language)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_language.addItem(spacerItem2)
-        self.comboBox_language = QtWidgets.QComboBox(Dialog_createProject)
+        self.comboBox_language = QtWidgets.QComboBox(Dialog_createProjectView)
         self.comboBox_language.setObjectName("comboBox_language")
         self.horizontalLayout_language.addWidget(self.comboBox_language)
         self.horizontalLayout_language.setStretch(0, 1)
@@ -69,7 +69,7 @@ class Ui_Dialog_createProject(object):
         self.horizontalLayout_parser = QtWidgets.QHBoxLayout()
         self.horizontalLayout_parser.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         self.horizontalLayout_parser.setObjectName("horizontalLayout_parser")
-        self.label_parser = QtWidgets.QLabel(Dialog_createProject)
+        self.label_parser = QtWidgets.QLabel(Dialog_createProjectView)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -80,7 +80,7 @@ class Ui_Dialog_createProject(object):
         self.horizontalLayout_parser.addWidget(self.label_parser)
         spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_parser.addItem(spacerItem4)
-        self.comboBox_parser = QtWidgets.QComboBox(Dialog_createProject)
+        self.comboBox_parser = QtWidgets.QComboBox(Dialog_createProjectView)
         self.comboBox_parser.setObjectName("comboBox_parser")
         self.horizontalLayout_parser.addWidget(self.comboBox_parser)
         self.horizontalLayout_parser.setStretch(0, 1)
@@ -92,7 +92,7 @@ class Ui_Dialog_createProject(object):
         self.horizontalLayout_create.setObjectName("horizontalLayout_create")
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_create.addItem(spacerItem6)
-        self.pushButton_create = QtWidgets.QPushButton(Dialog_createProject)
+        self.pushButton_create = QtWidgets.QPushButton(Dialog_createProjectView)
         self.pushButton_create.setObjectName("pushButton_create")
         self.horizontalLayout_create.addWidget(self.pushButton_create)
         spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -102,14 +102,15 @@ class Ui_Dialog_createProject(object):
         self.verticalLayout.addItem(spacerItem8)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
 
-        self.retranslateUi(Dialog_createProject)
-        QtCore.QMetaObject.connectSlotsByName(Dialog_createProject)
+        self.retranslateUi(Dialog_createProjectView)
+        QtCore.QMetaObject.connectSlotsByName(Dialog_createProjectView)
 
-    def retranslateUi(self, Dialog_createProject):
+    def retranslateUi(self, Dialog_createProjectView):
         _translate = QtCore.QCoreApplication.translate
-        Dialog_createProject.setWindowTitle(_translate("Dialog_createProject", "Create Project"))
-        self.label_projectName.setText(_translate("Dialog_createProject", "Project name"))
-        self.label_language.setText(_translate("Dialog_createProject", "Language"))
-        self.label_parser.setText(_translate("Dialog_createProject", "Parser"))
-        self.pushButton_create.setText(_translate("Dialog_createProject", "Create"))
+        Dialog_createProjectView.setWindowTitle(_translate("Dialog_createProjectView", "Create Project"))
+        self.label_projectName.setText(_translate("Dialog_createProjectView", "Project name"))
+        self.label_language.setText(_translate("Dialog_createProjectView", "Language"))
+        self.label_parser.setText(_translate("Dialog_createProjectView", "Parser"))
+        self.pushButton_create.setText(_translate("Dialog_createProjectView", "Create"))
 import rawtextcheck.ui.resources_rc
+

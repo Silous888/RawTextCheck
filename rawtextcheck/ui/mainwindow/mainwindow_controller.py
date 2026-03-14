@@ -26,14 +26,14 @@ from rawtextcheck.default_parameters import (
 from rawtextcheck.newtype import ItemResult
 from rawtextcheck.script import json_config
 from rawtextcheck.ui.mainwindow.mainwindow_model import MainWindowModel
-from rawtextcheck.ui.mainwindow.Ui_mainwindow import Ui_MainWindow
-from rawtextcheck.ui.project_manager.project_manager import DialogProjectManager
+from rawtextcheck.ui.mainwindow.Ui_mainwindow_view import Ui_MainWindowView
+from rawtextcheck.ui.project_manager.project_manager_controller import DialogProjectManager
 from rawtextcheck.ui.messagebox import popup_manager
 
 
 # == Classes ==================================================================
 
-class MainWindow(QMainWindow):
+class MainWindowController(QMainWindow):
     """Main window of the application.
     This class initializes the main window.
     Attributes:
@@ -41,8 +41,8 @@ class MainWindow(QMainWindow):
     """
     def __init__(self) -> None:
         """Initialize the MainWindow."""
-        super(MainWindow, self).__init__()
-        self.ui = Ui_MainWindow()
+        super(MainWindowController, self).__init__()
+        self.ui = Ui_MainWindowView()
         self.ui.setupUi(self)  # type: ignore
 
         popup_manager.show_error.connect(

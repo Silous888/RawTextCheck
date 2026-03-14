@@ -30,11 +30,11 @@ if __name__ == "__main__":
 
     # Imports where translator neeed to be initialized before
     from rawtextcheck import startup
-    from rawtextcheck.ui.mainwindow.mainwindow import MainWindow
+    from rawtextcheck.ui.mainwindow.mainwindow_controller import MainWindowController
 
     startup.startup_everything()
 
-    program = MainWindow()
+    program = MainWindowController()
 
     program.show()
     sys.exit(app.exec())

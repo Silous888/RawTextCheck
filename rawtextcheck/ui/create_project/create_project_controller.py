@@ -14,13 +14,13 @@ This module defines a dialog for creating a new project, allowing users to speci
 from PyQt5.QtWidgets import QDialog
 
 # -------------------- Import Lib User -------------------
-from rawtextcheck.ui.create_project.Ui_create_project import Ui_Dialog_createProject
+from rawtextcheck.ui.create_project.Ui_create_project_view import Ui_Dialog_createProjectView
 from rawtextcheck.ui.create_project.create_project_model import CreateProjectModel
 
 
 # == Classes ==================================================================
 
-class DialogCreateProject(QDialog):
+class DialogCreateProjectController(QDialog):
     """Dialog for creating a new project.
     This dialog allows users to enter a project name and select a language for the new project.
     Attributes:
@@ -30,7 +30,7 @@ class DialogCreateProject(QDialog):
     def __init__(self) -> None:
         """Initialize the DialogCreateProject."""
         super(QDialog, self).__init__()
-        self.ui = Ui_Dialog_createProject()
+        self.ui = Ui_Dialog_createProjectView()
 
         self.ui.setupUi(self)  # type: ignore
         self.set_up_connect()

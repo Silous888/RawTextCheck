@@ -1,43 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog_deleteProject</class>
- <widget class="QDialog" name="Dialog_deleteProject">
+ <class>Dialog_createProjectView</class>
+ <widget class="QDialog" name="Dialog_createProjectView">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>655</width>
-    <height>143</height>
+    <height>213</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Delete Project?</string>
+   <string>Create Project</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">
     <normaloff>:/resources/RawTextCheck.ico</normaloff>:/resources/RawTextCheck.ico</iconset>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_2">
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout_main" stretch="0,0,0,0,0,2">
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_projectName" stretch="0,0,0">
+      <layout class="QHBoxLayout" name="horizontalLayout_projectName" stretch="1,0,2">
        <property name="sizeConstraint">
         <enum>QLayout::SetMaximumSize</enum>
        </property>
-       <item>
-        <spacer name="horizontalSpacer_projectName_1">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item>
         <widget class="QLabel" name="label_projectName">
          <property name="sizePolicy">
@@ -47,7 +34,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string notr="true">LABEL_PROJECT_NAME</string>
+          <string>Project name</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -55,7 +42,7 @@
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer_projectName_2">
+        <spacer name="horizontalSpacer_projectName">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -66,6 +53,9 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_projectName"/>
        </item>
       </layout>
      </item>
@@ -83,25 +73,12 @@
       </spacer>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_question" stretch="0,0,0">
+      <layout class="QHBoxLayout" name="horizontalLayout_language" stretch="1,0,2">
        <property name="sizeConstraint">
         <enum>QLayout::SetMaximumSize</enum>
        </property>
        <item>
-        <spacer name="horizontalSpacer_question_1">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_question">
+        <widget class="QLabel" name="label_language">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -109,7 +86,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Do you really want to delete this project?</string>
+          <string>Language</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
@@ -117,7 +94,7 @@
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer_question_2">
+        <spacer name="horizontalSpacer_language">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -128,6 +105,9 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_language"/>
        </item>
       </layout>
      </item>
@@ -145,9 +125,28 @@
       </spacer>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_buttons" stretch="1,0,0,0,1">
+      <layout class="QHBoxLayout" name="horizontalLayout_parser" stretch="1,0,2">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMaximumSize</enum>
+       </property>
        <item>
-        <spacer name="horizontalSpacer_buttons_1">
+        <widget class="QLabel" name="label_parser">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Parser</string>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_parser">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -160,14 +159,27 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_yes">
-         <property name="text">
-          <string>Yes</string>
-         </property>
-        </widget>
+        <widget class="QComboBox" name="comboBox_parser"/>
        </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_main_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>466</width>
+         <height>13</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_create">
        <item>
-        <spacer name="horizontalSpacer_buttons_2">
+        <spacer name="horizontalSpacer_create_1">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -180,14 +192,14 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_no">
+        <widget class="QPushButton" name="pushButton_create">
          <property name="text">
-          <string>No</string>
+          <string>Create</string>
          </property>
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer_buttons_3">
+        <spacer name="horizontalSpacer_create_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -202,14 +214,14 @@
       </layout>
      </item>
      <item>
-      <spacer name="verticalSpacer_main_3">
+      <spacer name="verticalSpacer_main_4">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>40</height>
+         <height>30</height>
         </size>
        </property>
       </spacer>

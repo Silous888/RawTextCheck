@@ -15,7 +15,7 @@ from rawtextcheck.script.process import process_file
 
 # == Classes ==================================================================
 
-class WorkerMainWindow(QObject):
+class MainWindowWorker(QObject):
     """Worker for the main window to handle background tasks."""
 
     signal_run_process_start = pyqtSignal(str, str, str)

@@ -16,8 +16,8 @@ from PyQt5.QtWidgets import QDialog, QFileDialog
 # -------------------- Import Lib User -------------------
 from rawtextcheck.default_parameters import NOBREAK_SPACE, NARROW_NOBREAK_SPACE
 from rawtextcheck.newtype import ItemProject
-from rawtextcheck.ui.create_project.create_project import DialogCreateProject
-from rawtextcheck.ui.delete_project.delete_project import DialogDeleteProject
+from rawtextcheck.ui.create_project.create_project_controller import DialogCreateProjectController
+from rawtextcheck.ui.delete_project.delete_project_controller import DialogDeleteProjectController
 from rawtextcheck.ui.project_manager.Ui_project_manager import Ui_Dialog_projectManager
 from rawtextcheck.ui.project_manager.project_manager_model import ProjectManagerModel
 
@@ -77,7 +77,7 @@ class DialogProjectManager(QDialog):
     def pushButton_createProject_clicked(self) -> None:
         """Slot when the create project button is clicked.
         Opens a dialog to create a new project."""
-        dialog: DialogCreateProject = DialogCreateProject()
+        dialog: DialogCreateProjectController = DialogCreateProjectController()
         result: int = dialog.exec_()
         if result == QDialog.Accepted:  # type: ignore
             project_name: str = dialog.get_project_name()
@@ -93,7 +93,7 @@ class DialogProjectManager(QDialog):
 
         if project_name is None:
             return
-        dialog: DialogDeleteProject = DialogDeleteProject(project_name)
+        dialog: DialogDeleteProjectController = DialogDeleteProjectController(project_name)
         dialog.exec_()
         self.model.titleComboBoxModel.load_data()
         self.ui.comboBox_project.setCurrentText(project_name)
