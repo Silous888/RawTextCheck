@@ -50,6 +50,10 @@ class MainWindowController(QMainWindow):
             lambda title, msg: QMessageBox.critical(self, title, msg)  # type: ignore
         )
 
+        popup_manager.show_info.connect(
+            lambda title, msg: QMessageBox.information(self, title, msg)  # type: ignore
+        )
+
         self.ui.tableView_result.set_columns_hidden_by_default(json_config.load_data()["hidden_column"])
         self.set_up_language_menu()
         self.set_up_theme_menu()
@@ -90,8 +94,8 @@ class MainWindowController(QMainWindow):
         self.ui.menuPreference.addAction(self.action_language)  # type: ignore
 
     def set_up_theme_menu(self) -> None:
-        self.action_theme = QAction(self.tr("theme"), self)
-        theme_menu = QMenu(self.tr("theme"), self)
+        self.action_theme = QAction(self.tr("Theme"), self)
+        theme_menu = QMenu(self.tr("Theme"), self)
 
         self.theme_group = QActionGroup(self)
         self.theme_group.setExclusive(True)
@@ -306,10 +310,18 @@ class MainWindowController(QMainWindow):
     def language_selected(self, action: QAction) -> None:
         selected_code = action.data()
         json_config.set_language(selected_code)
+        popup_manager.show_info.emit(
+            self.tr("Language applied"),
+            self.tr("The language has been applied. You need to restart the application for the changes to take effect.")
+            )
 
     def theme_selected(self, action: QAction) -> None:
         selected_code = action.data()
         json_config.set_theme(selected_code)
+        popup_manager.show_info.emit(
+            self.tr("Theme applied"),
+            self.tr("The theme has been applied. You need to restart the application for some changes to take effect.")
+            )
 
     def add_custom_actions_to_menu(self, menu: QMenu) -> None:
         """Add several actions to contextmenu of table_result

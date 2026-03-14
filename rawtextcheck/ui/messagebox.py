@@ -45,6 +45,7 @@ class Popup:
 
 class PopupManager(QObject):
     show_error = pyqtSignal(str, str)  # title, message
+    show_info = pyqtSignal(str, str)  # title, message
 
 
 popup_manager = PopupManager()
