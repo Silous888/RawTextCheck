@@ -2,10 +2,10 @@
 File        : startup_translation.py
 Author      : Silous
 Created on  : 2025-07-26
-Description : Handles application translations.
+Description : Handles process before the app startup.
 
-This module initializes the translation system for the CheckFrench application.
-It loads the appropriate translation file based on the user's language setting.
+This module initializes the translation system and the style for the application.
+It loads the appropriate configuration file based on the user's setting.
 
 Warning:
 Some code is a copy of the code in json_config.py and default_parameters.py
@@ -21,10 +21,11 @@ from logging import Logger
 import os
 import sys
 
-from PyQt5.QtCore import QTranslator
+from PyQt5.QtCore import QFile, QTextStream, QTranslator, QIODevice
 
 from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ItemConfig
+from rawtextcheck.ui import breeze_pyqt5  # type: ignore
 
 
 # == Global Variables =========================================================
@@ -61,7 +62,7 @@ def load_data_config() -> ItemConfig:
         return ItemConfig(language=DEFAULT_LANGUAGE, theme=DEFAULT_THEME,
                           hidden_column=[], last_project="", credentials_google={})
     with open(JSON_CONFIG_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+        return ItemConfig(json.load(f))
     logger.info("Loaded app configuration data")
 
 
@@ -92,3 +93,24 @@ def init_translator() -> QTranslator | None:
     if translator.load(translations_path(load_data_config()["language"] + ".qm")):
         return translator
     return None
+
+def init_stylesheet() -> str | None:
+    """Initialize the stylesheet for the application.
+    Returns:
+        QTextStream | None: The stylesheet stream if successful, None otherwise.
+    """
+    if load_data_config()["theme"] == "dark":
+        file = QFile(":/dark/stylesheet.qss")
+    else:
+        file = QFile(":/light/stylesheet.qss")
+
+    if not file.open(QIODevice.OpenModeFlag.ReadOnly | QIODevice.OpenModeFlag.Text):  # type: ignore
+        return None
+
+    stream = QTextStream(file)
+    stylesheet: str = stream.readAll()
+    file.close()
+
+    return stylesheet
+
+

@@ -34,7 +34,8 @@ LANGUAGES: list[tuple[str, str]] = [
 is default value"""
 
 THEMES: list[tuple[str, str]] = [
-    ("light", QCA.translate("color theme", "Light"))
+    ("light", QCA.translate("color theme", "Light")),
+    ("dark", QCA.translate("color theme", "Dark"))
     ]
 """Avalaible theme for the app interface, first value is
 default value"""

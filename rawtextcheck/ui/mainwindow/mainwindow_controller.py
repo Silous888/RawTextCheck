@@ -21,7 +21,8 @@ from rawtextcheck.default_parameters import (
     INVALID_CHAR_TEXT_ERROR_TYPE,
     BANWORD_TEXT_ERROR_TYPE,
     LANGUAGETOOL_SPELLING_CATEGORY,
-    LANGUAGES
+    LANGUAGES,
+    THEMES
 )
 from rawtextcheck.newtype import ItemResult
 from rawtextcheck.script import json_config
@@ -51,6 +52,7 @@ class MainWindowController(QMainWindow):
 
         self.ui.tableView_result.set_columns_hidden_by_default(json_config.load_data()["hidden_column"])
         self.set_up_language_menu()
+        self.set_up_theme_menu()
         self.set_up_model()
         self.set_up_connect()
 
@@ -87,6 +89,28 @@ class MainWindowController(QMainWindow):
         self.action_language.setMenu(language_menu)
         self.ui.menuPreference.addAction(self.action_language)  # type: ignore
 
+    def set_up_theme_menu(self) -> None:
+        self.action_theme = QAction(self.tr("theme"), self)
+        theme_menu = QMenu(self.tr("theme"), self)
+
+        self.theme_group = QActionGroup(self)
+        self.theme_group.setExclusive(True)
+
+        default_theme_code: str = json_config.load_data()["theme"]
+
+        for code, name in THEMES:
+            action = QAction(name, self)
+            action.setCheckable(True)
+            action.setData(code)
+            theme_menu.addAction(action)  # type: ignore
+            self.theme_group.addAction(action)
+
+            if code == default_theme_code:
+                action.setChecked(True)
+
+        self.action_theme.setMenu(theme_menu)
+        self.ui.menuPreference.addAction(self.action_theme)  # type: ignore
+
     def set_up_model(self) -> None:
         """Initialize the model for the main window."""
         self.model = MainWindowModel(self.ui.comboBox_project.currentText(), "")
@@ -100,6 +124,7 @@ class MainWindowController(QMainWindow):
         self.ui.actionProjects.triggered.connect(self.actionProjects_triggered)
         self.ui.actionAdd_google_credentials.triggered.connect(self.actionAdd_google_credentials_triggered)
         self.language_group.triggered.connect(self.language_selected)
+        self.theme_group.triggered.connect(self.theme_selected)
         # combobox
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
         # lineEdit
@@ -281,6 +306,10 @@ class MainWindowController(QMainWindow):
     def language_selected(self, action: QAction) -> None:
         selected_code = action.data()
         json_config.set_language(selected_code)
+
+    def theme_selected(self, action: QAction) -> None:
+        selected_code = action.data()
+        json_config.set_theme(selected_code)
 
     def add_custom_actions_to_menu(self, menu: QMenu) -> None:
         """Add several actions to contextmenu of table_result

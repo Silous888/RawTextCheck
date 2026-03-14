@@ -15,7 +15,7 @@ import sys
 from PyQt5.QtCore import QTranslator
 from PyQt5.QtWidgets import QApplication
 
-from rawtextcheck import startup_translation
+from rawtextcheck import startup, prestartup
 
 
 # == Main Application =========================================================
@@ -24,9 +24,13 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    translator: QTranslator | None = startup_translation.init_translator()
+    translator: QTranslator | None = prestartup.init_translator()
     if translator is not None:
         app.installTranslator(translator)
+
+    stylesheet: str | None = prestartup.init_stylesheet()
+    if stylesheet is not None:
+        app.setStyleSheet(stylesheet)
 
     # Imports where translator neeed to be initialized before
     from rawtextcheck import startup
