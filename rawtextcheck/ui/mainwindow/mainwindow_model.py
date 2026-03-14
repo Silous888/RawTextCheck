@@ -256,7 +256,7 @@ class ResultsTableModel(QAbstractTableModel):
             case 2: return item["error"]
             case 3: return item["error_type"]
             case 4: return item["explanation"]
-            case 5: return item["suggestion"]
+            case 5: return item["suggestion"].strip("[]")
             case _: return QVariant()
 
     def data_row(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | ItemResult:
