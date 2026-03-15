@@ -769,7 +769,7 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         row, col = index.row(), index.column()
 
         if row >= len(self._data):
-            if col in (self.start_col, self.end_col) and value:
+            if col in (self.start_col, self.end_col):
                 start: str = value if col == self.start_col else ""
                 end: str = value if col == self.end_col else ""
                 self.beginInsertRows(QModelIndex(), row, row)
@@ -874,7 +874,7 @@ class IgnoredSubstringsModel(QAbstractTableModel):
         space_dict: dict[str, list[str]] = {}
         nospace_dict: dict[str, list[str]] = {}
         for start, end, is_space in self._data:
-            if not start or not end:
+            if not start and not end:
                 continue
             target: dict[str, list[str]] = space_dict if is_space else nospace_dict
             if start not in target:

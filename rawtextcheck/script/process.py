@@ -57,7 +57,7 @@ def remove_ignored_substrings(text: str, ignored_substrings: dict[str, list[str]
 
         for start, ends in ignored_substrings.items():
 
-            if text.startswith(start, i):
+            if (start != "" and text.startswith(start, i)) or (start == "" and i == 0):  # Check if the text at position i starts with the start pattern
                 start_index: int = i + len(start)
                 end_index: int = length  # Default to end of string if no end is found
                 found = False  # Flag to signal a successful end match
@@ -65,13 +65,17 @@ def remove_ignored_substrings(text: str, ignored_substrings: dict[str, list[str]
                 # Look for the first matching end pattern after the start
                 for j in range(start_index, length):
                     for end in ends:
-                        # If the text at position j starts with an end pattern
-                        if text.startswith(end, j):
-                            end_index = j + len(end)  # Define where the ignored block ends
+                        if end != "" and text.startswith(end, j):
+                            end_index = j + len(end)
                             found = True
                             break
                     if found:
                         break
+
+                # If no end found but "" is allowed, match end of text
+                if not found and "" in ends:
+                    end_index = length
+                    found = True
 
                 if found:
                     if insert_space:
