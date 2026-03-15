@@ -8,7 +8,7 @@ Description :
 # == Imports ==================================================================
 
 from typing import List
-from PyQt5.QtWidgets import QTableView, QMenu, QAction, QWidget
+from PyQt5.QtWidgets import QTableView, QMenu, QAction, QWidget, QApplication
 from PyQt5.QtCore import QAbstractItemModel, QItemSelectionModel, QModelIndex, Qt, QPoint, pyqtSignal
 from PyQt5.QtGui import QKeyEvent
 
@@ -84,24 +84,55 @@ class DataResultTableView(QTableView):
 
         menu = QMenu(self)
 
-        # Action: Delete rows if selection
         selection_model: QItemSelectionModel | None = self.selectionModel()
-        if selection_model and selection_model.selectedRows():
+        selected_rows: List[QModelIndex] = selection_model.selectedRows() if selection_model else []
+
+        if selected_rows:
+            row: int = selected_rows[0].row()
+
+            # Action: Delete
             delete_action = QAction(self.tr("Delete"), self)
             delete_action.triggered.connect(self.delete_selected_row)
             menu.addAction(delete_action)  # type: ignore
             menu.addSeparator()
 
-        # To add external custom actions
+            # Get data for the selected row to populate the Copy submenu
+            idx = lambda col: model.index(row, col)  # type: ignore
+            line: str      = model.data(idx(1), Qt.ItemDataRole.DisplayRole)
+            error: str     = model.data(idx(2), Qt.ItemDataRole.DisplayRole)
+            # error_type: str = model.data(idx(3), Qt.ItemDataRole.DisplayRole)
+            suggestion: str = model.data(idx(5), Qt.ItemDataRole.DisplayRole)
+
+
+            copy_line_action = QAction(self.tr("Copy text"), self)
+            copy_line_action.triggered.connect(lambda: QApplication.clipboard().setText(str(line)))  # type: ignore
+            menu.addAction(copy_line_action)  # type: ignore
+
+            copy_error_action = QAction(self.tr("Copy error"), self)
+            copy_error_action.triggered.connect(lambda: QApplication.clipboard().setText(str(error)))  # type: ignore
+            menu.addAction(copy_error_action)  # type: ignore
+
+
+            if suggestion:
+                suggestion_menu = QMenu(self.tr("Copy suggestion"), self)
+                suggestions: list[str] = [s.strip().strip("'") for s in str(suggestion).split(",") if s.strip()]
+                if suggestions:
+                    suggestion_menu.addSeparator()
+                    for sug in suggestions:
+                        sug_action = QAction(sug, self)
+                        sug_action.triggered.connect(lambda checked, s=sug: QApplication.clipboard().setText(s))  # type: ignore
+                        suggestion_menu.addAction(sug_action)  # type: ignore
+
+                menu.addMenu(suggestion_menu)
+            menu.addSeparator()
+
         self.custom_context_actions_requested.emit(menu)
 
         visibility_menu = QMenu(self.tr("Visibility"), self)
-        # Action: Toggle column visibility
         for col in range(model.columnCount()):
             col_name = model.headerData(col, Qt.Orientation.Horizontal, Qt.ItemDataRole.DisplayRole)
             if col_name is None:
                 col_name = f"Column {col}"
-
             action = QAction(str(col_name), self)
             action.setCheckable(True)
             is_visible: bool = not self.isColumnHidden(col)

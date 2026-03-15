@@ -4,14 +4,29 @@
 <context>
     <name>DataResultTableView</name>
     <message>
-        <location filename="../rawtextcheck/ui/widgets/dataresult_tableview.py" line="88"/>
+        <location filename="../rawtextcheck/ui/widgets/dataresult_tableview.py" line="94"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/widgets/dataresult_tableview.py" line="96"/>
+        <location filename="../rawtextcheck/ui/widgets/dataresult_tableview.py" line="131"/>
         <source>Visibility</source>
         <translation>Visible</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/widgets/dataresult_tableview.py" line="107"/>
+        <source>Copy text</source>
+        <translation>Copier le texte</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/widgets/dataresult_tableview.py" line="111"/>
+        <source>Copy error</source>
+        <translation>Copier l’erreur</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/widgets/dataresult_tableview.py" line="117"/>
+        <source>Copy suggestion</source>
+        <translation>Copier une suggestion</translation>
     </message>
 </context>
 <context>
