@@ -36,6 +36,8 @@ class DataResultTableView(QTableView):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_context_menu)
         self._column_visibility: dict[int, bool] = {}
+        self.setAlternatingRowColors(True)
+        self.setSortingEnabled(True)
 
         horizontal_header: QWidget | None = self.horizontalHeader()
         if horizontal_header is not None:

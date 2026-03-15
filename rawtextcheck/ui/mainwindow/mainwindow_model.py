@@ -214,6 +214,9 @@ class ResultsTableModel(QAbstractTableModel):
         self.project_name: str = project_name
         self.filename: str = file_name
         self._keys: list[str] = []
+        self._original_keys: list[str] = []
+        self._sort_column: int = -1
+        self._sort_order: Qt.SortOrder = Qt.SortOrder.AscendingOrder
         if file_name != "":
             self.load_data()
 
@@ -226,6 +229,8 @@ class ResultsTableModel(QAbstractTableModel):
         self.beginResetModel()
         self._data: dict[str, ItemResult] = json_results.get_file_data(self.project_name, self.filename)
         self._keys = list(self._data.keys())
+        self._original_keys = list(self._keys)
+        self._sort_column = -1
         self.endResetModel()
 
     def clear_data(self) -> None:
@@ -290,8 +295,10 @@ class ResultsTableModel(QAbstractTableModel):
         if err_nb != 0:
             return False
         self.beginRemoveRows(parent, row, row)
-        del self._data[self._keys[row]]
+        key: str = self._keys[row]
+        del self._data[key]
         del self._keys[row]
+        self._original_keys.remove(key)
         self.endRemoveRows()
         return True
 
@@ -347,3 +354,31 @@ class ResultsTableModel(QAbstractTableModel):
         json_projects.add_ignored_rules(self.project_name, rule)
         json_results.delete_error_type(self.project_name, self.filename, rule)
         self.load_data()
+
+    def sort(self, column: int, order: Qt.SortOrder = Qt.SortOrder.AscendingOrder) -> None:
+        self.layoutAboutToBeChanged.emit()
+
+        # If the same column is clicked and the order is ascending, reset to original order
+        if column == self._sort_column and order == 0 and self._sort_order == 1:
+            self._keys = list(self._original_keys)
+            self._sort_column = -1
+        else:
+            key_map: dict[int, str] = {
+                0: "line_number",
+                1: "line",
+                2: "error",
+                3: "error_type",
+                4: "explanation",
+                5: "suggestion",
+            }
+            field = key_map.get(column)
+            if field is None:
+                self.layoutChanged.emit()
+                return
+
+            self._keys.sort(key=lambda k: self._data[k][field],  # type: ignore
+                            reverse=(order == Qt.SortOrder.DescendingOrder))
+            self._sort_column = column
+            self._sort_order = order
+
+        self.layoutChanged.emit()
