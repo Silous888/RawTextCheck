@@ -1,5 +1,5 @@
 """
-File        : create_project.py
+File        : create_project_controller.py
 Author      : Silous
 Created on  : 2025-06-09
 Description : pop-up dialog for creating a new project.

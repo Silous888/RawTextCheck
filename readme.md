@@ -44,8 +44,7 @@ Install dependencies:
 
     pip install -r requirements.txt
 
-
-To run the project, you can use the VS Code configuration or this command:
+To run the project, you can use the VS Code run configuration or this command:
 
     py -m rawtextcheck.main
 

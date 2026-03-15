@@ -56,31 +56,49 @@
     </message>
 </context>
 <context>
+    <name>DialogProjectManagerController</name>
+    <message>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager_controller.py" line="270"/>
+        <source>Export Project</source>
+        <translation>Exporter le projet</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager_controller.py" line="287"/>
+        <source>JSON Files (*.json);;All Files (*)</source>
+        <translation>fichier JSON (*.json);;Tous les fichiers (*)</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/project_manager/project_manager_controller.py" line="287"/>
+        <source>Import Project</source>
+        <translation>Importer un fichier</translation>
+    </message>
+</context>
+<context>
     <name>Dialog_createProject</name>
     <message>
         <location filename="../rawtextcheck/ui/create_project/create_project.ui" line="14"/>
         <source>Create Project</source>
-        <translation type="obsolete">Créer un projet</translation>
+        <translation>Créer un projet</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/create_project/create_project.ui" line="37"/>
         <source>Project name</source>
-        <translation type="obsolete">Nom du projet</translation>
+        <translation>Nom du projet</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/create_project/create_project.ui" line="89"/>
         <source>Language</source>
-        <translation type="obsolete">Langue</translation>
+        <translation>Langue</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/create_project/create_project.ui" line="141"/>
         <source>Parser</source>
-        <translation type="obsolete">Parseur</translation>
+        <translation>Parseur</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/create_project/create_project.ui" line="197"/>
         <source>Create</source>
-        <translation type="obsolete">Créer</translation>
+        <translation>Créer</translation>
     </message>
 </context>
 <context>
@@ -116,22 +134,22 @@
     <message>
         <location filename="../rawtextcheck/ui/delete_project/delete_project.ui" line="14"/>
         <source>Delete Project?</source>
-        <translation type="obsolete">Supprimer le projet ?</translation>
+        <translation>Supprimer le projet ?</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/delete_project/delete_project.ui" line="112"/>
         <source>Do you really want to delete this project?</source>
-        <translation type="obsolete">Êtes-vous certains de vouloir supprimer ce projet ?</translation>
+        <translation>Êtes-vous certains de vouloir supprimer ce projet ?</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/delete_project/delete_project.ui" line="165"/>
         <source>Yes</source>
-        <translation type="obsolete">Oui</translation>
+        <translation>Oui</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/delete_project/delete_project.ui" line="185"/>
         <source>No</source>
-        <translation type="obsolete">Non</translation>
+        <translation>Non</translation>
     </message>
 </context>
 <context>
@@ -162,112 +180,112 @@
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="14"/>
         <source>Manage Projects</source>
-        <translation type="obsolete">Gérer les projets</translation>
+        <translation>Gérer les projets</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="28"/>
         <source>Create New Project</source>
-        <translation type="obsolete">Nouveau projet</translation>
+        <translation>Nouveau projet</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="90"/>
         <source>Delete</source>
-        <translation type="obsolete">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="111"/>
         <source>Import</source>
-        <translation type="obsolete">Importer</translation>
+        <translation>Importer</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="121"/>
         <source>Export</source>
-        <translation type="obsolete">Exporter</translation>
+        <translation>Exporter</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="171"/>
         <source>Dictionary</source>
-        <translation type="obsolete">Dictionnaire</translation>
+        <translation>Dictionnaire</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="200"/>
         <source>Banwords</source>
-        <translation type="obsolete">Mots interdits</translation>
+        <translation>Mots interdits</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="229"/>
         <source>Ignored codes</source>
-        <translation type="obsolete">codes ignorés</translation>
+        <translation>codes ignorés</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="255"/>
         <source>Ignored substrings</source>
-        <translation type="obsolete">sous-chaînes ignorées</translation>
+        <translation>sous-chaînes ignorées</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="307"/>
         <source>Ignored grammar rules</source>
-        <translation type="obsolete">règles de grammaire ignorées</translation>
+        <translation>règles de grammaire ignorées</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="367"/>
         <source>Project name</source>
-        <translation type="obsolete">Nom du projet</translation>
+        <translation>Nom du projet</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="419"/>
         <source>Language</source>
-        <translation type="obsolete">Langue</translation>
+        <translation>Langue</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="471"/>
         <source>Parser</source>
-        <translation type="obsolete">Parseur</translation>
+        <translation>Parseur</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="526"/>
         <source>Argument for parser</source>
-        <translation type="obsolete">Argument du parseur</translation>
+        <translation>Argument du parseur</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="580"/>
         <source>Valid characters</source>
-        <translation type="obsolete">caractères valides</translation>
+        <translation>caractères valides</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="631"/>
         <source>Space</source>
-        <translation type="obsolete">espace</translation>
+        <translation>espace</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="638"/>
         <source>No-break space</source>
-        <translation type="obsolete">espace insécable</translation>
+        <translation>espace insécable</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="645"/>
         <source>narrow no-break space</source>
-        <translation type="obsolete">espace insécable fine</translation>
+        <translation>espace insécable fine</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="688"/>
         <source>Restore</source>
-        <translation type="obsolete">restaurer</translation>
+        <translation>restaurer</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="711"/>
         <source>Save</source>
-        <translation type="obsolete">Sauvegarder</translation>
+        <translation>Sauvegarder</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="734"/>
         <source>Save and Quit</source>
-        <translation type="obsolete">Sauvegarder et quitter</translation>
+        <translation>Sauvegarder et quitter</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/project_manager/project_manager.ui" line="281"/>
         <source>Replace codes</source>
-        <translation type="obsolete">Codes à remplacer</translation>
+        <translation>Codes à remplacer</translation>
     </message>
 </context>
 <context>
@@ -802,127 +820,127 @@
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="17"/>
         <source>RawTextCheck</source>
-        <translation type="obsolete">RawTextCheck</translation>
+        <translation>RawTextCheck</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="54"/>
         <source>Process</source>
-        <translation type="obsolete">Analyser</translation>
+        <translation>Analyser</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="72"/>
         <source>Argument parser</source>
-        <translation type="obsolete">Argument du parseur</translation>
+        <translation>Argument du parseur</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="123"/>
         <source>Manage</source>
-        <translation type="obsolete">Configuration</translation>
+        <translation>Configuration</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="126"/>
         <source>View</source>
-        <translation type="obsolete">Vue</translation>
+        <translation>Vue</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="131"/>
         <source>Preference</source>
-        <translation type="obsolete">Préférences</translation>
+        <translation>Préférences</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="139"/>
         <source>Open Recent Result</source>
-        <translation type="obsolete">Ouvrir le dernier résultat</translation>
+        <translation>Ouvrir le dernier résultat</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="144"/>
         <source>Open Result</source>
-        <translation type="obsolete">Ouvrir un résultat</translation>
+        <translation>Ouvrir un résultat</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="149"/>
         <source>Configure projects</source>
-        <translation type="obsolete">Configurer les projets</translation>
+        <translation>Configurer les projets</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="154"/>
         <source>Parsers</source>
-        <translation type="obsolete">Parseurs</translation>
+        <translation>Parseurs</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="159"/>
         <source>Results</source>
-        <translation type="obsolete">Résultats</translation>
+        <translation>Résultats</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="164"/>
         <source>Keybinding</source>
-        <translation type="obsolete">Raccourcis Clavier</translation>
+        <translation>Raccourcis Clavier</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="169"/>
         <source>Theme</source>
-        <translation type="obsolete">Thème</translation>
+        <translation>Thème</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="174"/>
         <source>Check for Updates</source>
-        <translation type="obsolete">Vérifier les mises à jour</translation>
+        <translation>Vérifier les mises à jour</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="179"/>
         <source>Export all projects configuration</source>
-        <translation type="obsolete">Exporter toutes les configurations de projets</translation>
+        <translation>Exporter toutes les configurations de projets</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="184"/>
         <source>Import all projects configuration</source>
-        <translation type="obsolete">Importer toutes les configurations de projets</translation>
+        <translation>Importer toutes les configurations de projets</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="307"/>
         <source>Add character to valid characters</source>
-        <translation type="obsolete">Ajouter aux caractères valides</translation>
+        <translation>Ajouter aux caractères valides</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="313"/>
         <source>Remove word from the banword list</source>
-        <translation type="obsolete">Supprimer des mots interdits</translation>
+        <translation>Supprimer des mots interdits</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="319"/>
         <source>Add this word to dictionary</source>
-        <translation type="obsolete">Ajouter ce mot au dictionnaire</translation>
+        <translation>Ajouter ce mot au dictionnaire</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="325"/>
         <source>Add {item_result[&apos;error_type&apos;]} to ignored rules</source>
-        <translation type="obsolete">Ajouter{item_result[&apos;error_type&apos;]} au règles ignorées</translation>
+        <translation>Ajouter{item_result['error_type']} au règles ignorées</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="70"/>
         <source>Language</source>
-        <translation type="obsolete">Langue</translation>
+        <translation>Langue</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.ui" line="194"/>
         <source>Add google credentials</source>
-        <translation type="obsolete">Ajouter une clé d’accès Google</translation>
+        <translation>Ajouter une clé d’accès Google</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="267"/>
         <source>Select Google Credentials JSON File</source>
-        <translation type="obsolete">Sélectionner le fichier JSON des credentials Google</translation>
+        <translation>Sélectionner le fichier JSON des credentials Google</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="267"/>
         <source>JSON Files (*.json)</source>
-        <translation type="obsolete">Fichiers JSON (*.json)</translation>
+        <translation>Fichiers JSON (*.json)</translation>
     </message>
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow.py" line="157"/>
         <source>File not found</source>
-        <translation type="obsolete">Fichier non trouvé</translation>
+        <translation>Fichier non trouvé</translation>
     </message>
 </context>
 <context>
@@ -990,7 +1008,7 @@
     <message>
         <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="366"/>
         <source>Add {item_result[&apos;error_type&apos;]} to ignored rules</source>
-        <translation>Ajouter{item_result[&apos;error_type&apos;]} au règles ignorées</translation>
+        <translation>Ajouter{item_result['error_type']} au règles ignorées</translation>
     </message>
 </context>
 <context>

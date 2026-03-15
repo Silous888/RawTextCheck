@@ -1,5 +1,5 @@
 """
-File        : project_manager.py
+File        : project_manager_controller.py
 Author      : Silous
 Created on  : 2025-05-29
 Description : Dialog for managing projects in the application.
@@ -24,7 +24,7 @@ from rawtextcheck.ui.project_manager.project_manager_model import ProjectManager
 
 # == Classes ==================================================================
 
-class DialogProjectManager(QDialog):
+class DialogProjectManagerController(QDialog):
     """Dialog for managing projects in the application.
     This dialog allows users to create, delete, and edit project settings.
     Attributes:

@@ -15,7 +15,7 @@ import sys
 from PyQt5.QtCore import QTranslator
 from PyQt5.QtWidgets import QApplication
 
-from rawtextcheck import startup, prestartup
+from rawtextcheck import prestartup
 
 
 # == Main Application =========================================================

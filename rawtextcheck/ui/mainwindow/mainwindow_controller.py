@@ -1,5 +1,5 @@
 """
-File        : mainwindow.py
+File        : mainwindow_controller.py
 Author      : Silous
 Created on  : 2025-04-18
 Description : Main window of the application.
@@ -28,7 +28,7 @@ from rawtextcheck.newtype import ItemResult
 from rawtextcheck.script import json_config
 from rawtextcheck.ui.mainwindow.mainwindow_model import MainWindowModel
 from rawtextcheck.ui.mainwindow.Ui_mainwindow_view import Ui_MainWindowView
-from rawtextcheck.ui.project_manager.project_manager_controller import DialogProjectManager
+from rawtextcheck.ui.project_manager.project_manager_controller import DialogProjectManagerController
 from rawtextcheck.ui.messagebox import popup_manager
 
 
@@ -145,7 +145,7 @@ class MainWindowController(QMainWindow):
         """Slot for handling the Projects menu action.
         Opens the project manager dialog."""
         current_project: str = self.ui.comboBox_project.currentText()
-        self.dialog_project_manager = DialogProjectManager(current_project)
+        self.dialog_project_manager = DialogProjectManagerController(current_project)
         self.dialog_project_manager.exec()
         self.model.titleComboBoxModel.load_data()
         self.ui.comboBox_project.setCurrentText(current_project)

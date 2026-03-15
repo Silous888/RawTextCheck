@@ -1,5 +1,5 @@
 """
-File        : delete_project.py
+File        : delete_project_controller.py
 Author      : Silous
 Created on  : 2025-06-09
 Description : Dialog for deleting a project in the application.
