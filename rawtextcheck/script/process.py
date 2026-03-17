@@ -23,6 +23,7 @@ from rawtextcheck.default_parameters import (
     BANWORD_TEXT_ERROR
     )
 
+from rawtextcheck import global_variable
 from rawtextcheck.logger import get_logger
 from rawtextcheck.newtype import ItemProject, ItemResult
 from rawtextcheck.script import json_projects, json_results, languagetool, parser_loader, utils
@@ -242,6 +243,8 @@ def process_file(filepath: str, project_name: str, argument_parser: str) -> None
     # Parse the file using the selected parser
     argument_parser_dict: dict[str, str] = utils.parse_attributes(argument_parser)
     texts: list[tuple[str, str]] = all_parsers[parser_name].parse_file(filepath, argument_parser_dict)
+
+    global_variable.results_raw_current = texts  # Store the raw results for potential modifications
 
     texts = replace_codes_in_texts(texts, project_data["replace_codes"])
 

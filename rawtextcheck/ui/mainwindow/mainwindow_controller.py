@@ -11,7 +11,7 @@ Description : Main window of the application.
 from typing import List
 
 # -------------------- Import Lib Tier -------------------
-from PyQt5.QtCore import QMimeData, QModelIndex, QUrl, QItemSelectionModel
+from PyQt5.QtCore import QMimeData, QModelIndex, QUrl, QItemSelectionModel, QVariant
 from PyQt5.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent
 from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QActionGroup, QFileDialog, QMessageBox
 
@@ -24,8 +24,10 @@ from rawtextcheck.default_parameters import (
     LANGUAGES,
     THEMES
 )
+from rawtextcheck import global_variable
 from rawtextcheck.newtype import ItemResult
 from rawtextcheck.script import json_config
+from rawtextcheck.script.utils import parse_suggestions
 from rawtextcheck.ui.mainwindow.mainwindow_model import MainWindowModel
 from rawtextcheck.ui.mainwindow.Ui_mainwindow_view import Ui_MainWindowView
 from rawtextcheck.ui.project_manager.project_manager_controller import DialogProjectManagerController
@@ -135,9 +137,12 @@ class MainWindowController(QMainWindow):
         self.ui.lineEdit_filepath.textChanged.connect(self.lineEdit_filepath_textChanged)
         # pushbutton
         self.ui.pushButton_process.clicked.connect(self.pushButton_process_clicked)
+        self.ui.pushButton_apply.clicked.connect(self.pushButton_apply_clicked)
         # worker
         self.model.worker.signal_run_process_start.connect(self.model.worker.run_process)
         self.model.worker.signal_run_process_finished.connect(self.run_process_finished)
+
+        self.ui.tableView_result.selectionModel().selectionChanged.connect(self.tableView_result_selectionChanged) # type: ignore
 
 # -------------------- Slots --------------------
 
@@ -203,12 +208,56 @@ class MainWindowController(QMainWindow):
             self.ui.lineEdit_argument.text()
             )
 
+    def pushButton_apply_clicked(self) -> None:
+        """Slot when the apply button is clicked.
+        """
+        project_name: str | None = self.model.titleComboBoxModel.get_value(self.ui.comboBox_project.currentIndex())
+        if project_name is None:
+            return
+        selection_model: QItemSelectionModel | None = self.ui.tableView_result.selectionModel()
+        if selection_model is None:
+            return
+
+        selected: list[QModelIndex] = selection_model.selectedRows()
+        if not selected:
+            return
+
+        item_result: QVariant | ItemResult = self.model.resultsTableModel.data_row(selected[0])
+        if isinstance(item_result, QVariant):
+            return
+        result: bool = self.model.replace_text(
+            project_name,
+            self.ui.lineEdit_filepath.text(),
+            self.ui.textEdit_rawline.toPlainText(),
+            item_result["line_number"]
+        )
+        if result:
+            self.model.resultsTableModel.removeRow(selected[0].row())
+
     def run_process_finished(self) -> None:
         """Slot when the worker process is finished.
         Updates the model and UI after processing is complete.
         """
         self.set_enabled_during_process(True)
         self.model.resultsTableModel.load_data()
+
+    def tableView_result_selectionChanged(self) -> None:
+        selection_model: QItemSelectionModel | None = self.ui.tableView_result.selectionModel()
+        if selection_model is None:
+            return
+
+        selected: list[QModelIndex] = selection_model.selectedRows()
+        if not selected:
+            return
+
+        item_result: QVariant | ItemResult = self.model.resultsTableModel.data_row(selected[0])
+        if isinstance(item_result, QVariant):
+            return
+
+        self.populate_combobox_suggestion(item_result["suggestion"])
+        line_number: str = item_result["line_number"]
+        match = next((value for key, value in global_variable.results_raw_current if key == line_number), None)
+        self.ui.textEdit_rawline.setPlainText(match if match is not None else "")
 
 # -------------------- Events --------------------
 
@@ -290,6 +339,9 @@ class MainWindowController(QMainWindow):
         self.ui.tableView_result.setEnabled(is_enabled)
         self.ui.menuManage.setEnabled(is_enabled)
         self.ui.menuPreference.setEnabled(is_enabled)
+        self.ui.textEdit_rawline.setEnabled(is_enabled)
+        self.ui.comboBox_suggestion.setEnabled(is_enabled)
+        self.ui.pushButton_apply.setEnabled(is_enabled)
 
     def add_google_creadentials_process(self) -> None:
 
@@ -322,6 +374,17 @@ class MainWindowController(QMainWindow):
             self.tr("Theme applied"),
             self.tr("The theme has been applied. You need to restart the application for some changes to take effect.")
             )
+
+    def populate_combobox_suggestion(self, suggestions: str) -> None:
+        """Populate the suggestion combobox with the provided suggestions.
+        Args:
+            suggestions (str): A comma-separated string of suggestions to populate the combobox with.
+        """
+        self.ui.comboBox_suggestion.clear()
+        suggestion_list: List[str] = [self.tr("-None-")]
+        if suggestions:
+            suggestion_list.extend(parse_suggestions(suggestions))
+        self.ui.comboBox_suggestion.addItems(suggestion_list)
 
     def add_custom_actions_to_menu(self, menu: QMenu) -> None:
         """Add several actions to contextmenu of table_result

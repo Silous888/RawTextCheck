@@ -118,6 +118,28 @@ def call_get_filename(parser_name: str, filepath: str) -> tuple[str, bool]:
     else:
         return "", False
 
+def call_replace_text(parser_name: str, filepath: str, text: str, line_number: str) -> tuple[bool, bool]:
+    """call replace_text of a parser, and return result, and existence of
+    the method in the parser
+
+    Args:
+        parser_name (str): name of the parser
+        text (str): text to replace
+        line_number (str): Number or id of the line
+    Returns:
+        tuple[str, bool]: result of replace_text, and if replace_text exists
+    """
+    all_parsers: dict[str, ModuleType] = get_all_parsers()
+    if parser_name not in all_parsers:
+        return False, False
+    if hasattr(all_parsers[parser_name], "replace_text"):
+        try:
+            return all_parsers[parser_name].replace_text(filepath, text, line_number), True
+        except Exception as e:
+            logger.error("error during replace_text method of parser %s: %s", parser_name, e)
+            return False, True
+    else:
+        return False, False
 
 def get_arguments_keys(parser_name: str) -> tuple[list[ParserArgument], bool]:  # type: ignore
     """call LIST_ARGUMENT of the parser, and return the list, and existence

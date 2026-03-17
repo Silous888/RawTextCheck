@@ -7,11 +7,11 @@ Description :
 
 # == Imports ==================================================================
 
-from typing import List
 from PyQt5.QtWidgets import QTableView, QMenu, QAction, QWidget, QApplication
 from PyQt5.QtCore import QAbstractItemModel, QItemSelectionModel, QModelIndex, Qt, QPoint, pyqtSignal
 from PyQt5.QtGui import QKeyEvent
 
+from rawtextcheck.script.utils import parse_suggestions
 
 # == Classes ==================================================================
 
@@ -85,7 +85,7 @@ class DataResultTableView(QTableView):
         menu = QMenu(self)
 
         selection_model: QItemSelectionModel | None = self.selectionModel()
-        selected_rows: List[QModelIndex] = selection_model.selectedRows() if selection_model else []
+        selected_rows: list[QModelIndex] = selection_model.selectedRows() if selection_model else []
 
         if selected_rows:
             row: int = selected_rows[0].row()
@@ -115,7 +115,7 @@ class DataResultTableView(QTableView):
 
             if suggestion:
                 suggestion_menu = QMenu(self.tr("Copy suggestion"), self)
-                suggestions: list[str] = [s.strip().strip("'") for s in str(suggestion).split(",") if s.strip()]
+                suggestions: list[str] = parse_suggestions(suggestion)
                 if suggestions:
                     suggestion_menu.addSeparator()
                     for sug in suggestions:
@@ -182,7 +182,7 @@ class DataResultTableView(QTableView):
         selection_model: QItemSelectionModel | None = self.selectionModel()
         if selection_model is None:
             return
-        selection: List[QModelIndex] = selection_model.selectedRows()
+        selection: list[QModelIndex] = selection_model.selectedRows()
         if not selection:
             return
         model.removeRow(selection[0].row())

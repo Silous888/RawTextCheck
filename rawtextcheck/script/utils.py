@@ -8,6 +8,7 @@ Description : Utility functions for various operations in the application.
 
 # == Imports ==================================================================
 
+import csv
 import re
 
 
@@ -49,3 +50,19 @@ def parse_attributes(line: str) -> dict[str, str]:
         for key, val1, val2 in matches
         if (val1 if val1 else val2)  # only keep non-empty values
     }
+
+def parse_suggestions(suggestions: str) -> list[str]:
+    """Parse a suggestion string, respecting quoted commas."""
+    cleaned: list[str] = []
+    reader = csv.reader([suggestions.strip("[]")], skipinitialspace=True)
+    for row in reader:
+        for s in row:
+            s: str = s.strip()
+            if not s:
+                continue
+            stripped_single: str = s.strip("'")
+            if stripped_single != s:
+                cleaned.append(stripped_single)
+            else:
+                cleaned.append(s.strip('"'))
+    return cleaned

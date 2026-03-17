@@ -140,3 +140,38 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                                                     "The file might not be a valid UTF-8 text file.")
                                       )
         return lines
+
+def replace_text(filepath: str, text: str, line_number: str) -> bool:
+    """Replace a given text at position line_number
+
+    Args:
+        filepath (str): Path of the file.
+        text (str): Text for a unique line
+        line_number (str): Number or id of the line
+    """
+    try:
+        target: int = int(line_number)
+    except ValueError:
+        logger.error("Invalid line number: %s", line_number)
+        return False
+
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            lines: list[str] = f.readlines()
+
+        if target < 1 or target > len(lines):
+            logger.error("Line number %s out of range (file has %s lines).", line_number, len(lines))
+            return False
+
+        original_line: str = lines[target - 1]
+        ending: str = "\n" if original_line.endswith("\n") else ""
+        lines[target - 1] = text + ending
+
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+
+        return True
+
+    except OSError as e:
+        logger.error("Error when replacing text in file %s : %s", filepath, e)
+        return False
