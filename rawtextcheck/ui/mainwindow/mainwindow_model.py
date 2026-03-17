@@ -215,6 +215,7 @@ class ResultsTableModel(QAbstractTableModel):
                           QCA.translate("column title", "Line"),
                           QCA.translate("column title", "Error"),
                           QCA.translate("column title", "Type"),
+                          QCA.translate("column title", "Category"),
                           QCA.translate("column title", "Explanation"),
                           QCA.translate("column title", "Suggestion")]
 
@@ -274,8 +275,9 @@ class ResultsTableModel(QAbstractTableModel):
             case 1: return item["line"]
             case 2: return item["error"]
             case 3: return item["error_type"]
-            case 4: return item["explanation"]
-            case 5: return item["suggestion"].strip("[]")
+            case 4: return item["error_issue_type"]
+            case 5: return item["explanation"]
+            case 6: return item["suggestion"].strip("[]")
             case _: return QVariant()
 
     def data_row(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> QVariant | ItemResult:
@@ -382,8 +384,9 @@ class ResultsTableModel(QAbstractTableModel):
                 1: "line",
                 2: "error",
                 3: "error_type",
-                4: "explanation",
-                5: "suggestion",
+                4: "error_issue_type",
+                5: "explanation",
+                6: "suggestion",
             }
             field = key_map.get(column)
             if field is None:
