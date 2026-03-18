@@ -10,7 +10,6 @@ and allows users to delete selected rows using the Delete key or through the con
 
 # == Imports ==================================================================
 
-from typing import List
 from PyQt5.QtWidgets import QTableView, QMenu, QAction, QWidget
 from PyQt5.QtCore import QAbstractItemModel, QItemSelectionModel, QModelIndex, Qt, QPoint
 from PyQt5.QtGui import QKeyEvent
@@ -54,7 +53,7 @@ class DataTableView(QTableView):
         selection_model: QItemSelectionModel | None = self.selectionModel()
         if selection_model is None:
             return
-        selection: List[QModelIndex] = selection_model.selectedRows()
+        selection: list[QModelIndex] = selection_model.selectedRows()
         if not selection:
             return
 
@@ -81,12 +80,12 @@ class DataTableView(QTableView):
         selection_model: QItemSelectionModel | None = self.selectionModel()
         if selection_model is None:
             return
-        selection: List[QModelIndex] = selection_model.selectedRows()
+        selection: list[QModelIndex] = selection_model.selectedRows()
         if not selection:
             return
 
         # Collect the rows to delete, sorted in reverse order to avoid index issues while deleting rows
-        rows_to_delete: List[int] = sorted([index.row() for index in selection if index.row()], reverse=True)
+        rows_to_delete: list[int] = sorted([index.row() for index in selection if index.row()], reverse=True)
 
         for row in rows_to_delete:
             if row < model.rowCount() - 1:  # Avoid deleting the last empty row

@@ -8,8 +8,6 @@ Description : Main window of the application.
 
 # == Imports ==================================================================
 
-from typing import List
-
 # -------------------- Import Lib Tier -------------------
 from PyQt5.QtCore import QMimeData, QModelIndex, QUrl, QItemSelectionModel, QVariant
 from PyQt5.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent
@@ -27,7 +25,7 @@ from rawtextcheck.default_parameters import (
 from rawtextcheck import global_variable
 from rawtextcheck.newtype import ItemResult
 from rawtextcheck.script import json_config
-from rawtextcheck.script.utils import parse_suggestions
+from rawtextcheck.script.utils import parse_suggestions, parse_attributes
 from rawtextcheck.ui.mainwindow.mainwindow_model import MainWindowModel
 from rawtextcheck.ui.mainwindow.Ui_mainwindow_view import Ui_MainWindowView
 from rawtextcheck.ui.project_manager.project_manager_controller import DialogProjectManagerController
@@ -306,7 +304,7 @@ class MainWindowController(QMainWindow):
         if mime_data is None:
             return
         if mime_data.hasUrls():
-            urls: List[QUrl] = mime_data.urls()
+            urls: list[QUrl] = mime_data.urls()
             if not urls:
                 return
 
@@ -406,7 +404,7 @@ class MainWindowController(QMainWindow):
             suggestions (str): A comma-separated string of suggestions to populate the combobox with.
         """
         self.ui.comboBox_suggestion.clear()
-        suggestion_list: List[str] = [self.tr("-None-")]
+        suggestion_list: list[str] = [self.tr("-None-")]
         if suggestions:
             suggestion_list.extend(parse_suggestions(suggestions))
         self.ui.comboBox_suggestion.addItems(suggestion_list)
@@ -465,7 +463,7 @@ class MainWindowController(QMainWindow):
         selection_model: QItemSelectionModel | None = self.ui.tableView_result.selectionModel()
         if not (selection_model and selection_model.selectedRows()):
             return
-        selected: List[QModelIndex] = selection_model.selectedRows()
+        selected: list[QModelIndex] = selection_model.selectedRows()
         if len(selected) != 1:
             return
 
