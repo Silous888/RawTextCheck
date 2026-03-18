@@ -133,6 +133,7 @@ class MainWindowController(QMainWindow):
         self.theme_group.triggered.connect(self.theme_selected)
         # combobox
         self.ui.comboBox_project.currentIndexChanged.connect(self.comboBox_project_currentIndexChanged)
+        self.ui.comboBox_suggestion.currentIndexChanged.connect(self.comboBox_suggestion_currentIndexChanged)
         # lineEdit
         self.ui.lineEdit_filepath.textChanged.connect(self.lineEdit_filepath_textChanged)
         # pushbutton
@@ -141,7 +142,7 @@ class MainWindowController(QMainWindow):
         # worker
         self.model.worker.signal_run_process_start.connect(self.model.worker.run_process)
         self.model.worker.signal_run_process_finished.connect(self.run_process_finished)
-
+        # tableView
         self.ui.tableView_result.selectionModel().selectionChanged.connect(self.tableView_result_selectionChanged) # type: ignore
 
 # -------------------- Slots --------------------
@@ -170,6 +171,35 @@ class MainWindowController(QMainWindow):
         self.model.resultsTableModel.project_name = self.model.titleComboBoxModel.get_value(index) or ""
         self.model.resultsTableModel.load_data()
         self.set_enabled_project_has_project(self.ui.comboBox_project.count() > 0)
+
+    def comboBox_suggestion_currentIndexChanged(self, index: int) -> None:
+        """Slot for handling changes in the suggestion combobox.
+        Updates the raw line text edit with the selected suggestion.
+        Args:
+            index (int): The index of the selected suggestion in the combobox.
+        """
+        suggestion: str = self.ui.comboBox_suggestion.currentText()
+        # get current selected item
+        selection_model: QItemSelectionModel | None = self.ui.tableView_result.selectionModel()
+        if selection_model is None:
+            return
+
+        selected: list[QModelIndex] = selection_model.selectedRows()
+        if not selected:
+            return
+
+        item_result: QVariant | ItemResult = self.model.resultsTableModel.data_row(selected[0])
+        if isinstance(item_result, QVariant):
+            return
+
+        line_number: str = item_result["line_number"]
+
+        match: str | None = next((value for key, value in global_variable.results_raw_current if key == line_number), None)
+        rawtext: str = match if match is not None else ""
+        if index == 0:
+            self.ui.textEdit_rawline.setPlainText(rawtext)
+            return
+        self.ui.textEdit_rawline.setPlainText(rawtext.replace(item_result["error"], suggestion, 1))
 
     def lineEdit_filepath_textChanged(self) -> None:
         """Slot for handling text changes in the filepath lineEdit
