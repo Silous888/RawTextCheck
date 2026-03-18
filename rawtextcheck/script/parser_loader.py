@@ -118,7 +118,7 @@ def call_get_filename(parser_name: str, filepath: str) -> tuple[str, bool]:
     else:
         return "", False
 
-def call_replace_text(parser_name: str, filepath: str, text: str, line_number: str) -> tuple[bool, bool]:
+def call_replace_text(parser_name: str, filepath: str, text: str, line_number: str, arguments: dict[str, str]) -> tuple[bool, bool]:
     """call replace_text of a parser, and return result, and existence of
     the method in the parser
 
@@ -126,6 +126,7 @@ def call_replace_text(parser_name: str, filepath: str, text: str, line_number: s
         parser_name (str): name of the parser
         text (str): text to replace
         line_number (str): Number or id of the line
+        arguments (dict[str, str]): Specific argument for this file.
     Returns:
         tuple[str, bool]: result of replace_text, and if replace_text exists
     """

@@ -122,18 +122,19 @@ class MainWindowModel():
         else:
             return os.path.basename(filepath)
 
-    def replace_text(self, project_name: str, filepath: str, text: str, line_number: str) -> bool:
+    def replace_text(self, project_name: str, filepath: str, text: str, line_number: str, arguments: dict[str, str]) -> bool:
         """get the name of the file given its path
         Args:
             filepath (str): Path of the file.
             text (str): Text for a unique line
             line_number (str): Number or id of the line
+            arguments (dict[str, str]): Specific argument for this file.
         """
         project_data: ItemProject | None = json_projects.get_project_data(project_name)
         if not project_data:
             return False
         parser_name: str = project_data["parser"]
-        function_result, _ = parser_loader.call_replace_text(parser_name, filepath, text, line_number)
+        function_result, _ = parser_loader.call_replace_text(parser_name, filepath, text, line_number, arguments)
         return function_result
 
     def generate_result(self, filepath: str, project_name: str, argument_parser: str) -> None:

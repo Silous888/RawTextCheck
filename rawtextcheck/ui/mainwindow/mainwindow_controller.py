@@ -241,7 +241,8 @@ class MainWindowController(QMainWindow):
             project_name,
             self.ui.lineEdit_filepath.text(),
             self.ui.textEdit_rawline.toPlainText(),
-            item_result["line_number"]
+            item_result["line_number"],
+            parse_attributes(self.ui.lineEdit_argument.text())
         )
         if result:
             self.model.resultsTableModel.removeRow(selected[0].row())

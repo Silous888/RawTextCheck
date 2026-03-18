@@ -141,13 +141,14 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                                       )
         return lines
 
-def replace_text(filepath: str, text: str, line_number: str) -> bool:
+def replace_text(filepath: str, text: str, line_number: str, arguments: dict[str, str]) -> bool:
     """Replace a given text at position line_number
 
     Args:
         filepath (str): Path of the file.
         text (str): Text for a unique line
         line_number (str): Number or id of the line
+        arguments (dict[str, str]): Specific argument for this file. (not used)
     """
     try:
         target: int = int(line_number)
