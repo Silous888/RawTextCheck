@@ -179,27 +179,7 @@ class MainWindowController(QMainWindow):
             index (int): The index of the selected suggestion in the combobox.
         """
         suggestion: str = self.ui.comboBox_suggestion.currentText()
-        # get current selected item
-        selection_model: QItemSelectionModel | None = self.ui.tableView_result.selectionModel()
-        if selection_model is None:
-            return
-
-        selected: list[QModelIndex] = selection_model.selectedRows()
-        if not selected:
-            return
-
-        item_result: QVariant | ItemResult = self.model.resultsTableModel.data_row(selected[0])
-        if isinstance(item_result, QVariant):
-            return
-
-        line_number: str = item_result["line_number"]
-
-        match: str | None = next((value for key, value in global_variable.results_raw_current if key == line_number), None)
-        rawtext: str = match if match is not None else ""
-        if index == 0:
-            self.ui.textEdit_rawline.setPlainText(rawtext)
-            return
-        self.ui.textEdit_rawline.setPlainText(rawtext.replace(item_result["error"], suggestion, 1))
+        self.apply_suggestion(suggestion, index)
 
     def lineEdit_filepath_textChanged(self) -> None:
         """Slot for handling text changes in the filepath lineEdit
@@ -285,9 +265,7 @@ class MainWindowController(QMainWindow):
             return
 
         self.populate_combobox_suggestion(item_result["suggestion"])
-        line_number: str = item_result["line_number"]
-        match = next((value for key, value in global_variable.results_raw_current if key == line_number), None)
-        self.ui.textEdit_rawline.setPlainText(match if match is not None else "")
+        self.load_rawtext(item_result)
 
 # -------------------- Events --------------------
 
@@ -415,6 +393,43 @@ class MainWindowController(QMainWindow):
         if suggestions:
             suggestion_list.extend(parse_suggestions(suggestions))
         self.ui.comboBox_suggestion.addItems(suggestion_list)
+
+    def load_rawtext(self, item_result: ItemResult) -> None:
+        """Load the raw text of the selected item result into the raw line text edit.
+        Args:
+            item_result (ItemResult): The item result containing the line number to load.
+        """
+        line_number: str = item_result["line_number"]
+        match: str | None = next((value for key, value in global_variable.results_raw_current if key == line_number), None)
+        self.ui.textEdit_rawline.setPlainText(match if match is not None else "")
+
+    def apply_suggestion(self, suggestion: str, index_combobox: int) -> None:
+        """Apply the selected suggestion to the raw line text edit.
+        Args:
+            suggestion (str): The suggestion to apply.
+            index_combobox (int): The index of the selected suggestion in the combobox.
+        """
+        # get current selected item
+        selection_model: QItemSelectionModel | None = self.ui.tableView_result.selectionModel()
+        if selection_model is None:
+            return
+
+        selected: list[QModelIndex] = selection_model.selectedRows()
+        if not selected:
+            return
+
+        item_result: QVariant | ItemResult = self.model.resultsTableModel.data_row(selected[0])
+        if isinstance(item_result, QVariant):
+            return
+
+        line_number: str = item_result["line_number"]
+
+        match: str | None = next((value for key, value in global_variable.results_raw_current if key == line_number), None)
+        rawtext: str = match if match is not None else ""
+        if index_combobox == 0:
+            self.ui.textEdit_rawline.setPlainText(rawtext)
+            return
+        self.ui.textEdit_rawline.setPlainText(rawtext.replace(item_result["error"], suggestion, 1))
 
     def add_custom_actions_to_menu(self, menu: QMenu) -> None:
         """Add several actions to contextmenu of table_result
