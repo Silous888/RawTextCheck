@@ -63,6 +63,7 @@ class MainWindowController(QMainWindow):
         self.set_up_connect()
 
         self.set_enabled_file_valid(False)
+        self.set_enabled_apply_change(False)
         self.set_enabled_project_has_project(self.ui.comboBox_project.count() > 0)
         self.ui.comboBox_project.setCurrentText(json_config.load_data()["last_project"])
         self.model.resultsTableModel.project_name = self.ui.comboBox_project.currentText()
@@ -204,6 +205,7 @@ class MainWindowController(QMainWindow):
             self.model.resultsTableModel.filename = ""
             self.model.resultsTableModel.clear_data()
             self.set_enabled_file_valid(False)
+            self.set_enabled_apply_change(False)
 
     def pushButton_process_clicked(self) -> None:
         """Slot when the create project button is clicked.
@@ -250,20 +252,25 @@ class MainWindowController(QMainWindow):
         """
         self.set_enabled_during_process(True)
         self.model.resultsTableModel.load_data()
+        self.tableView_result_selectionChanged()
 
     def tableView_result_selectionChanged(self) -> None:
         selection_model: QItemSelectionModel | None = self.ui.tableView_result.selectionModel()
         if selection_model is None:
+            self.set_enabled_apply_change(False)
             return
 
         selected: list[QModelIndex] = selection_model.selectedRows()
         if not selected:
+            self.set_enabled_apply_change(False)
             return
 
         item_result: QVariant | ItemResult = self.model.resultsTableModel.data_row(selected[0])
         if isinstance(item_result, QVariant):
+            self.set_enabled_apply_change(False)
             return
 
+        self.set_enabled_apply_change(True)
         self.populate_combobox_suggestion(item_result["suggestion"])
         self.load_rawtext(item_result)
 
@@ -335,6 +342,15 @@ class MainWindowController(QMainWindow):
         self.ui.lineEdit_filepath.setEnabled(has_project)
         self.ui.tableView_result.setEnabled(has_project)
 
+    def set_enabled_apply_change(self, is_enabled: bool) -> None:
+        """Enable or disable the apply button based on whether a change can be applied.
+        Args:
+            is_enabled (bool): True to enable the apply button, False to disable it.
+        """
+        self.ui.pushButton_apply.setEnabled(is_enabled)
+        self.ui.textEdit_rawline.setEnabled(is_enabled)
+        self.ui.comboBox_suggestion.setEnabled(is_enabled)
+
     def set_enabled_during_process(self, is_enabled: bool) -> None:
         """Enable or disable UI elements during processing.
         Args:
@@ -402,6 +418,8 @@ class MainWindowController(QMainWindow):
         line_number: str = item_result["line_number"]
         match: str | None = next((value for key, value in global_variable.results_raw_current if key == line_number), None)
         self.ui.textEdit_rawline.setPlainText(match if match is not None else "")
+        if not match:
+            self.set_enabled_apply_change(False)
 
     def apply_suggestion(self, suggestion: str, index_combobox: int) -> None:
         """Apply the selected suggestion to the raw line text edit.
