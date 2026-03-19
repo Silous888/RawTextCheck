@@ -243,6 +243,10 @@ class MainWindowController(QMainWindow):
             parse_attributes(self.ui.lineEdit_argument.text())
         )
         if result:
+            global_variable.results_raw_current = [
+                (key, self.ui.textEdit_rawline.toPlainText()) if key == item_result["line_number"] else (key, value)
+                for key, value in global_variable.results_raw_current
+            ]
             self.model.resultsTableModel.removeRow(selected[0].row())
 
     def run_process_finished(self) -> None:
