@@ -500,6 +500,7 @@ class MainWindowController(QMainWindow):
             value (str): _description_
         """
         self.model.resultsTableModel.add_valid_character(value)
+        self.tableView_result_selectionChanged()
 
     def action_remove_banword_triggered(self, value: str) -> None:
         """handle removing word from the banword list
@@ -508,6 +509,7 @@ class MainWindowController(QMainWindow):
             value (str): word
         """
         self.model.resultsTableModel.remove_banword(value)
+        self.tableView_result_selectionChanged()
 
     def action_add_rules_triggered(self, value: str) -> None:
         """Handle adding a new rule to ignored rules
@@ -516,6 +518,7 @@ class MainWindowController(QMainWindow):
             value (str): rule type
         """
         self.model.resultsTableModel.add_ignored_rule(value)
+        self.tableView_result_selectionChanged()
 
     def action_action_add_word_dictionary_triggered(self, value: str) -> None:
         """Handle adding a word to the dictionary
@@ -524,3 +527,4 @@ class MainWindowController(QMainWindow):
             value (str): word to add
         """
         self.model.resultsTableModel.add_word_dictionary(value)
+        self.tableView_result_selectionChanged()
