@@ -77,6 +77,7 @@ pyinstaller rawtextcheck.spec
 | **Manage** | Configure project | Opens the project management window. Use this to create your first project. ([Project configuration](#manage-project-window)) |
 | **Manage** | Add google credentials | Add a Google API credentials file. Required for the Google Sheet parser. See [this guide](resources/credentials_google_api.md). |
 | **Preference** | Language | Select the application language. The app must be restarted for changes to take effect. This does not affect the language used for text analysis. |
+| **Preference** | Theme | Select the application theme. The app must be restarted for changes to take effect. |
 
 #### Controls
 
@@ -84,6 +85,7 @@ pyinstaller rawtextcheck.spec
 - **File path input**: Enter the path of the file to analyze. You can also drag and drop a file onto the app.
 - **Argument parser**: Specify arguments for the parser. By default, the arguments defined in the project are used, but you can modify them for specific files if needed.
 - **Process button**: Start the analysis. Processing may take some time. If LanguageTool is not yet initialized, analyzing a 500-line file may take 1–2 minutes.
+- **Raw Line**: The raw line of the selected error. You can insert a suggestion or directly edit the line. Then, you can apply the correction with the button **Apply modification**. This feature can't be used with errors loaded from history. The process of the file need to be done just before.
 - **Results table**: Displays the analysis results. If a file has been analyzed previously, the most recent results will be loaded automatically.
 
 ---
@@ -98,16 +100,20 @@ The results table has 6 columns:
 | **Line** | The text content of the line |
 | **Error** | The word(s) where the error was detected |
 | **Type** | The LanguageTool error type |
+| **Category** | The LanguageTool error category, useful for sorting |
 | **Explanation** | A description of the error |
 | **Suggestion** | Suggested correction(s) for the error |
 
-Each column can be hidden by right-clicking and deselecting it in the **Visibility** menu. Hidden columns are remembered between sessions.
+Each column can be hidden by right-clicking and deselecting it in the **Visibility** menu. Hidden columns are remembered between sessions. Each column header can be clicked to sort errors.
 
 #### Right-click Actions
 
 | Action | Condition | Description |
 |--------|-----------|-------------|
 | **Delete** | Always | Delete the selected row. The `Delete` key can also be used. |
+| **Copy text** | Always | Copy the cleaned text of the line column. |
+| **Copy error** | Always | Copy the error. |
+| **Copy suggestion** | When suggestions available | Copy the chosen suggestion. |
 | **Add character to valid characters** | Invalid character errors only | Adds the character to valid characters and removes all related errors. |
 | **Add this word to dictionary** | Spelling errors only | Adds the word to the dictionary and removes all related spelling errors. |
 | **Remove word from the banword list** | Banword errors only | Removes the word from the banword list and deletes all related errors. |
@@ -153,6 +159,9 @@ Using the same example, instead of adding every `[xx]` code individually, you ca
 ```
 That's Yoko Fukunaga. Good, at least I can remember that much.
 ```
+
+- You can keep "start" blank to remove the beginning of the line until "end" token.
+- You can keep "end" blank to remove the end of the line from "start" token.
 
 **Replace codes**
 Define substitutions where specific tokens are automatically replaced with another value.
