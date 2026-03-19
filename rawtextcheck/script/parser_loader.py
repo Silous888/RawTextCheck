@@ -135,7 +135,7 @@ def call_replace_text(parser_name: str, filepath: str, text: str, line_number: s
         return False, False
     if hasattr(all_parsers[parser_name], "replace_text"):
         try:
-            return all_parsers[parser_name].replace_text(filepath, text, line_number), True
+            return all_parsers[parser_name].replace_text(filepath, text, line_number, arguments), True
         except Exception as e:
             logger.error("error during replace_text method of parser %s: %s", parser_name, e)
             return False, True
