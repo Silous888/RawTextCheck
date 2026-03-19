@@ -53,25 +53,29 @@ def parse_attributes(line: str) -> dict[str, str]:
 
 def parse_suggestions(suggestions: str) -> list[str]:
     """Parse a suggestion string, respecting quoted commas."""
-    cleaned: list[str] = []
 
-    for quotechar in ["'", '"']:
-        try:
-            reader = csv.reader(
-                [suggestions.strip("[]")],
-                skipinitialspace=True,
-                quotechar=quotechar
-            )
-            results: list[str] = []
-            for row in reader:
-                for s in row:
-                    s: str = s.strip().strip(quotechar)
-                    if s:
-                        results.append(s)
-            if results:
-                cleaned = results
-                break
-        except Exception:
-            continue
+    def strip_surrounding_quotes(s: str) -> str:
+        """Remove surrounding quotes only if the string starts and ends with the same quote."""
+        if (s.startswith("'") and s.endswith("'")) or \
+           (s.startswith('"') and s.endswith('"')):
+            return s[1:-1]
+        return s
+
+    cleaned: list[str] = []
+    try:
+        reader = csv.reader(
+            [suggestions.strip("[]")],
+            skipinitialspace=True,
+            quotechar="'",
+            doublequote=False,
+            escapechar=None
+        )
+        for row in reader:
+            for s in row:
+                s = strip_surrounding_quotes(s.strip())
+                if s:
+                    cleaned.append(s)
+    except Exception:
+        pass
 
     return cleaned
