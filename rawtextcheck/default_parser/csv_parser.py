@@ -55,7 +55,13 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
             col_id_index = int(arguments[COL_ID_ARG.name])
         if col_value_index < 1 or (col_id_index is not None and col_id_index < 1):
             return []
-
+    except KeyError:
+        logger.error("Missing required argument for CSV parser: 'col'.")
+        popup_manager.show_error.emit(QCA.translate("window title", "Parser Error"),
+                                      QCA.translate("message error",
+                                                    "Missing required argument 'col' for the CSV parser.")
+                                      )
+        return []
     except ValueError:
         logger.error("%s is not a valid argument for the CSV parser.", arguments)
         popup_manager.show_error.emit(QCA.translate("window title", "Parser Error"),
@@ -91,3 +97,62 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                                       )
 
     return results
+
+def replace_text(filepath: str, text: str, line_number: str, arguments: dict[str, str]) -> bool:
+    """Replace a given text at position line_number in the specified column.
+
+    Args:
+        filepath (str): Path of the CSV file.
+        text (str): New text for the cell.
+        line_number (str): Row identifier (row number or colID value).
+        arguments (dict[str, str]): Specific argument for this file.
+            keys:
+                - "col": Column number (1-based index) to replace.
+                - "colID": Optional column number (1-based index) for row identifier.
+    Returns:
+        bool: True if the replacement was successful, False otherwise.
+    """
+    try:
+        col_value_index: int = int(arguments[COL_ARG.name])
+        col_id_index: int | None = None
+        if COL_ID_ARG.name in arguments:
+            col_id_index = int(arguments[COL_ID_ARG.name])
+        if col_value_index < 1 or (col_id_index is not None and col_id_index < 1):
+            return False
+    except ValueError:
+        logger.error("Invalid arguments for CSV replace_text: %s", arguments)
+        return False
+
+    try:
+        with open(filepath, newline='', encoding='utf-8') as csvfile:
+            rows: list[list[str]] = list(csv.reader(csvfile))
+
+        target_row: int | None = None
+        for i, row in enumerate(rows):
+            if col_id_index is not None:
+                if len(row) >= col_id_index and row[col_id_index - 1].strip() == line_number:
+                    target_row = i
+                    break
+            else:
+                if str(i + 1) == line_number:
+                    target_row = i
+                    break
+
+        if target_row is None:
+            logger.error("Row identifier '%s' not found in file %s.", line_number, filepath)
+            return False
+
+        if len(rows[target_row]) < col_value_index:
+            logger.error("Row %s has fewer columns than expected in file %s.", target_row + 1, filepath)
+            return False
+
+        rows[target_row][col_value_index - 1] = text
+
+        with open(filepath, 'w', newline='', encoding='utf-8') as csvfile:
+            csv.writer(csvfile).writerows(rows)
+
+        return True
+
+    except OSError as e:
+        logger.error("Error when replacing text in CSV file %s : %s", filepath, e)
+        return False
