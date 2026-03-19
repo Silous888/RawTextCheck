@@ -101,7 +101,7 @@ class DataResultTableView(QTableView):
             line: str      = model.data(idx(1), Qt.ItemDataRole.DisplayRole)
             error: str     = model.data(idx(2), Qt.ItemDataRole.DisplayRole)
             # error_type: str = model.data(idx(3), Qt.ItemDataRole.DisplayRole)
-            suggestion: str = model.data(idx(5), Qt.ItemDataRole.DisplayRole)
+            suggestion: str = model.data(idx(6), Qt.ItemDataRole.DisplayRole)
 
 
             copy_line_action = QAction(self.tr("Copy text"), self)
