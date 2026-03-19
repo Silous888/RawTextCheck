@@ -176,3 +176,24 @@ def get_worksheet_values(worksheet: Worksheet) -> (list[list[str]] | None):
             logger.error("Can't get values of worksheet name:%s, id:%s", worksheet.title, worksheet.id)
         return
     return values
+
+
+def update_cell(worksheet: Worksheet, row: int, col: int, value: str) -> bool:
+    """update a cell in a worksheet
+
+    Args:
+        worksheet (Worksheet): worksheet opened
+        row (int): row of the cell to update, first is 1
+        col (int): column of the cell to update, first is 1
+        value (str): new value of the cell
+
+    Returns:
+        bool: True if updated successfully, False otherwise
+    """
+    result: Any = _safe_execute_method(worksheet, "update_cell", row, col, value)
+    if isinstance(result, Exception):
+        if "MAX_RETRIES" not in str(result):
+            logger.error("Can't update cell %s,%s of worksheet name:%s, id:%s with value:%s, error: %s",
+                         row, col, worksheet.title, worksheet.id, value, result)
+        return False
+    return True

@@ -132,3 +132,58 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                 results.append((str(i), line[col_value_index]))
 
     return results
+
+def replace_text(filepath: str, text: str, line_number: str, arguments: dict[str, str]) -> bool:
+    """Replace a given cell at position line_number in the Google Sheet.
+
+    Args:
+        filepath (str): URL of the Google Sheet.
+        text (str): New text for the cell.
+        line_number (str): Row identifier (row number or colID value).
+        arguments (dict[str, str]): Specific argument for this file.
+            keys:
+                - "col": Column letter (e.g., "A") to replace.
+                - "colID": Optional column letter for row identifier.
+
+    Returns:
+        bool: True if the replacement was successful, False otherwise.
+    """
+    try:
+        col_value_index: int = column_letter_to_index(arguments[COL_ARG.name]) - 1
+        col_id_index: int | None = None
+        if COL_ID_ARG.name in arguments:
+            col_id_index = column_letter_to_index(arguments[COL_ID_ARG.name]) - 1
+    except Exception:
+        logger.error("%s is not a valid argument for the google sheet parser.", arguments)
+        return False
+
+    id_sheet: str = extract_id_from_url(filepath)
+
+    spreadsheet: Spreadsheet | None = google_sheet_api.open_spreadsheet(id_sheet)
+    if spreadsheet is None:
+        return False
+
+    worksheet: Worksheet | None = google_sheet_api.open_worksheet(spreadsheet, 0)
+    if worksheet is None:
+        return False
+
+    values: list[list[str]] | None = google_sheet_api.get_worksheet_values(worksheet)
+    if values is None:
+        return False
+
+    target_row: int | None = None
+    for i, row in enumerate(values, start=1):
+        if col_id_index is not None:
+            if len(row) > col_id_index and row[col_id_index].strip() == line_number:
+                target_row = i
+                break
+        else:
+            if str(i) == line_number:
+                target_row = i
+                break
+
+    if target_row is None:
+        logger.error("Row identifier '%s' not found in spreadsheet %s.", line_number, filepath)
+        return False
+
+    return google_sheet_api.update_cell(worksheet, target_row, col_value_index + 1, text)
