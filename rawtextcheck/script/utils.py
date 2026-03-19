@@ -54,15 +54,24 @@ def parse_attributes(line: str) -> dict[str, str]:
 def parse_suggestions(suggestions: str) -> list[str]:
     """Parse a suggestion string, respecting quoted commas."""
     cleaned: list[str] = []
-    reader = csv.reader([suggestions.strip("[]")], skipinitialspace=True)
-    for row in reader:
-        for s in row:
-            s: str = s.strip()
-            if not s:
-                continue
-            stripped_single: str = s.strip("'")
-            if stripped_single != s:
-                cleaned.append(stripped_single)
-            else:
-                cleaned.append(s.strip('"'))
+
+    for quotechar in ["'", '"']:
+        try:
+            reader = csv.reader(
+                [suggestions.strip("[]")],
+                skipinitialspace=True,
+                quotechar=quotechar
+            )
+            results: list[str] = []
+            for row in reader:
+                for s in row:
+                    s: str = s.strip().strip(quotechar)
+                    if s:
+                        results.append(s)
+            if results:
+                cleaned = results
+                break
+        except Exception:
+            continue
+
     return cleaned
