@@ -113,3 +113,64 @@ def parse_file(filepath: str, arguments: dict[str, str]) -> list[tuple[str, str]
                                                     "Error when parsing the XML file.")
                                       )
         return []
+
+def replace_text(filepath: str, text: str, line_number: str, arguments: dict[str, str]) -> bool:
+    """Replace a given text at position line_number in the XML file.
+
+    Args:
+        filepath (str): Path of the XML file.
+        text (str): New text for the element or attribute.
+        line_number (str): Row identifier (line number or idAttr value).
+        arguments (dict[str, str]): Specific argument for this file.
+            keys:
+                - "tag": The XML element tag to target.
+                - "attr": (optional) Attribute name to replace instead of element text.
+                - "idAttr": (optional) Attribute name used as row identifier.
+    Returns:
+        bool: True if the replacement was successful, False otherwise.
+    """
+    try:
+        tag: str = arguments[TAG_ARG.name]
+        attr: str | None = arguments.get(ATTR_ARG.name)
+        id_attr: str | None = arguments.get(ID_ATTR_ARG.name)
+    except KeyError as e:
+        logger.error("Missing required argument: %s", e)
+        return False
+
+    try:
+        tree: ET.ElementTree = ET.parse(filepath) # type: ignore
+        root: ET.Element = tree.getroot() # type: ignore
+        line_map: dict[int, str] = build_line_map(filepath)
+
+        target_elem: ET.Element | None = None
+        for elem in root.iter(tag):
+            if id_attr:
+                if elem.attrib.get(id_attr, "").strip() == line_number:
+                    target_elem = elem
+                    break
+            else:
+                # Recherche par numéro de ligne
+                current_value: str = (elem.attrib.get(attr, "") if attr else elem.text or "").strip()
+                for line_no, raw in line_map.items():
+                    if str(line_no) == line_number and f"<{tag}" in raw and current_value in raw:
+                        target_elem = elem
+                        break
+                if target_elem is not None:
+                    break
+
+        if target_elem is None:
+            logger.error("Row identifier '%s' not found in file %s.", line_number, filepath)
+            return False
+
+        if attr:
+            target_elem.set(attr, text)
+        else:
+            target_elem.text = text
+
+        ET.indent(tree)
+        tree.write(filepath, encoding="utf-8", xml_declaration=True)
+        return True
+
+    except Exception as e:
+        logger.error("Error when replacing text in XML file %s : %s", filepath, e)
+        return False
