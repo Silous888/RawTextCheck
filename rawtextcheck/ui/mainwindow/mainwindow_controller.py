@@ -235,6 +235,8 @@ class MainWindowController(QMainWindow):
         item_result: QVariant | ItemResult = self.model.resultsTableModel.data_row(selected[0])
         if isinstance(item_result, QVariant):
             return
+        self.set_enabled_during_process(False)
+        self.set_enabled_apply_change(False)
         result: bool = self.model.replace_text(
             project_name,
             self.ui.lineEdit_filepath.text(),
@@ -248,6 +250,9 @@ class MainWindowController(QMainWindow):
                 for key, value in global_variable.results_raw_current
             ]
             self.model.resultsTableModel.removeRow(selected[0].row())
+        self.set_enabled_during_process(True)
+        self.set_enabled_apply_change(True)
+
 
     def run_process_finished(self) -> None:
         """Slot when the worker process is finished.
@@ -351,7 +356,8 @@ class MainWindowController(QMainWindow):
             is_enabled (bool): True to enable the apply button, False to disable it.
         """
         self.ui.pushButton_apply.setEnabled(is_enabled)
-        self.ui.textEdit_rawline.setEnabled(is_enabled)
+        # self.ui.textEdit_rawline.setEnabled(is_enabled)
+        self.ui.textEdit_rawline.setReadOnly(not is_enabled)
         self.ui.comboBox_suggestion.setEnabled(is_enabled)
 
     def set_enabled_during_process(self, is_enabled: bool) -> None:
@@ -423,6 +429,7 @@ class MainWindowController(QMainWindow):
         self.ui.textEdit_rawline.setPlainText(match if match is not None else "")
         if not match:
             self.set_enabled_apply_change(False)
+            self.ui.textEdit_rawline.setPlainText(self.tr("Raw text not found for this line. History can't be used for this feature. You may need to reprocess the file."))
 
     def apply_suggestion(self, suggestion: str, index_combobox: int) -> None:
         """Apply the selected suggestion to the raw line text edit.

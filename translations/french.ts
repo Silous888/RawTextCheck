@@ -32,7 +32,7 @@
 <context>
     <name>DataTableView</name>
     <message>
-        <location filename="../rawtextcheck/ui/widgets/data_tableview.py" line="63"/>
+        <location filename="../rawtextcheck/ui/widgets/data_tableview.py" line="62"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
@@ -946,74 +946,79 @@
 <context>
     <name>MainWindowController</name>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="78"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="77"/>
         <source>Language</source>
         <translation>Langue</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="100"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="99"/>
         <source>Theme</source>
         <translation>Thème</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="191"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="200"/>
         <source>File not found</source>
         <translation>Fichier non trouvé</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="348"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="380"/>
         <source>Select Google Credentials JSON File</source>
         <translation>Sélectionner le fichier JSON des credentials Google</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="348"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="380"/>
         <source>JSON Files (*.json)</source>
         <translation>Fichiers JSON (*.json)</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="365"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="397"/>
         <source>Language applied</source>
         <translation>Langue appliquée</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="365"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="397"/>
         <source>The language has been applied. You need to restart the application for the changes to take effect.</source>
         <translation>La langue a été appliquée. Vous devez redémarrer pour appliquer les changements.</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="373"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="405"/>
         <source>Theme applied</source>
         <translation>Thème appliqué</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="373"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="405"/>
         <source>The theme has been applied. You need to restart the application for some changes to take effect.</source>
         <translation>Le thème a été appliquée. Vous devez redémarrer pour appliquer les changements.</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="411"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="483"/>
         <source>Add character to valid characters</source>
         <translation>Ajouter aux caractères valides</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="417"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="489"/>
         <source>Remove word from the banword list</source>
         <translation>Supprimer des mots interdits</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="423"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="495"/>
         <source>Add this word to dictionary</source>
         <translation>Ajouter ce mot au dictionnaire</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="429"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="501"/>
         <source>Add {item_result[&apos;error_type&apos;]} to ignored rules</source>
         <translation>Ajouter{item_result[&apos;error_type&apos;]} au règles ignorées</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="384"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="416"/>
         <source>-None-</source>
         <translation>-Aucune-</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_controller.py" line="431"/>
+        <source>Raw text not found for this line. History can&apos;t be used for this feature. You may need to reprocess the file.</source>
+        <translation>Texte brut non trouvé pour cette ligne. L’historique ne peut pas être utilisé pour cette fonctionnalité. Il est sûrement nécessaire de relancer un traitement du fichier.</translation>
     </message>
 </context>
 <context>
@@ -1158,37 +1163,37 @@
 <context>
     <name>column title</name>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="214"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="215"/>
         <source>Line Number</source>
         <translation>Numéro de ligne</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="215"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="216"/>
         <source>Line</source>
         <translation>Texte</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="216"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="217"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="217"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="218"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="219"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="220"/>
         <source>Explanation</source>
         <translation>Explication</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="220"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="221"/>
         <source>Suggestion</source>
         <translation>Suggestion</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="218"/>
+        <location filename="../rawtextcheck/ui/mainwindow/mainwindow_model.py" line="219"/>
         <source>Category</source>
         <translation>Catégorie</translation>
     </message>
@@ -1222,12 +1227,12 @@
 <context>
     <name>message error</name>
     <message>
-        <location filename="../rawtextcheck/default_parser/csv_parser.py" line="61"/>
+        <location filename="../rawtextcheck/default_parser/csv_parser.py" line="67"/>
         <source>{arguments} is not a valid argument for the CSV parser.</source>
         <translation>{arguments} n’est pas un argument valide pour le parseur de CSV.</translation>
     </message>
     <message>
-        <location filename="../rawtextcheck/default_parser/csv_parser.py" line="88"/>
+        <location filename="../rawtextcheck/default_parser/csv_parser.py" line="94"/>
         <source>Error when parsing the CSV file.</source>
         <translation>Erreur pendant l’extration de texte du CSV.</translation>
     </message>
@@ -1290,6 +1295,11 @@
         <location filename="../rawtextcheck/script/languagetool.py" line="119"/>
         <source>LanguageTool failed to analyze the text.</source>
         <translation>Échec de l’analyse de texte avec LanguageTool.</translation>
+    </message>
+    <message>
+        <location filename="../rawtextcheck/default_parser/csv_parser.py" line="60"/>
+        <source>Missing required argument &apos;col&apos; for the CSV parser.</source>
+        <translation>Argument &apos;col&apos; manquant pour le parseur CSV.</translation>
     </message>
 </context>
 <context>
