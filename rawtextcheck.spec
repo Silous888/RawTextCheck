@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['rawtextcheck\\main.py'],
+    ['rawtextcheck/main.py'],
     pathex=[],
     binaries=[],
     datas=[
